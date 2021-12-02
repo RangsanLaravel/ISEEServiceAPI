@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CryptoHelper" Version="3.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ISEEService.DataAccess\ISEEService.DataAccess.csproj" />
+    <ProjectReference Include="..\ISEEService.DataContract\ISEEService.DataContract.csproj" />
+  </ItemGroup>
+
+</Project>
