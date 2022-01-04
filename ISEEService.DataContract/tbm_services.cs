@@ -8,6 +8,7 @@ namespace ISEEService.DataContract
 {
   public  class tbm_services
     {
+      public string jobcode { get; set; }
       public string services_no{get;set;}
       public string services_name{get;set;}
       public string period_year{get;set;}

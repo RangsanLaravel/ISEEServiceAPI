@@ -11,6 +11,7 @@ namespace ISEEService.DataContract
         public string license_no { get; set; }
         public string seq { get; set; }
         public string brand_no { get; set; }
+        public string brand_name_tha { get; set; }
         public string model_no { get; set; }
         public string chassis_no { get; set; }
         public string Color { get; set; }

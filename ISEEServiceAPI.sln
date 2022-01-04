@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISEEService.DataAccess", "I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ISEEService.BusinessLogic", "ISEEService.BusinessLogic\ISEEService.BusinessLogic.csproj", "{3F03943E-3578-40B4-BEAD-384655811026}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ITUtility", "ITUtility\ITUtility.csproj", "{AD4F3AA6-1B68-4434-8C93-3FB14D34CF19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ITUtility", "ITUtility\ITUtility.csproj", "{AD4F3AA6-1B68-4434-8C93-3FB14D34CF19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessUtility", "DataAccessUtility\DataAccessUtility.csproj", "{EA60F15E-E33E-4903-81BF-3197FDC0BFAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessUtility", "DataAccessUtility\DataAccessUtility.csproj", "{EA60F15E-E33E-4903-81BF-3197FDC0BFAC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StoreManagement", "D:\DevHome\StoreManagement\StoreManagement\StoreManagement.csproj", "{8DF280C7-8D9F-4F61-A223-8333C94D836B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{EA60F15E-E33E-4903-81BF-3197FDC0BFAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA60F15E-E33E-4903-81BF-3197FDC0BFAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA60F15E-E33E-4903-81BF-3197FDC0BFAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DF280C7-8D9F-4F61-A223-8333C94D836B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DF280C7-8D9F-4F61-A223-8333C94D836B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DF280C7-8D9F-4F61-A223-8333C94D836B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DF280C7-8D9F-4F61-A223-8333C94D836B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

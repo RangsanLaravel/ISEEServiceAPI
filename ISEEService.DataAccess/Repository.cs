@@ -148,6 +148,25 @@ namespace ISEEService.DataAccess
             }
             return dataObjects;
         }
+
+        public async ValueTask<List<tbm_brand>> GET_BRANDAsync()
+        {
+            List<tbm_brand> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT * FROM [ISEE].[dbo].[tbm_brand] WHERE ACTIVE_FLAG =1"
+            };
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_brand>().ToList();
+                }
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<Customer>> GET_CUSTOMERAsync(string license_no)
         {
             List<Customer> dataObjects = null;
@@ -298,6 +317,35 @@ namespace ISEEService.DataAccess
             return dataObjects;
         }
 
+        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
+        {
+            List<tbt_adj_sparepart> dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT  sp.[part_id]
+      ,sp.[part_no]
+      ,[part_name]
+      ,[part_desc]
+	  ,sp.part_value
+	  ,[adj_part_value]
+  FROM [ISEE].[dbo].[tbm_sparepart] sp
+  left join [ISEE].[dbo].[tbt_adj_sparepart] adj
+  ON adj.part_id =sp.part_id
+  WHERE sp.cancal_date is null and adj.cancel_date is null"
+            };
+
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbt_adj_sparepart>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+
         #region " GET JOB DETAIL "
         public async ValueTask<close_job> GET_TBT_JOB_HEADERAsync(string job_id)
         {
@@ -306,9 +354,31 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbt_job_header]
-                                where job_id =@job_id AND STATUS =1"
+                CommandText = @"SELECT  [job_id],type_job
+      ,[license_no]
+      ,hd.customer_id
+	  ,concat(tc.fname,' ',tc.lname) customer_name
+      ,[summary]
+      ,[action]
+      ,[result]
+      ,[transfer_to]
+      ,[fix_date]
+      ,[close_date]
+      ,[email_customer]
+      ,[invoice_no]
+      ,[owner_id]
+	  ,CONCAT(te.fullname,' ',te.lastname) owner_name
+      ,hd.create_by
+      ,hd.create_date
+      ,hd.update_by
+      ,hd.update_date
+      ,[ref_hjob_id]
+      ,hd.status
+ FROM [ISEE].[dbo].[tbt_job_header] hd
+ INNER JOIN [ISEE].[dbo].[tbm_customer] tc on hd.customer_id =tc.customer_id 
+ INNER JOIN [ISEE].[dbo].[tbm_employee] te on hd.owner_id =te.user_id
+ where job_id =@job_id 
+ AND hd.STATUS =1"
             };
             command.Parameters.AddWithValue("@job_id", job_id);
 
@@ -328,7 +398,32 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
+                CommandText = @"SELECT [bjob_id]
+      ,[B1_model]
+      ,[B1_serial]
+      ,[B1_amp_hrs]
+      ,[B1_date_code]
+      ,[B1_spec_gravity]
+      ,[B1_volt_static]
+      ,[B1_volt_load]
+      ,[B2_model]
+      ,[B2_serial]
+      ,[B2_amp_hrs]
+      ,[B2_date_code]
+      ,[B2_spec_gravity]
+      ,[B2_volt_static]
+      ,[B2_volt_load]
+      ,[CD_manufact]
+      ,[CD_model]
+      ,[CD_serial]
+      ,concat( convert(varchar(2), FORMAT(CD_tag_date,'dd')),'/',convert(varchar(2), FORMAT(CD_tag_date,'MM') ),'/',convert(varchar, year(CD_tag_date) +543)) AS CD_tag_date
+      ,[H_meter]
+      ,[V_service_mane]
+      ,[V_labour]
+      ,[V_travel]
+      ,[V_total]
+      ,[failure_code]
+      ,[fair_wear]
                                 FROM [ISEE].[dbo].[tbt_job_detail]
                                 where bjob_id =@job_id"
             };
@@ -378,7 +473,8 @@ namespace ISEEService.DataAccess
                 CommandText = @"
 SELECT  [pjob_id]
       ,[seq]
-      ,jpar.[part_no]
+      ,spar.[part_no]
+      ,jpar.part_id
 	  ,[part_name]
       ,[part_desc]
       ,[part_type]
@@ -392,7 +488,7 @@ SELECT  [pjob_id]
       ,jpar.[create_by]
       ,[status]
   FROM [ISEE].[dbo].[tbt_job_part] jpar
-  INNER JOIN [ISEE].[dbo].[tbm_sparepart] spar on jpar.part_no =spar.part_no
+  INNER JOIN [ISEE].[dbo].[tbm_sparepart] spar on jpar.part_id =spar.part_id
   WHERE jpar.status =1
   AND jpar.pjob_id =@job_id"
             };
@@ -442,7 +538,6 @@ SELECT [ijob_id]
             }
             return dataObjects;
         }
-
         public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid,bool isAdmin)
         {
             List<job_detail_list> dataObjects = null;
@@ -451,6 +546,7 @@ SELECT [ijob_id]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 CommandText = @"SELECT [job_id]
+                                ,type_job
                                 ,jh.[license_no]
                                 ,jh.[customer_id]
 	                            ,CONCAT(cus.fname,' ',cus.lname)AS cus_fullname
@@ -484,6 +580,7 @@ SELECT [ijob_id]
             }
             return dataObjects;
         }
+       
 
         #endregion " GET JOB DETAIL "
 
@@ -516,7 +613,7 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT MAX(SEQ)
+                CommandText = @"SELECT ISNULL(MAX(SEQ),0)
                                 FROM [ISEE].[dbo].[tbt_job_part]
                                 where pjob_id =@job_id AND STATUS =1"
             };
@@ -706,6 +803,7 @@ WHERE cu.status =1 "
                 CommandText = @"SELECT  license_no
       ,seq
       ,brand_no
+      ,br.brand_name_tha
       ,model_no
       ,chassis_no
       ,Color
@@ -720,6 +818,7 @@ WHERE cu.status =1 "
   FROM [ISEE].[dbo].[tbm_vehicle] v
   INNER JOIN [ISEE].[dbo].[tbm_services] s on s.services_no =v.service_no
   INNER JOIN [ISEE].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
+  LEFT JOIN [ISEE].[dbo].[tbm_brand] br on br.brand_code =v.brand_no 
   WHERE s.status =1 "
             };
             if (data is not null && !string.IsNullOrWhiteSpace(data.license_no))
@@ -829,6 +928,31 @@ WHERE cu.status =1 "
                 }
             }
             return dataObjects;
+        }
+        public async ValueTask<string> GET_TBM_SERVICES_BY_JOBTYPE(string data)
+        {
+            string service_no = string.Empty;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT MAX(services_no)
+                        FROM [ISEE].[dbo].[tbm_services]
+                         WHERE status= 1 "
+            };
+            if (!string.IsNullOrWhiteSpace(data))
+            {
+                command.CommandText += " AND services_no like @services_no";
+                command.Parameters.AddWithValue("@services_no", $"{data}%");
+            }
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    service_no = dt.Rows[0][0].ToString();
+                }
+            }
+            return service_no;
         }
         public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data)
         {
@@ -956,6 +1080,37 @@ SELECT
             return image_id;
         }
 
+        public async ValueTask<tbt_job_image> GET_PATHFILE(string ijob_id, string seq)
+        {
+            tbt_job_image filedetai = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT [ijob_id]
+      ,[seq]
+      ,[img_name]
+      ,[img_path]
+      ,[create_date]
+      ,[create_by]
+      ,[status]
+      ,[image_type]
+  FROM [ISEE].[dbo].[tbt_job_image]
+WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
+            };
+            command.Parameters.AddWithValue("@ijob_id", ijob_id);
+            command.Parameters.AddWithValue("@seq", seq);
+
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    filedetai = dt.AsEnumerable<tbt_job_image>().FirstOrDefault();
+                }
+            }
+            return filedetai;
+        }
+
         public async ValueTask<List<tbm_image_type>> GET_TBM_IMAGE_TYPEAsync()
         {
             List<tbm_image_type> dataObjects = null;
@@ -986,7 +1141,7 @@ SELECT
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT MAX(SEQ)
+                CommandText = @"SELECT ISNULL(MAX(SEQ),0)
                                FROM [ISEE].[dbo].[tbt_job_image]
                                 WHERE status =1
                         AND ijob_id =@ijob_id"
@@ -1132,6 +1287,8 @@ AND menu.status =1
             return menu;
         }
 
+        
+
         #endregion " GET DATA "
 
         #region " INSERT DATA "
@@ -1187,7 +1344,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [dbo].[tbm_customer]
+                CommandText = @"INSERT INTO [ISEE].[dbo].[tbm_customer]
            (
            cust_type
            ,fname
@@ -1240,7 +1397,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [dbo].[tbm_vehicle]
+                CommandText = @"INSERT INTO [ISEE].[dbo].[tbm_vehicle]
            (license_no
            ,seq
            ,brand_no
@@ -1292,27 +1449,29 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [dbo].[tbm_services]
+                CommandText = @"INSERT INTO [ISEE].[dbo].[tbm_services]
            (
              services_no
             ,services_name
             ,period_year
             ,create_date
             ,create_by
-            ,status)
+            ,status
+,jobcode)
      VALUES
            (@services_no
            ,@services_name
            ,@period_year
            ,GETDATE()
            ,@create_by
-           ,1)"
+           ,1,@jobcode)"
             };
 
-            sql.Parameters.AddWithValue("@services_no", data.services_no);
-            sql.Parameters.AddWithValue("@services_name", data.services_name);
-            sql.Parameters.AddWithValue("@period_year", data.period_year);
-            sql.Parameters.AddWithValue("@create_by", data.create_by);          
+            sql.Parameters.AddWithValue("@services_no", data.services_no ??(object)DBNull.Value);
+            sql.Parameters.AddWithValue("@services_name", data.services_name ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@period_year", data.period_year ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);          
+            sql.Parameters.AddWithValue("@jobcode", data.jobcode ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
         public async ValueTask INSERT_TBT_JOB_HEADERAsync(create_job data)
@@ -1323,8 +1482,10 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @$"INSERT INTO [dbo].[tbt_job_header]
+                CommandText = @$"INSERT INTO [ISEE].[dbo].[tbt_job_header]
            (job_id
+            ,type_job
+            ,summary
            ,license_no    
            ,customer_id
            ,owner_id
@@ -1335,6 +1496,8 @@ AND menu.status =1
            ,status)
      VALUES
            (@job_id
+            ,@type_job
+,@summary
            ,@license_no   
            ,@customer_id
            ,@owner_id
@@ -1346,6 +1509,8 @@ AND menu.status =1
             };
 
             sql.Parameters.AddWithValue("@job_id", data.job_id);
+            sql.Parameters.AddWithValue("@type_job", data.type_job);
+            sql.Parameters.AddWithValue("@summary", data.summary?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@license_no", data.license_no);
             sql.Parameters.AddWithValue("@customer_id", data.customer_id);
             sql.Parameters.AddWithValue("@owner_id", data.owner_id);
@@ -1365,7 +1530,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [dbo].[tbt_job_header]
+                CommandText = @"INSERT INTO [ISEE].[dbo].[tbt_job_checklist]
            ( ckjob_id
             ,ck_id
             ,description)
@@ -1380,14 +1545,15 @@ AND menu.status =1
             sql.Parameters.AddWithValue("@description", data.description);
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask INSERT_TBT_JOB_DETAIL(tbt_job_detail data, string job_id)
+        public async ValueTask INSERT_TBT_JOB_DETAIL(tbt_job_detail data, string job_id,DateTime? CD_tag_date)
         {
             SqlCommand sql = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [dbo].[tbt_job_header]
+                
+                CommandText = @"INSERT INTO [ISEE].[dbo].[tbt_job_detail]
            ( bjob_id
       ,B1_model
       ,B1_serial
@@ -1443,33 +1609,136 @@ AND menu.status =1
       ,@fair_wear )"
             };
 
-            sql.Parameters.AddWithValue("@bjob_id", job_id);
-            sql.Parameters.AddWithValue("@B1_model", data.B1_model);
-            sql.Parameters.AddWithValue("@B1_serial", data.B1_serial);
-            sql.Parameters.AddWithValue("@B1_amp_hrs", data.B1_amp_hrs);
-            sql.Parameters.AddWithValue("@B1_date_code", data.B1_date_code);
-            sql.Parameters.AddWithValue("@B1_spec_gravity", data.B1_spec_gravity);
-            sql.Parameters.AddWithValue("@B1_volt_static", data.B1_volt_static);
-            sql.Parameters.AddWithValue("@B1_volt_load", data.B1_volt_load);
-            sql.Parameters.AddWithValue("@B2_model", data.B2_model);
-            sql.Parameters.AddWithValue("@B2_serial", data.B2_serial);
-            sql.Parameters.AddWithValue("@B2_amp_hrs", data.B2_amp_hrs);
-            sql.Parameters.AddWithValue("@B2_date_code", data.B2_date_code);
-            sql.Parameters.AddWithValue("@B2_spec_gravity", data.B2_spec_gravity);
-            sql.Parameters.AddWithValue("@B2_volt_static", data.B2_volt_static);
-            sql.Parameters.AddWithValue("@B2_volt_load", data.B2_volt_load);
-            sql.Parameters.AddWithValue("@CD_manufact", data.CD_manufact);
-            sql.Parameters.AddWithValue("@CD_model", data.CD_model);
-            sql.Parameters.AddWithValue("@CD_serial", data.CD_serial);
-            sql.Parameters.AddWithValue("@CD_tag_date", data.CD_tag_date);
-            sql.Parameters.AddWithValue("@H_meter", data.H_meter);
-            sql.Parameters.AddWithValue("@V_service_mane", data.V_service_mane);
-            sql.Parameters.AddWithValue("@V_labour", data.V_labour);
-            sql.Parameters.AddWithValue("@V_travel", data.V_travel);
-            sql.Parameters.AddWithValue("@V_total", data.V_total);
-            sql.Parameters.AddWithValue("@failure_code", data.failure_code);
-            sql.Parameters.AddWithValue("@fair_wear", data.fair_wear);
-
+           SqlParameter bjob_id = sql.Parameters.AddWithValue("@bjob_id", job_id);
+            if (job_id is null)
+            {
+                bjob_id.Value = DBNull.Value;
+            }
+            SqlParameter B1_model = sql.Parameters.AddWithValue("@B1_model", data.B1_model);
+            if (data.B1_model is null)
+            {
+                B1_model.Value = DBNull.Value;
+            }
+            SqlParameter B1_serial = sql.Parameters.AddWithValue("@B1_serial", data.B1_serial);
+            if (data.B1_serial is null)
+            {
+                B1_serial.Value = DBNull.Value;
+            }
+            SqlParameter B1_amp_hrs = sql.Parameters.AddWithValue("@B1_amp_hrs", data.B1_amp_hrs);
+            if (data.B1_amp_hrs is null)
+            {
+                B1_amp_hrs.Value = DBNull.Value;
+            }
+            SqlParameter B1_date_code = sql.Parameters.AddWithValue("@B1_date_code", data.B1_date_code);
+            if (data.B1_date_code is null)
+            {
+                B1_date_code.Value = DBNull.Value;
+            }
+            SqlParameter B1_spec_gravity = sql.Parameters.AddWithValue("@B1_spec_gravity", data.B1_spec_gravity);
+            if (data.B1_spec_gravity is null)
+            {
+                B1_spec_gravity.Value = DBNull.Value;
+            }
+            SqlParameter B1_volt_static = sql.Parameters.AddWithValue("@B1_volt_static", data.B1_volt_static);
+            if (data.B1_volt_static is null)
+            {
+                B1_volt_static.Value = DBNull.Value;
+            }
+            SqlParameter B1_volt_load = sql.Parameters.AddWithValue("@B1_volt_load", data.B1_volt_load);
+            if (data.B1_volt_load is null)
+            {
+                B1_volt_load.Value = DBNull.Value;
+            }
+            SqlParameter B2_model = sql.Parameters.AddWithValue("@B2_model", data.B2_model);
+            if (data.B2_model is null)
+            {
+                B2_model.Value = DBNull.Value;
+            }
+            SqlParameter B2_serial = sql.Parameters.AddWithValue("@B2_serial", data.B2_serial);
+            if (data.B2_serial is null)
+            {
+                B2_serial.Value = DBNull.Value;
+            }
+            SqlParameter B2_amp_hrs = sql.Parameters.AddWithValue("@B2_amp_hrs", data.B2_amp_hrs);
+            if (data.B2_amp_hrs is null)
+            {
+                B2_amp_hrs.Value = DBNull.Value;
+            }
+            SqlParameter B2_date_code = sql.Parameters.AddWithValue("@B2_date_code", data.B2_date_code);
+            if (data.B2_date_code is null)
+            {
+                B2_date_code.Value = DBNull.Value;
+            }
+            SqlParameter B2_spec_gravity = sql.Parameters.AddWithValue("@B2_spec_gravity", data.B2_spec_gravity);
+            if (data.B2_spec_gravity is null)
+            {
+                B2_spec_gravity.Value = DBNull.Value;
+            }
+            SqlParameter B2_volt_static = sql.Parameters.AddWithValue("@B2_volt_static", data.B2_volt_static);
+            if (data.B2_volt_static is null)
+            {
+                B2_volt_static.Value = DBNull.Value;
+            }
+            SqlParameter B2_volt_load = sql.Parameters.AddWithValue("@B2_volt_load", data.B2_volt_load);
+            if (data.B2_volt_load is null)
+            {
+                B2_volt_load.Value = DBNull.Value;
+            }
+            SqlParameter CD_manufact = sql.Parameters.AddWithValue("@CD_manufact", data.CD_manufact);
+            if (data.CD_manufact is null)
+            {
+                CD_manufact.Value = DBNull.Value;
+            }
+            SqlParameter CD_model = sql.Parameters.AddWithValue("@CD_model", data.CD_model);
+            if (data.CD_model is null)
+            {
+                CD_model.Value = DBNull.Value;
+            }
+            SqlParameter CD_serial = sql.Parameters.AddWithValue("@CD_serial", data.CD_serial);
+            if (data.CD_serial is null)
+            {
+                CD_serial.Value = DBNull.Value;
+            }
+            SqlParameter _CD_tag_date = sql.Parameters.AddWithValue("@CD_tag_date", CD_tag_date);
+            if (CD_tag_date is null)
+            {
+                _CD_tag_date.Value = DBNull.Value;
+            }
+            SqlParameter H_meter = sql.Parameters.AddWithValue("@H_meter", data.H_meter);
+            if (data.H_meter is null)
+            {
+                H_meter.Value = DBNull.Value;
+            }
+            SqlParameter V_service_mane = sql.Parameters.AddWithValue("@V_service_mane", data.V_service_mane);
+            if (data.V_service_mane is null)
+            {
+                V_service_mane.Value = DBNull.Value;
+            }
+            SqlParameter V_labour = sql.Parameters.AddWithValue("@V_labour", data.V_labour);
+            if (data.V_labour is null)
+            {
+                V_labour.Value = DBNull.Value;
+            }
+            SqlParameter V_travel = sql.Parameters.AddWithValue("@V_travel", data.V_travel);
+            if (data.V_travel is null)
+            {
+                V_travel.Value = DBNull.Value;
+            }
+            SqlParameter V_total = sql.Parameters.AddWithValue("@V_total", data.V_total);
+            if (data.V_total is null)
+            {
+                V_total.Value = DBNull.Value;
+            }
+            SqlParameter failure_code = sql.Parameters.AddWithValue("@failure_code", data.failure_code);
+            if (data.failure_code is null)
+            {
+                failure_code.Value = DBNull.Value;
+            }
+            SqlParameter fair_wear = sql.Parameters.AddWithValue("@fair_wear", data.fair_wear);
+            if (data.fair_wear is null)
+            {
+                fair_wear.Value = DBNull.Value;
+            }
             await sql.ExecuteNonQueryAsync();
         }
 
@@ -1494,8 +1763,8 @@ AND menu.status =1
       ,@seq
       ,@img_name
       ,@img_path
-      ,@create_date
       ,GETDATE()
+      ,@create_by   
       ,1
       ,@image_type)"
             };
@@ -1519,6 +1788,7 @@ AND menu.status =1
      ( pjob_id
       ,seq
       ,part_no
+      ,part_id
       ,total
       ,create_date
       ,create_by
@@ -1527,17 +1797,19 @@ AND menu.status =1
       (@pjob_id
       ,@seq
       ,@part_no
+      ,@part_id
       ,@total
       ,GETDATE()
       ,@create_by
       ,1)"
             };
 
-            sql.Parameters.AddWithValue("@pjob_id", job_id);
-            sql.Parameters.AddWithValue("@seq", data.seq);
-            sql.Parameters.AddWithValue("@part_no", data.part_no);
-            sql.Parameters.AddWithValue("@total", data.total);
-            sql.Parameters.AddWithValue("@create_by", userid);
+            sql.Parameters.AddWithValue("@pjob_id", job_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@seq", data.seq ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@total", data.total ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@create_by", userid ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
         public async ValueTask INSERT_TBM_LOCATION_STOREAsync(tbm_location_store data)
@@ -1610,20 +1882,52 @@ AND menu.status =1
       ,@create_by)"
             };
 
-            sql.Parameters.AddWithValue("@part_no", data.part_no);
-            sql.Parameters.AddWithValue("@part_name", data.part_name);
-            sql.Parameters.AddWithValue("@part_desc", data.part_desc);
-            sql.Parameters.AddWithValue("@part_type", data.part_type);
-            sql.Parameters.AddWithValue("@cost_price", data.cost_price);
-            sql.Parameters.AddWithValue("@sale_price", data.sale_price);
-            sql.Parameters.AddWithValue("@unit_code", data.unit_code);
-            sql.Parameters.AddWithValue("@part_value", data.part_value);
-            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value);
-            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value);
-            sql.Parameters.AddWithValue("@location_id", data.location_id);
-            sql.Parameters.AddWithValue("@create_by", data.create_by);
+            sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_name", data.part_name ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_desc", data.part_desc ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_type", data.part_type ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@cost_price", data.cost_price ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@sale_price", data.sale_price ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@unit_code", data.unit_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_value", data.part_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
+
+        public async ValueTask INSERT_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = @"
+INSERT INTO [dbo].[tbt_adj_sparepart]
+           (
+           [part_id]
+           ,[part_no]
+           ,[adj_part_value]
+           ,[create_date]
+           ,[create_by])
+     VALUES
+           (
+           @part_id
+           ,@part_no
+           ,@adj_part_value
+           ,GETDATE()
+           ,@create_by)
+"
+            };
+            sql.Parameters.AddWithValue("@part_id", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_part_value", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@create_by", data.part_no ?? (object)DBNull.Value);
+            await sql.ExecuteNonQueryAsync();
+        }
+
         #endregion " INSERT DATA "
 
         #region " UPDATE "
@@ -1654,33 +1958,52 @@ AND menu.status =1
 
         }
         public async ValueTask Close_jobAsync(close_job data)
-        {
-
+        {          
             SqlCommand command = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbt_job_header] 
+                CommandText = $@"UPDATE [ISEE].[dbo].[tbt_job_header]
                                 SET
                                     summary=@summary,
                                     action= @action,
                                     result =@result,
                                     transfer_to =@transfer_to,
-                                     {(data.fix_date == "N" ? "" : "fix_date =GETDATE(),")}
+                                     {(data.flg_close == "N" ? "" : "fix_date =GETDATE(),")}
                                     invoice_no=@invoice_no,
                                     update_date=GETDATE(),
                                     update_by=@update_by
                                 WHERE job_id =@job_id
 "
             };
-            command.Parameters.AddWithValue("@summary", data.summary);
-            command.Parameters.AddWithValue("@action", data.action);
-            command.Parameters.AddWithValue("@result", data.result);
-            command.Parameters.AddWithValue("@transfer_to", data.transfer_to);
-            command.Parameters.AddWithValue("@invoice_no", data.invoice_no);
-            command.Parameters.AddWithValue("@update_by", data.userid);
-            command.Parameters.AddWithValue("@job_id", data.job_id);
+            SqlParameter summary = command.Parameters.AddWithValue("@summary", data.summary);
+            if (data.summary is null)
+            {
+                summary.Value = DBNull.Value;
+            }
+            SqlParameter action = command.Parameters.AddWithValue("@action", data.action);
+            if (data.action is null)
+            {
+                action.Value = DBNull.Value;
+            }
+            SqlParameter result = command.Parameters.AddWithValue("@result", data.result);
+            if (data.result is null)
+            {
+                result.Value = DBNull.Value;
+            }
+            SqlParameter transfer_to = command.Parameters.AddWithValue("@transfer_to", data.transfer_to);
+            if (data.transfer_to is null)
+            {
+                transfer_to.Value = DBNull.Value;
+            }
+            SqlParameter invoice_no = command.Parameters.AddWithValue("@invoice_no", data.invoice_no);
+            if(data.invoice_no is null)
+            {
+                invoice_no.Value = DBNull.Value;
+            }
+            command.Parameters.AddWithValue("@update_by", data.userid ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@job_id", data.job_id ?? (object)DBNull.Value);
             await command.ExecuteNonQueryAsync();
 
         }
@@ -1707,17 +2030,17 @@ AND menu.status =1
      WHERE customer_id =@customer_id "
             };
 
-            sql.Parameters.AddWithValue("@cust_type", data.cust_type);
-            sql.Parameters.AddWithValue("@fname", data.fname);
-            sql.Parameters.AddWithValue("@lname", data.lname);
-            sql.Parameters.AddWithValue("@address", data.address);
-            sql.Parameters.AddWithValue("@sub_district_no", data.sub_district_no);
-            sql.Parameters.AddWithValue("@district_code", data.district_code);
-            sql.Parameters.AddWithValue("@province_code", data.province_code);
-            sql.Parameters.AddWithValue("@zip_code", data.zip_code);
-            sql.Parameters.AddWithValue("@phone_no", data.phone_no);
-            sql.Parameters.AddWithValue("@Email", data.Email);
-            sql.Parameters.AddWithValue("@customer_id", data.customer_id);
+            sql.Parameters.AddWithValue("@cust_type", data.cust_type ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fname", data.fname ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@lname", data.lname ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@address", data.address ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@sub_district_no", data.sub_district_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@district_code", data.district_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@province_code", data.province_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@zip_code", data.zip_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@phone_no", data.phone_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Email", data.Email ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@customer_id", data.customer_id ?? (object)DBNull.Value);
 
             await sql.ExecuteNonQueryAsync();
         }
@@ -1760,7 +2083,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE[dbo].[tbm_vehicle]
+                CommandText = @"UPDATE [ISEE].[dbo].[tbm_vehicle]
            SET     
                      seq=@seq
                     ,brand_no=@brand_no
@@ -1817,14 +2140,14 @@ WHERE   services_no=@services_no"
             await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask UPDATE_TBT_JOB_DETAIL(tbt_job_detail data, string job_id)
+        public async ValueTask UPDATE_TBT_JOB_DETAIL(tbt_job_detail data, string job_id,DateTime? CD_tag_date)
         {
             SqlCommand sql = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbt_job_detail]
+                CommandText = @"UPDATE [ISEE].[dbo].[tbt_job_detail]
            SET
       B1_model =@B1_model
       ,B1_serial=@B1_serial
@@ -1851,35 +2174,35 @@ WHERE   services_no=@services_no"
       ,V_total=@V_total
       ,failure_code=@failure_code
       ,fair_wear=@fair_wear
-    WHERE bjob_id =@job_id"
+    WHERE bjob_id =@bjob_id"
             };
 
-            sql.Parameters.AddWithValue("@B1_model", data.B1_model);
-            sql.Parameters.AddWithValue("@B1_serial", data.B1_serial);
-            sql.Parameters.AddWithValue("@B1_amp_hrs", data.B1_amp_hrs);
-            sql.Parameters.AddWithValue("@B1_date_code", data.B1_date_code);
-            sql.Parameters.AddWithValue("@B1_spec_gravity", data.B1_spec_gravity);
-            sql.Parameters.AddWithValue("@B1_volt_static", data.B1_volt_static);
-            sql.Parameters.AddWithValue("@B1_volt_load", data.B1_volt_load);
-            sql.Parameters.AddWithValue("@B2_model", data.B2_model);
-            sql.Parameters.AddWithValue("@B2_serial", data.B2_serial);
-            sql.Parameters.AddWithValue("@B2_amp_hrs", data.B2_amp_hrs);
-            sql.Parameters.AddWithValue("@B2_date_code", data.B2_date_code);
-            sql.Parameters.AddWithValue("@B2_spec_gravity", data.B2_spec_gravity);
-            sql.Parameters.AddWithValue("@B2_volt_static", data.B2_volt_static);
-            sql.Parameters.AddWithValue("@B2_volt_load", data.B2_volt_load);
-            sql.Parameters.AddWithValue("@CD_manufact", data.CD_manufact);
-            sql.Parameters.AddWithValue("@CD_model", data.CD_model);
-            sql.Parameters.AddWithValue("@CD_serial", data.CD_serial);
-            sql.Parameters.AddWithValue("@CD_tag_date", data.CD_tag_date);
-            sql.Parameters.AddWithValue("@H_meter", data.H_meter);
-            sql.Parameters.AddWithValue("@V_service_mane", data.V_service_mane);
-            sql.Parameters.AddWithValue("@V_labour", data.V_labour);
-            sql.Parameters.AddWithValue("@V_travel", data.V_travel);
-            sql.Parameters.AddWithValue("@V_total", data.V_total);
-            sql.Parameters.AddWithValue("@failure_code", data.failure_code);
-            sql.Parameters.AddWithValue("@fair_wear", data.fair_wear);
-            sql.Parameters.AddWithValue("@bjob_id", job_id);
+            sql.Parameters.AddWithValue("@B1_model", data.B1_model ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B1_serial", data.B1_serial ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B1_amp_hrs", data.B1_amp_hrs ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B1_date_code", data.B1_date_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B1_spec_gravity", data.B1_spec_gravity ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B1_volt_static", data.B1_volt_static ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B1_volt_load", data.B1_volt_load ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_model", data.B2_model ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_serial", data.B2_serial ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_amp_hrs", data.B2_amp_hrs ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_date_code", data.B2_date_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_spec_gravity", data.B2_spec_gravity ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_volt_static", data.B2_volt_static ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@B2_volt_load", data.B2_volt_load ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@CD_manufact", data.CD_manufact ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@CD_model", data.CD_model ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@CD_serial", data.CD_serial ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@CD_tag_date", CD_tag_date ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@H_meter", data.H_meter ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@V_service_mane", data.V_service_mane ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@V_labour", data.V_labour ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@V_travel", data.V_travel ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@V_total", data.V_total ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@failure_code", data.failure_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fair_wear", data.fair_wear ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@bjob_id", job_id ?? (object)DBNull.Value);
 
 
             await sql.ExecuteNonQueryAsync();
@@ -1930,31 +2253,62 @@ WHERE   services_no=@services_no"
       ,location_id=@location_id
       ,update_date =GETDATE()
       ,update_by=@update_by
-      ${(data.status == "0" ? @",cancel_by = @cancel_by
+      {(data.status == "0" ? @",cancel_by = @cancel_by
       ,cancel_reason =@cancel_reason
       ,cancal_date =GETDATE()" :"")}
       WHERE  part_id =@part_id"
             };
 
-            sql.Parameters.AddWithValue("@part_no", data.part_no);
-            sql.Parameters.AddWithValue("@part_name", data.part_name);
-            sql.Parameters.AddWithValue("@part_desc", data.part_desc);
-            sql.Parameters.AddWithValue("@part_type", data.part_type);
-            sql.Parameters.AddWithValue("@cost_price", data.cost_price);
-            sql.Parameters.AddWithValue("@sale_price", data.sale_price);
-            sql.Parameters.AddWithValue("@unit_code", data.unit_code);
-            sql.Parameters.AddWithValue("@part_value", data.part_value);
-            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value);
-            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value);
-            sql.Parameters.AddWithValue("@location_id", data.location_id);
-            sql.Parameters.AddWithValue("@update_by", data.create_by);
-            sql.Parameters.AddWithValue("@part_id", data.part_id);
+            sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_name", data.part_name ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_desc", data.part_desc ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_type", data.part_type ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@cost_price", data.cost_price ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@sale_price", data.sale_price ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@unit_code", data.unit_code ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_value", data.part_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
             if(data.status == "0")
             {
-                sql.Parameters.AddWithValue("@cancel_by", data.create_by);
-                sql.Parameters.AddWithValue("@cancel_reason", data.cancel_reason);
+                sql.Parameters.AddWithValue("@cancel_by", data.create_by ?? (object)DBNull.Value);
+                sql.Parameters.AddWithValue("@cancel_reason", data.cancel_reason ?? (object)DBNull.Value);
             }
            
+            await sql.ExecuteNonQueryAsync();
+        }
+
+
+        public async ValueTask UPDATE_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = @$"UPDATE  [ISEE].[dbo].[tbt_adj_sparepart]
+     set
+       adj_part_value =@adj_part_value
+      ,update_date =GETDATE()
+      ,update_by =@update_by
+     {(string.IsNullOrEmpty(data.cancel_by) ?"": 
+     @",cancel_by=@cancel_by
+      ,cancel_reason =@cancel_reason")}   
+      WHERE  adj_id =@adj_id"
+            };
+
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@update_by", data.update_by ?? (object)DBNull.Value);        
+            if (!string.IsNullOrEmpty(data.cancel_by))
+            {
+                sql.Parameters.AddWithValue("@cancel_by", data.cancel_by ?? (object)DBNull.Value);
+                sql.Parameters.AddWithValue("@cancel_reason", data.cancel_reason ?? (object)DBNull.Value);
+            }
+            sql.Parameters.AddWithValue("@adj_id", data.adj_id ?? (object)DBNull.Value);
+
             await sql.ExecuteNonQueryAsync();
         }
         #endregion " UPDATE "
@@ -2082,6 +2436,24 @@ WHERE   services_no=@services_no"
             };
 
             sql.Parameters.AddWithValue("@job_id", job_id);         
+            await sql.ExecuteNonQueryAsync();
+        }
+
+        public async ValueTask TERMINATE_TBT_JOB_IMAGE(string job_id,string seq )
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = @"UPDATE [ISEE].[dbo].[tbt_job_image]
+SET  status =0
+WHERE  ijob_id =@ijob_id AND seq =@seq"
+            };
+
+            sql.Parameters.AddWithValue("@ijob_id", job_id);
+            sql.Parameters.AddWithValue("@seq", seq);
+
             await sql.ExecuteNonQueryAsync();
         }
         #endregion " TERMINATE "

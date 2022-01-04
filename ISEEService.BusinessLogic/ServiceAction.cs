@@ -13,6 +13,7 @@ namespace ISEEService.BusinessLogic
     public class ServiceAction
     {
         private readonly string _connectionstring = string.Empty;
+        private readonly CultureInfo culture = new CultureInfo("th-TH");
         //string contentRootPath = _hostingEnvironment.ContentRootPath + @"\ImageMaster";
         public ServiceAction(string connectionstring)
         {
@@ -176,7 +177,25 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
-
+        public async ValueTask<List<tbm_brand>> GET_BRANDAsync()
+        {
+            List<tbm_brand> dataObjects = null;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_BRANDAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<tbt_job_header>> GET_JOBREFAsync(job_ref data)
         {
             List<tbt_job_header> dataObjects = null;
@@ -247,7 +266,7 @@ namespace ISEEService.BusinessLogic
             DateTime? eEffective_date = null;
             TimeSpan timestart = new TimeSpan(0, 0, 0);
             TimeSpan timelast = new TimeSpan(23, 59, 59);
-            CultureInfo culture = new CultureInfo("th-TH");
+
             Repository repository = new Repository(_connectionstring);
             await repository.OpenConnectionAsync();
             try
@@ -256,13 +275,13 @@ namespace ISEEService.BusinessLogic
                 {
                     if (!string.IsNullOrWhiteSpace(data.expire_date))
                     {
-                        sExpire_date = DateTime.ParseExact(data.expire_date, "mm/dd/yyyy", culture);
+                        sExpire_date = DateTime.ParseExact(data.expire_date, "dd/MM/yyyy", culture);
                         sExpire_date = sExpire_date.Value.Add(timestart);
                         eExpire_date = sExpire_date.Value.Add(timelast);
                     }
                     if (!string.IsNullOrWhiteSpace(data.effective_date))
                     {
-                        sEffective_date = DateTime.ParseExact(data.effective_date, "mm/dd/yyyy", culture);
+                        sEffective_date = DateTime.ParseExact(data.effective_date, "dd/MM/yyyy", culture);
                         sEffective_date = sEffective_date.Value.Add(timestart);
                         eEffective_date = sEffective_date.Value.Add(timelast);
                     }
@@ -309,6 +328,26 @@ namespace ISEEService.BusinessLogic
             try
             {
                 dataObjects = await repository.GET_TBM_SERVICESAsync(data);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+
+        public async ValueTask<string> GET_TBM_SERVICES_BY_JOBTYPE(string JOBTYPE)
+        {
+            string dataObjects = string.Empty;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_TBM_SERVICES_BY_JOBTYPE(JOBTYPE);
             }
             catch (Exception ex)
             {
@@ -378,6 +417,26 @@ namespace ISEEService.BusinessLogic
             return dataObjects;
         }
 
+        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
+        {
+            List<tbt_adj_sparepart> dataObjects = new List<tbt_adj_sparepart>();
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_TBT_ADJ_SPAREPART();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+
         #region " GET JOB DETAIL "
         public async ValueTask<close_job> GET_JOB_DETAIL(string job_id)
         {
@@ -431,12 +490,32 @@ namespace ISEEService.BusinessLogic
             return dataObjects;
         }
 
+        public async ValueTask<tbt_job_image> GET_PATHFILE(string ijob_id, string seq)
+        {
+            tbt_job_image dataObjects = null;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_PATHFILE(ijob_id, seq);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+
         #endregion " GET JOB DETAIL "
 
 
         public async ValueTask<string> GET_SP_GET_RUNNING_NOAsync(string running_type)
         {
-            string dataObjects =string.Empty;
+            string dataObjects = string.Empty;
             Repository repository = new Repository(_connectionstring);
             await repository.OpenConnectionAsync();
             try
@@ -622,6 +701,7 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
+
                 if (string.IsNullOrWhiteSpace(data.user_id))
                 {
                     data.password = Crypto.HashPassword(data.password);
@@ -653,6 +733,7 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
+                data.id_card = data.id_card.Replace("-", "");
                 if (string.IsNullOrWhiteSpace(data.customer_id))
                 {
                     await repository.INSERT_TBM_CUSTOMERAsync(data);
@@ -691,11 +772,11 @@ namespace ISEEService.BusinessLogic
                 {
                     if (!string.IsNullOrWhiteSpace(data.effective_date))
                     {
-                        effective_date = DateTime.ParseExact(data.effective_date, "mm/dd/yyyy", culture);
+                        effective_date = DateTime.ParseExact(data.effective_date, "dd/MM/yyyy", culture);
                     }
                     if (!string.IsNullOrWhiteSpace(data.expire_date))
                     {
-                        expire_date = DateTime.ParseExact(data.expire_date, "mm/dd/yyyy", culture);
+                        expire_date = DateTime.ParseExact(data.expire_date, "dd/MM/yyyy", culture);
                     }
                 }
                 var oldlicense = await GET_TBM_VEHICLEAsync(new tbm_vehicle { license_no = data.license_no, customer_id = data.customer_id });
@@ -739,11 +820,29 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
-                var olddata = await GET_TBM_SERVICESAsync(new tbm_services { services_no = data.services_no });
+                List<tbm_services> olddata = new List<tbm_services>();
+                if (data.services_no is null)
+                {
+                    olddata = null;
+                }
+                else
+                {
+                    olddata = await GET_TBM_SERVICESAsync(new tbm_services { services_no = data.services_no });
+                }
                 if (olddata is null)
                 {
+                    var service_no = await GET_TBM_SERVICES_BY_JOBTYPE(data.jobcode);
+                    if (!string.IsNullOrWhiteSpace(service_no))
+                    {
+                        var number = service_no.Substring(2);
+                        var runingnumber = Convert.ToInt32(number) + 1;
+                        data.services_no = $"{data.jobcode}{runingnumber.ToString().PadLeft(2, '0')}";
+                    }
+                    else
+                    {
+                        data.services_no = $"{data.jobcode}01";
+                    }
                     await repository.INSERT_TBM_SERVICESAsync(data);
-
                 }
                 else
                 {
@@ -763,7 +862,6 @@ namespace ISEEService.BusinessLogic
             }
 
         }
-
         public async ValueTask INSERT_TBT_JOB_HEADERAsync(create_job data)
         {
 
@@ -837,18 +935,64 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
-                if (data is not null && string.IsNullOrWhiteSpace(data.part_id))
+                if (data is not null && string.IsNullOrWhiteSpace(data.part_id) && data.location_id == "001")
                 {
-                    await repository.INSERT_TBM_SPAREPARTAsync(data);
+                    await repository.INSERT_TBM_SPAREPARTAsync(data);//สร้างใหม่
+                }
+                else if (data.location_id != "001" && !string.IsNullOrWhiteSpace(data.part_id))
+                {
+                    var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id });
+                    if (spart is not null)
+                    {
+                        if(spart.FirstOrDefault().location_id != data.location_id)
+                        {
+                            await repository.INSERT_TBM_SPAREPARTAsync(data);//ย้ายไปคันอื่น
+                            spart.FirstOrDefault().part_value = (Convert.ToUInt32( spart.FirstOrDefault().part_value) - Convert.ToInt32 (data.part_value)).ToString();
+                            await repository.UPDATE_TBM_SPAREPARTAsync(spart.FirstOrDefault());
+                        }
+                        else
+                        {
+                            await repository.UPDATE_TBM_SPAREPARTAsync(data);//แก้ไขคันเดิม
+                        }
+                    }
                 }
                 else
                 {
-                    if(data.status == "0")
+                    if (data.status == "0")
                     {
                         data.cancel_by = data.create_by;
                     }
                     await repository.UPDATE_TBM_SPAREPARTAsync(data);
+                }              
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
+
+        public async ValueTask INSERT_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                if (data is not null && string.IsNullOrEmpty(data.adj_id))
+                {
+                    await repository.INSERT_TBT_ADJ_SPAREPARTAsync(data);
                 }
+                else
+                {
+                    await repository.UPDATE_TBT_ADJ_SPAREPARTAsync(data);
+                }
+                
                 await repository.CommitTransection();
             }
             catch (Exception ex)
@@ -1009,6 +1153,28 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
+
+
+        public async ValueTask TERMINATE_TBT_JOB_IMAGE(string job_id, string seq)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.TERMINATE_TBT_JOB_IMAGE(job_id, seq);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
         public async ValueTask Close_jobAsync(close_job data, List<tbt_job_image> image)
         {
             Repository repository = new Repository(_connectionstring);
@@ -1030,33 +1196,44 @@ namespace ISEEService.BusinessLogic
                 if (data.job_detail is not null)
                 {
                     var olddetail = await GET_TBT_JOB_DETAIL(new tbt_job_detail { bjob_id = data.job_id });
+                    DateTime? CD_tag_date = null;
+                    if (data.job_detail.CD_tag_date is not null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(data.job_detail.CD_tag_date))
+                        {
+                            CD_tag_date = DateTime.ParseExact(data.job_detail.CD_tag_date, "dd/MM/yyyy", culture);
+                        }
+                    }
                     if (olddetail is null)
                     {
-                        await repository.INSERT_TBT_JOB_DETAIL(data.job_detail, data.job_id);
+                        await repository.INSERT_TBT_JOB_DETAIL(data.job_detail, data.job_id, CD_tag_date);
                     }
                     else
                     {
-                        await repository.UPDATE_TBT_JOB_DETAIL(data.job_detail, data.job_id);
+                        await repository.UPDATE_TBT_JOB_DETAIL(data.job_detail, data.job_id, CD_tag_date);
                     }
                 }
 
                 if (image is not null && image.Count > 0)
                 {
+                    var seq = await GET_SEQ_IMAGEAsync(data.job_id);
+
                     foreach (var item in image)
                     {
-                        var seq = await GET_SEQ_IMAGEAsync(item.ijob_id);
-                        item.seq = (seq + 1).ToString();
+                        seq = seq + 1;
+                        item.seq = seq.ToString();
                         await repository.INSERT_TBT_JOB_IMAGE(item, data.userid);
                     }
                 }
 
                 if (data.job_parts is not null && data.job_parts.Count > 0)
                 {
+                    var seq = await GET_TBT_JOB_PART_SEQ(data.job_id);
                     await repository.TERMINATE_TBT_JOB_PART(data.job_id);
                     foreach (var item in data.job_parts)
                     {
-                        var seq = await GET_TBT_JOB_PART_SEQ(data.job_id);
-                        item.seq = (seq + 1).ToString();
+                        seq = seq + 1;
+                        item.seq = seq.ToString();
                         await repository.INSERT_TBT_JOB_PART(item, data.userid, data.job_id);
                     }
                 }

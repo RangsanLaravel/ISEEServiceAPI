@@ -17,8 +17,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ISEEServiceAPI.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/v1/[controller]")]
     public class ISEEServicesController : ControllerBase
     {
         private readonly ServiceAction service = null;
@@ -167,7 +168,7 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        
 
         [HttpGet("GET_JOBDETAIL_LIST/{userid}")]
 
@@ -179,6 +180,29 @@ namespace ISEEServiceAPI.Controllers
                 if (string.IsNullOrWhiteSpace(userid)) return BadRequest("Require userid");
                 dataObjects = await this.service.GET_JOB_DETAIL_LISTAsync(userid);
                 return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GET_FILE/{ijob_id}/{seq}")]
+        public async ValueTask<IActionResult> GET_FILE(string ijob_id, string seq)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(ijob_id)) return BadRequest("Require ijob_id");
+                if (string.IsNullOrEmpty(seq)) return BadRequest("Require seq");
+                var dataObject = await this.service.GET_PATHFILE(ijob_id, seq);
+                if (dataObject is null) return NoContent();
+                if (System.IO.File.Exists(dataObject.img_path))
+                {
+                    DataFile file = new DataFile(dataObject.img_path);
+                    file.FileName = dataObject.img_name;
+                    return Ok(file);
+                }
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -279,6 +303,36 @@ namespace ISEEServiceAPI.Controllers
             }
         }
 
+        [HttpGet("GET_TBM_BRAND")]
+        public async ValueTask<IActionResult> GET_BRANDAsync()
+        {
+            List<tbm_brand> dataObjects = null;
+            try
+            {
+                dataObjects = await this.service.GET_BRANDAsync();
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GET_TBT_ADJ_SPAREPART")]
+        public async ValueTask<IActionResult> GET_TBT_ADJ_SPAREPART()
+        {
+            List<tbt_adj_sparepart> dataObjects = null;
+            try
+            {
+                dataObjects = await this.service.GET_TBT_ADJ_SPAREPART();
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         #endregion " GET "
 
         #region " TEST READ WRITE FILE "
@@ -300,7 +354,7 @@ namespace ISEEServiceAPI.Controllers
                     new job_file
                     {
                         image_type ="sig",
-                        FileData =System.Convert.FromBase64String(files),
+                        FileData =files/*System.Convert.FromBase64String(files)*/,
                         ContentType ="image/png",
                         FileName ="test.png"
                     }
@@ -351,13 +405,18 @@ namespace ISEEServiceAPI.Controllers
 
         #endregion " TEST READ WRITE FILE "
 
-
         #region " MANAGE JOBE "
         [HttpPost("CREATEJOB")]
         public async ValueTask<IActionResult> INSERT_TBT_JOB_HEADER(create_job data)
         {
             try
             {
+                if (string.IsNullOrEmpty(data.type_job)) throw new Exception(" Required type_job");
+                if (string.IsNullOrEmpty(data.customer_id)) throw new Exception(" Required customer_id");
+                if (string.IsNullOrEmpty(data.email_customer)) throw new Exception(" Required email_customer");
+                if (string.IsNullOrEmpty(data.owner_id)) throw new Exception(" Required owner_id");
+                if (string.IsNullOrEmpty(data.user_id)) throw new Exception(" Required user_id");
+
                 await this.service.INSERT_TBT_JOB_HEADERAsync(data);
                 return Ok();
             }
@@ -368,10 +427,10 @@ namespace ISEEServiceAPI.Controllers
 
         }
         [HttpPost("CLOSEJOB")]
-        public async ValueTask<IActionResult> CLOSEJOB([FromForm] close_job data)
+        public async ValueTask<IActionResult> CLOSEJOB([FromBody] close_job data)
         {
             string pathfile = $@"{_hostingEnvironment.ContentRootPath}\Files";
-            List<tbt_job_image> job_image = null;
+            List<tbt_job_image> job_image = new List<tbt_job_image>();
             try
             {
 
@@ -468,6 +527,8 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+
        
         #endregion " MANAGE JOBE "
 
@@ -477,6 +538,16 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(data.id_card)) throw new Exception(" Required id_card");
+                if (string.IsNullOrEmpty(data.cust_type)) throw new Exception(" Required cust_type");
+                if (string.IsNullOrEmpty(data.fname)) throw new Exception(" Required fname");
+                if (string.IsNullOrEmpty(data.lname)) throw new Exception(" Required lname");
+                if (string.IsNullOrEmpty(data.province_code)) throw new Exception(" Required province_code");
+                if (string.IsNullOrEmpty(data.sub_district_no)) throw new Exception(" Required sub_district_no");
+                if (string.IsNullOrEmpty(data.district_code)) throw new Exception(" Required district_code");
+                if (string.IsNullOrEmpty(data.zip_code)) throw new Exception(" Required zip_code");
+                if (string.IsNullOrEmpty(data.Email)) throw new Exception(" Required Email");
+
                 await this.service.INSERT_TBM_CUSTOMERAsync(data);
                 return Ok();
             }
@@ -491,6 +562,12 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(data.user_name)) throw new Exception(" Required user_name");
+                if (string.IsNullOrEmpty(data.password)) throw new Exception(" Required password");
+                if (string.IsNullOrEmpty(data.fullname)) throw new Exception(" Required fullname");
+                if (string.IsNullOrEmpty(data.lastname)) throw new Exception(" Required lastname");
+                if (string.IsNullOrEmpty(data.create_by)) throw new Exception(" Required create_by");
+                if (string.IsNullOrEmpty(data.idcard)) throw new Exception(" Required idcard");
                 await this.service.INSERT_TBM_EMPLOYEEAsync(data);
                 return Ok();
             }
@@ -506,6 +583,11 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(data.license_no)) throw new Exception(" Required license_no");
+                if (string.IsNullOrEmpty(data.service_no)) throw new Exception(" Required service_no");
+                if (string.IsNullOrEmpty(data.contract_no)) throw new Exception(" Required contract_no");
+                if (string.IsNullOrEmpty(data.customer_id)) throw new Exception(" Required customer_id");
+
                 await this.service.INSERT_TBM_VEHICLEAsync(data);
                 return Ok();
             }
@@ -520,6 +602,9 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(data.jobcode)) throw new Exception(" Required jobcode");
+                if (string.IsNullOrEmpty(data.services_name)) throw new Exception(" Required services_name");
+
                 await this.service.INSERT_TBM_SERVICESAsync(data);
                 return Ok();
             }
@@ -535,6 +620,9 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(data.location_name)) throw new Exception(" Required location_name");
+                if (string.IsNullOrEmpty(data.owner_id)) throw new Exception(" Required owner_id");
+
                 await this.service.INSERT_TBM_LOCATION_STOREAsync(data);
                 return Ok();
             }
@@ -548,7 +636,31 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
+                if (string.IsNullOrEmpty(data.part_no)) throw new Exception(" Required part_no");
+                if (string.IsNullOrEmpty(data.part_name)) throw new Exception(" Required part_name");
+                if (string.IsNullOrEmpty(data.part_desc)) throw new Exception(" Required part_desc");
+                if (string.IsNullOrEmpty(data.part_type)) throw new Exception(" Required part_type");
+                if (string.IsNullOrEmpty(data.location_id)) throw new Exception(" Required location_id");
+
                 await this.service.INSERT_TBM_SPAREPARTAsync(data);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("INSERT_TBT_ADJ_SPAREPART")]
+        public async ValueTask<IActionResult> INSERT_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(data.part_no)) throw new Exception(" Required part_no");
+                if (string.IsNullOrEmpty(data.part_id)) throw new Exception(" Required part_id");
+                if (string.IsNullOrEmpty(data.adj_part_value)) throw new Exception(" Required adj_part_value");
+            
+                await this.service.INSERT_TBT_ADJ_SPAREPARTAsync(data);
                 return Ok();
             }
             catch (Exception ex)
@@ -693,10 +805,23 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("TERMINATE_TBT_JOB_IMAGE")]
+        public async ValueTask<IActionResult> TERMINATE_TBT_JOB_IMAGEAsync(string ijob_id, string seq)
+        {
+            try
+            {
+                if(string.IsNullOrWhiteSpace(ijob_id)) return BadRequest("Require ijob_id");
+                if(string.IsNullOrWhiteSpace(seq)) return BadRequest("Require seq");
+                await this.service.TERMINATE_TBT_JOB_IMAGE(ijob_id,seq);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         #endregion " TERMINATE "
-
-
-
 
         [AllowAnonymous]
         [HttpPost("Login")]
@@ -767,8 +892,10 @@ namespace ISEEServiceAPI.Controllers
                 System.IO.Directory.CreateDirectory(fullpath);
             }
             string img_path = $@"{fullpath}\{filename}";
-            await System.IO.File.WriteAllBytesAsync(img_path, job_File.FileData);
+            await System.IO.File.WriteAllBytesAsync(img_path, Convert.FromBase64String(job_File.FileData));
             return img_path;
         }
+
+        
     }
 }

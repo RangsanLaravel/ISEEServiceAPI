@@ -9,6 +9,7 @@ namespace ISEEService.DataContract
    public class job_detail_list
     {
         public string job_id{get;set;}
+        public string type_job { get; set; }
         public string license_no{get;set;}
       public string customer_id{get;set;}
        public string cus_fullname { get; set; }

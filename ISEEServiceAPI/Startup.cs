@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -5,10 +6,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ISEEServiceAPI
@@ -27,6 +30,56 @@ namespace ISEEServiceAPI
         {
 
             services.AddControllers();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["Jwt:Audience"],
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero, // disable delay when token is expire
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+
+            services.AddCors(options =>
+            {
+                //ระบุโดเมน
+                options.AddPolicy("AllowSpecificOrigins",
+                 builder =>
+                 {
+                     builder.WithOrigins(
+                         "http://example.com",
+                         "http://localhost:4200")
+                         .AllowAnyHeader()
+                         .AllowAnyMethod();
+                        //.WithMethods("GET", "POST", "HEAD");
+                    });
+                //เปิดเข้าถึงได้ทุกโดเมน
+                options.AddPolicy("AllowAll",
+                 builder =>
+                 {
+                     builder.AllowAnyOrigin()
+                     .AllowAnyHeader()
+                     .AllowAnyMethod();
+                 });
+
+                /*
+                    The browser can skip the preflight request
+                    if the following conditions are true:
+                    - The request method is GET, HEAD, or POST.
+                    - The Content-Type header
+                       - application/x-www-form-urlencoded
+                       - multipart/form-data
+                       - text/plain
+                */
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ISEEServiceAPI", Version = "v1" });
@@ -54,6 +107,12 @@ namespace ISEEServiceAPI
 
             app.UseRouting();
 
+            app.UseCors("AllowAll");
+
+            //jwt 
+            app.UseAuthentication();
+
+            //Authen claim
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

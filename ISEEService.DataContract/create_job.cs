@@ -10,6 +10,7 @@ namespace ISEEService.DataContract
     {
         public string job_id { get; set; }
         public string type_job { get; set; }
+        public string summary { get; set; }
         public string owner_id { get; set; }
         public string license_no { get; set; }
         public string customer_id { get; set; }
