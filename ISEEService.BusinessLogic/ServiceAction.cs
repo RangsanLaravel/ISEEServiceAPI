@@ -416,7 +416,25 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
-
+        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART_DETAIL(string part_id)
+        {
+            List<tbt_adj_sparepart> dataObjects = new List<tbt_adj_sparepart>();
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_TBT_ADJ_SPAREPART_DETAIL(part_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
         {
             List<tbt_adj_sparepart> dataObjects = new List<tbt_adj_sparepart>();
@@ -477,6 +495,7 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
+                isAdmin =await repository.CheckPermissionAdmin(userid);
                 dataObjects = await repository.GET_JOB_DETAIL_LISTAsync(userid, isAdmin);
             }
             catch (Exception ex)
@@ -673,12 +692,18 @@ namespace ISEEService.BusinessLogic
         {
 
             List<tbm_menu> dataObjects = null;
+            List<tbm_config> configs = null;
             Repository repository = new Repository(_connectionstring);
             await repository.OpenConnectionAsync();
             try
             {
 
                 dataObjects = await repository.GET_MENU(user_id);
+                configs = await repository.GET_TBM_CONFIG();
+                if (dataObjects is not null && configs is not null)
+                {
+                    dataObjects.Select(a => { a.config = new List<tbm_config>(); a.config = configs; return a; }).ToList();
+                }
 
             }
             catch (Exception ex)
@@ -944,10 +969,10 @@ namespace ISEEService.BusinessLogic
                     var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id });
                     if (spart is not null)
                     {
-                        if(spart.FirstOrDefault().location_id != data.location_id)
+                        if (spart.FirstOrDefault().location_id != data.location_id)
                         {
                             await repository.INSERT_TBM_SPAREPARTAsync(data);//ย้ายไปคันอื่น
-                            spart.FirstOrDefault().part_value = (Convert.ToUInt32( spart.FirstOrDefault().part_value) - Convert.ToInt32 (data.part_value)).ToString();
+                            spart.FirstOrDefault().part_value = (Convert.ToUInt32(spart.FirstOrDefault().part_value) - Convert.ToInt32(data.part_value)).ToString();
                             await repository.UPDATE_TBM_SPAREPARTAsync(spart.FirstOrDefault());
                         }
                         else
@@ -963,7 +988,7 @@ namespace ISEEService.BusinessLogic
                         data.cancel_by = data.create_by;
                     }
                     await repository.UPDATE_TBM_SPAREPARTAsync(data);
-                }              
+                }
                 await repository.CommitTransection();
             }
             catch (Exception ex)
@@ -984,15 +1009,15 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
-                if (data is not null && string.IsNullOrEmpty(data.adj_id))
-                {
-                    await repository.INSERT_TBT_ADJ_SPAREPARTAsync(data);
-                }
-                else
-                {
-                    await repository.UPDATE_TBT_ADJ_SPAREPARTAsync(data);
-                }
-                
+                //if (data is not null && string.IsNullOrEmpty(data.adj_id))
+                //{
+                await repository.INSERT_TBT_ADJ_SPAREPARTAsync(data);
+                //}
+                //else
+                //{
+                //    await repository.UPDATE_TBT_ADJ_SPAREPARTAsync(data);
+                //}
+
                 await repository.CommitTransection();
             }
             catch (Exception ex)
@@ -1153,7 +1178,29 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
-
+        public async ValueTask TERMINATE_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                if (data is not null)
+                {
+                    await repository.TERMINATE_TBT_ADJ_SPAREPARTAsync(Convert.ToInt32(data.adj_id), data.cancel_by, data.cancel_reason);
+                }
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
 
         public async ValueTask TERMINATE_TBT_JOB_IMAGE(string job_id, string seq)
         {

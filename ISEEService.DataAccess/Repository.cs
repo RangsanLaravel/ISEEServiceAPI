@@ -316,7 +316,36 @@ namespace ISEEService.DataAccess
             }
             return dataObjects;
         }
+        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART_DETAIL(string part_id)
+        {
+            List<tbt_adj_sparepart> dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT  sp.[part_id],
+       adj.adj_id
+      ,sp.[part_no]
+      ,[part_name]
+      ,[part_desc]
+	  ,sp.part_value
+	  ,[adj_part_value]
+  FROM [ISEE].[dbo].[tbm_sparepart] sp
+  INNER join [ISEE].[dbo].[tbt_adj_sparepart] adj
+  ON adj.part_id =sp.part_id
+  WHERE sp.[part_id] =@part_id "
+            };
+            command.Parameters.AddWithValue("@part_id", part_id);
 
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbt_adj_sparepart>().ToList();
+                }
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
         {
             List<tbt_adj_sparepart> dataObjects = null;
@@ -325,15 +354,20 @@ namespace ISEEService.DataAccess
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 CommandText = @"SELECT  sp.[part_id]
+    
       ,sp.[part_no]
       ,[part_name]
       ,[part_desc]
 	  ,sp.part_value
-	  ,[adj_part_value]
+	  ,SUM([adj_part_value]) AS adj_part_value
   FROM [ISEE].[dbo].[tbm_sparepart] sp
-  left join [ISEE].[dbo].[tbt_adj_sparepart] adj
+  INNER join [ISEE].[dbo].[tbt_adj_sparepart] adj
   ON adj.part_id =sp.part_id
-  WHERE sp.cancal_date is null and adj.cancel_date is null"
+  GROUP BY  sp.[part_id]
+      ,sp.[part_no]
+      ,[part_name]
+      ,[part_desc]
+	  ,sp.part_value"
             };
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -568,9 +602,13 @@ SELECT [ijob_id]
                 FROM [ISEE].[dbo].[tbt_job_header] jh
                 INNER JOIN [ISEE].[dbo].[tbm_customer] cus on jh.customer_id =cus.customer_id
                 INNER JOIN [ISEE].[dbo].[tbm_employee] emp on emp.user_id =jh.owner_id
-                where jh.status =1"
+                where jh.status =1 "
             };
-
+            if (!isAdmin)
+            {
+                command.CommandText += @" AND owner_id =@owner_id";
+                command.Parameters.AddWithValue("@owner_id", userid);
+            }
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -580,7 +618,21 @@ SELECT [ijob_id]
             }
             return dataObjects;
         }
-       
+        public async ValueTask<bool> CheckPermissionAdmin(string userid)
+        {
+            SqlCommand command = new SqlCommand("[dbo].[CheckPermissionAdmin]", this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Parameters.AddWithValue("@UserId", userid);       
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    return true;
+                }
+            }
+            return false ;
+        }
+
 
         #endregion " GET JOB DETAIL "
 
@@ -1171,7 +1223,7 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
                                         ,em.fullname
                                         ,em.lastname 
                                         ,em.position
-                                        ,po.position_description
+                                        ,po.position_description                                        
                                 FROM [ISEE].[dbo].[tbm_employee] em 
                                 INNER JOIN [ISEE].[dbo].[tbm_employee_position] po on em.position =po.position_code
                                 WHERE UPPER(em.user_name) =@username                               
@@ -1218,6 +1270,29 @@ AND menu.status =1
                 }
             }
             return menu;
+        }
+        public async ValueTask<List<tbm_config>> GET_TBM_CONFIG()
+        {
+            List<tbm_config> config = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT  [config_id]
+      ,[config_key]
+      ,[config_value]
+  FROM [ISEE].[dbo].[tbm_config]
+"
+            };
+           
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    config = dt.AsEnumerable<tbm_config>().ToList();
+                }
+            }
+            return config;
         }
         public async ValueTask<List<tbm_unit>> GET_TBM_UNITAsync()
         {
@@ -1921,10 +1996,10 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
            ,@create_by)
 "
             };
-            sql.Parameters.AddWithValue("@part_id", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@adj_part_value", data.part_no ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@create_by", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",","") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
 
@@ -2300,8 +2375,8 @@ WHERE   services_no=@services_no"
       WHERE  adj_id =@adj_id"
             };
 
-            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@update_by", data.update_by ?? (object)DBNull.Value);        
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",","") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);        
             if (!string.IsNullOrEmpty(data.cancel_by))
             {
                 sql.Parameters.AddWithValue("@cancel_by", data.cancel_by ?? (object)DBNull.Value);
@@ -2404,7 +2479,7 @@ WHERE   services_no=@services_no"
      set
       cancal_date=GETDATE()
       ,cancel_by =@cancel_by
-      ,cancel_reason
+      ,cancel_reason=@cancel_reason
       WHERE  part_id =@part_id"
             };               
             sql.Parameters.AddWithValue("@cancel_by", user_id);
@@ -2412,7 +2487,25 @@ WHERE   services_no=@services_no"
             sql.Parameters.AddWithValue("@part_id", part_id);
             await sql.ExecuteNonQueryAsync();
         }
-
+        public async ValueTask TERMINATE_TBT_ADJ_SPAREPARTAsync(long? adj_id, string user_id, string cancel_reason)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = @"UPDATE  [ISEE].[dbo].[tbt_adj_sparepart]
+     set
+      cancal_date=GETDATE()
+      ,cancel_by =@cancel_by
+      ,cancel_reason=@cancel_reason
+      WHERE  adj_id =@adj_id"
+            };
+            sql.Parameters.AddWithValue("@cancel_by", user_id);
+            sql.Parameters.AddWithValue("@cancel_reason", cancel_reason);
+            sql.Parameters.AddWithValue("@adj_id", adj_id);
+            await sql.ExecuteNonQueryAsync();
+        }
         public async ValueTask TERMINATE_TBT_JOB_CHECKLISTAsync(string Job_id)
         {
             SqlCommand sql = new SqlCommand

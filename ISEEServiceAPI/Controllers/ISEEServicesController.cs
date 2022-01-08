@@ -317,7 +317,20 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpGet("GET_TBT_ADJ_SPAREPART_DETAIL/{part_id}")]
+        public async ValueTask<IActionResult> GET_TBT_ADJ_SPAREPART_DETAIL(string part_id)
+        {
+            List<tbt_adj_sparepart> dataObjects = null;
+            try
+            {
+                dataObjects = await this.service.GET_TBT_ADJ_SPAREPART_DETAIL(part_id);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("GET_TBT_ADJ_SPAREPART")]
         public async ValueTask<IActionResult> GET_TBT_ADJ_SPAREPART()
         {
@@ -806,6 +819,24 @@ namespace ISEEServiceAPI.Controllers
             }
         }
 
+        [HttpPost("TERMINATE_TBT_ADJ_SPAREPART")]
+        public async ValueTask<IActionResult> TERMINATE_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
+        {
+            try
+            {
+                if (data is not null)
+                {                    
+                    await this.service.TERMINATE_TBT_ADJ_SPAREPARTAsync(data);
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("TERMINATE_TBT_JOB_IMAGE")]
         public async ValueTask<IActionResult> TERMINATE_TBT_JOB_IMAGEAsync(string ijob_id, string seq)
         {
@@ -838,7 +869,7 @@ namespace ISEEServiceAPI.Controllers
                 employee_Info = await this.service.UserLogin(user);
                 if (employee_Info is null)
                 {
-                    return Unauthorized();
+                    return BadRequest("UserName or Password invalid ");
                 }
                 else
                 {
