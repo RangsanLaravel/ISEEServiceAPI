@@ -11,7 +11,9 @@ namespace ISEEService.DataContract
       public string ch_id{get;set;}
       public string check_name{get;set;}
       public string status{get;set;}
-      public string check_group_id{get;set;}
+      public string status_check{get;set; }
+      public string remark{get;set; }
+        public string check_group_id{get;set;}
       public string create_date{get;set;}
       public string create_by{get;set;}
       public string update_date{get;set;}

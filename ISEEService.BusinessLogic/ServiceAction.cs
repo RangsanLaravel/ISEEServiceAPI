@@ -1,12 +1,20 @@
 ﻿using CryptoHelper;
+using ISEEService.BusinessLogic.report;
 using ISEEService.DataAccess;
 using ISEEService.DataContract;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ISEEService.BusinessLogic.Extensions;
+using ITUtility;
+using MimeKit;
 
 namespace ISEEService.BusinessLogic
 {
@@ -14,10 +22,12 @@ namespace ISEEService.BusinessLogic
     {
         private readonly string _connectionstring = string.Empty;
         private readonly CultureInfo culture = new CultureInfo("th-TH");
+        private readonly IMailService IMailService;
         //string contentRootPath = _hostingEnvironment.ContentRootPath + @"\ImageMaster";
-        public ServiceAction(string connectionstring)
+        public ServiceAction(string connectionstring, MailSettings mailSettings)
         {
             this._connectionstring = connectionstring;
+            this.IMailService = new MailService(mailSettings);
         }
         public async ValueTask CheckConnectDB()
         {
@@ -495,7 +505,7 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-                isAdmin =await repository.CheckPermissionAdmin(userid);
+                isAdmin = await repository.CheckPermissionAdmin(userid);
                 dataObjects = await repository.GET_JOB_DETAIL_LISTAsync(userid, isAdmin);
             }
             catch (Exception ex)
@@ -1030,7 +1040,30 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
+        public async ValueTask INSERT_TBT_JOB_IMAGE(tbt_job_image data, string userid, string job_id)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                var seq = await GET_SEQ_IMAGEAsync(job_id);
+                seq = seq + 1;
+                data.seq = seq.ToString();            
+                await repository.INSERT_TBT_JOB_IMAGE(data, userid);
 
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
         public async ValueTask TERMINATE_TBM_CUSTOMERAsync(customer_terminate data)
         {
             Repository repository = new Repository(_connectionstring);
@@ -1285,7 +1318,6 @@ namespace ISEEService.BusinessLogic
                     }
                 }
 
-
                 await repository.CommitTransection();
             }
             catch (Exception ex)
@@ -1299,21 +1331,345 @@ namespace ISEEService.BusinessLogic
             }
         }
 
-        /*
-        
-        
-        3.ลงตารางเพิ่ม3ตารางตอนปิดjob
-        -tbt_job_checklist ok
-        -tbt_job_detail ok
-        -tbt_job_image รับไฟล์ ok
-        -tbt_job_part 
-        4.ให้ลงข้อมูลLogin checklogin return menu
-        5.select ตารางและเช็คคอนดิชั่นทุกฟิล
-            -emp + where condition
-            -cus + where condition
-            -vil + where condition
-        6.ดึงข้อมูลมาสเตอร์ตาราง image_type ok
-        ถ้าเปิดหลายรอบมีปัญหาแน่ไม่ได้ดักไว้เนชรื่องการปิดงาน
-         */
+        #region " REPORT "
+        public async ValueTask<tbt_job_image> GET_IMAGE_SIG(string condition)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            tbt_job_image dataObjects = new tbt_job_image();
+            try
+            {
+                dataObjects = await repository.GET_IMAGE_SIG(condition);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+
+        public async ValueTask<summary_job_list_condition> GET_Summary_job_list(summary_job_list_condition condition)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            List<DataContract.summary_job_list> dataObjects = new List<DataContract.summary_job_list>();
+            try
+            {
+                DateTime? jobfrom = null;
+                DateTime? jobto = null;
+                DateTime? fixfrom = null;
+                DateTime? fixto = null;
+                DateTime? closefrom = null;
+                DateTime? closeto = null;
+                if (condition is not null)
+                {
+                    convertDate(ref jobfrom, ref jobto, condition.job_date_from, condition.job_date_to);
+                    convertDate(ref fixfrom, ref fixto, condition.fix_date_from, condition.fix_date_to);
+                    convertDate(ref closefrom, ref closeto, condition.close_dt_from, condition.close_dt_to);
+                }
+                dataObjects = await repository.GET_Summary_job_list(condition, jobfrom, jobto, fixfrom, fixto, closefrom, closeto);
+                if (dataObjects is not null)
+                {
+                    condition.summary_job_list = new List<DataContract.summary_job_list>();
+                    condition.summary_job_list = dataObjects;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return condition;
+        }
+        public async ValueTask<DataFile> GET_REPORT_Summary_job_list(summary_job_list_condition condition)
+        {
+            DataFile file = new DataFile();
+            try
+            {
+                report.summary_job_list rpt = new report.summary_job_list(condition);
+                if (condition.report_type.ToUpper() == "PDF")
+                {
+                    MemoryStream stream = new MemoryStream();
+                    await rpt.ExportToPdfAsync(stream);
+                    file.FileData = stream.ToArray();
+                    file.FileName = "summaryJob.pdf";
+                    file.ContentType = "application/pdf";
+
+                }
+                else
+                {
+                    MemoryStream stream = new MemoryStream();
+                    await rpt.ExportToXlsAsync(stream);
+                    file.FileData = stream.ToArray();
+                    file.FileName = "summaryJob.xlsx";
+                    file.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return file;
+        }
+        private void convertDate(ref DateTime? from, ref DateTime? to, string stfrom, string stto)
+        {
+            TimeSpan timestart = new TimeSpan(0, 0, 0);
+            TimeSpan timelast = new TimeSpan(23, 59, 59);
+            if (!string.IsNullOrEmpty(stfrom) && !string.IsNullOrEmpty(stto))
+            {
+                from = DateTime.ParseExact(stfrom, "dd/MM/yyyy", culture);
+                to = DateTime.ParseExact(stto, "dd/MM/yyyy", culture);
+                from.Value.Add(timestart);
+                to.Value.Add(timestart);
+            }
+            else if (!string.IsNullOrEmpty(stfrom) && string.IsNullOrEmpty(stto))
+            {
+                from = DateTime.ParseExact(stfrom, "dd/MM/yyyy", culture);
+                to = DateTime.ParseExact(stfrom, "dd/MM/yyyy", culture);
+                from.Value.Add(timestart);
+                to.Value.Add(timestart);
+            }
+            else if (string.IsNullOrEmpty(stfrom) && !string.IsNullOrEmpty(stto))
+            {
+                from = DateTime.ParseExact(stto, "dd/MM/yyyy", culture);
+                to = DateTime.ParseExact(stto, "dd/MM/yyyy", culture);
+                from.Value.Add(timestart);
+                to.Value.Add(timestart);
+            }
+            else if (string.IsNullOrEmpty(stfrom) && string.IsNullOrEmpty(stto))
+            {
+                from = null;
+                to = null;
+            }
+        }
+        public async ValueTask<summary_stock_list_condition> GET_Summary_stock_list(summary_stock_list_condition condition)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            List<DataContract.summary_stock_list> dataObjects = new List<DataContract.summary_stock_list>();
+            try
+            {
+                DateTime? partcrtfrom = null;
+                DateTime? partcrtto = null;
+                if (condition is not null)
+                {
+                    convertDate(ref partcrtfrom, ref partcrtto, condition.Part_create_from, condition.Part_create_to);
+                }
+                dataObjects = await repository.GET_Summary_stock_list(condition, partcrtfrom, partcrtto);
+                if (dataObjects is not null)
+                {
+                    condition.summary_stock_list = new List<DataContract.summary_stock_list>();
+                    condition.summary_stock_list = dataObjects;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return condition;
+        }
+        public async ValueTask<DataFile> GET_REPORT_Summary_stock_list(summary_stock_list_condition condition)
+        {
+            DataFile file = new DataFile();
+            try
+            {
+                report.summary_stock_list rpt = new report.summary_stock_list(condition);
+                if (condition.report_type.ToUpper() == "PDF")
+                {
+                    MemoryStream stream = new MemoryStream();
+                    await rpt.ExportToPdfAsync(stream);
+                    file.FileData = stream.ToArray();
+                    file.FileName = "summaryJob.pdf";
+                    file.ContentType = "application/pdf";
+
+                }
+                else
+                {
+                    MemoryStream stream = new MemoryStream();
+                    await rpt.ExportToXlsxAsync(stream);
+                    file.FileData = stream.ToArray();
+                    file.FileName = "summaryJob.xlsx";
+                    file.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return file;
+        }
+
+        public async ValueTask<DataFile> GET_REPORT_CLOSE_JOB(string job_id)
+        {
+            // Repository repository = new Repository(_connectionstring);
+            //  await repository.OpenConnectionAsync();
+            List<check_list_rpt> chkpt = new List<check_list_rpt>();
+            check_list_header_rpt chkheader = null;
+            DataFile pdf = null;
+            try
+            {
+                var checklist = await CHECK_LIST();
+                var listdata = await GET_JOB_DETAIL(job_id);
+                if (listdata is not null)
+                {
+                    chkheader = new check_list_header_rpt
+                    {
+                        Customer = listdata.customer_name,
+                        Job_id = listdata.job_id
+                    };
+                }
+                if (listdata is not null && listdata.job_checklists is not null)
+                {
+                    foreach (var item in listdata.job_checklists)
+                    {
+                        foreach (var _item in checklist)
+                        {
+                            _item.check_list.Where(a => a.ch_id == item.ck_id).Select(a => { a.status_check = "Y"; a.remark = item.description; return a; }).ToList();
+                        }
+                    }
+                }
+                foreach (var item in checklist)
+                {
+                    chkpt.Add(new check_list_rpt
+                    {
+                        DESCRIPTION = $"{item.check_group_name}",
+                        Header = "Y"
+                    });
+                    foreach (var _item in item.check_list)
+                    {
+                        chkpt.Add(new check_list_rpt
+                        {
+                            DESCRIPTION = $"{_item.check_name.PadLeft(2)}",
+                            INSP = _item.status_check,
+                            ACT = _item.status_check,
+                            REMARK = _item.remark
+                        });
+                    }
+
+                }
+
+                var img = await GET_IMAGE_SIG(listdata.job_id);
+                if (img is not null)
+                {
+                    if (System.IO.File.Exists(img.img_path))
+                    {
+                        var imageData = System.IO.File.ReadAllBytes(img.img_path);
+                        listdata.rptsig = Convert.ToBase64String(imageData);
+                    }
+                }
+                var rpt = await mainreport(listdata);
+                chkheader.checklist = new List<check_list_rpt>();
+                chkheader.checklist = chkpt;
+                var chklist = await checklistreport(chkheader);
+                var allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist });
+                pdf = new DataFile { FileData = allpdf, FileName = "job.pdf", ContentType = "application/pdf" };
+                List<DataFile> Attachments = new List<DataFile>();
+                Attachments.Add(pdf);
+                MailRequest request = new MailRequest
+                {
+                    Attachments = Attachments,
+                    Body = "<span>รายละเอียดการซ่อมบำรุง</span>",
+                    Subject = "รายละเอียดการซ่อมบำรุง",
+                    //ToEmail = "Dethman_light@hotmail.com"
+                    ToEmail = listdata.email_customer
+
+                };
+                await IMailService.SendEmailAsync(request);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                //await repository.CloseConnectionAsync();
+            }
+            return pdf;
+        }
+
+        private async ValueTask<byte[]> CombineMultiplePDFs(List<byte[]> dataFiles)
+        {
+            // step 1: creation of a document-object
+
+            Document document = new Document();
+            byte[] pdfAll = null;
+            //create newFileStream object which will be disposed at the end
+            using (Stream newFileStream = new MemoryStream())
+            {
+                // step 2: we create a writer that listens to the document
+                PdfCopy writer = new PdfCopy(document, newFileStream);
+                if (writer == null)
+                {
+                    return dataFiles[0];
+                }
+
+                // step 3: we open the document
+                document.Open();
+
+                foreach (var fileName in dataFiles)
+                {
+                    // we create a reader for a certain document
+                    PdfReader reader = new PdfReader(fileName);
+                    reader.ConsolidateNamedDestinations();
+
+                    // step 4: we add content
+                    for (int i = 1; i <= reader.NumberOfPages; i++)
+                    {
+                        PdfImportedPage page = writer.GetImportedPage(reader, i);
+                        writer.AddPage(page);
+                    }
+
+                    PrAcroForm form = reader.AcroForm;
+                    if (form != null)
+                    {
+                        writer.CopyAcroForm(reader);
+                    }
+
+                    reader.Close();
+                }
+
+                // step 5: we close the document and writer
+                writer.Close();
+                document.Close();
+                pdfAll = newFileStream.ToByteArray();
+            }
+            return pdfAll;//disposes the newFileStream object
+        }
+        private async ValueTask<byte[]> mainreport(close_job listdata)
+        {
+            report_close_job rpt = new report_close_job(listdata);
+            MemoryStream stream = new MemoryStream();
+            rpt.ExportToPdf(stream);
+            var mainreport = stream.ToArray();
+            return mainreport;
+        }
+        private async ValueTask<byte[]> checklistreport(check_list_header_rpt header)
+        {
+            report_checklist rpt = new report_checklist(header);
+            MemoryStream stream = new MemoryStream();
+            rpt.ExportToPdf(stream);
+            var mainreport = stream.ToArray();
+            return mainreport;
+
+        }
+        #endregion " REPORT "
+
     }
 }

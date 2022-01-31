@@ -1,3 +1,5 @@
+using ISEEService.BusinessLogic;
+using ISEEService.DataContract;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +32,9 @@ namespace ISEEServiceAPI
         {
 
             services.AddControllers();
+            //services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
+           // services.AddTransient<IMailService, Services.MailService>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

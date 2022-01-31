@@ -351,23 +351,9 @@ namespace ISEEService.DataAccess
             List<tbt_adj_sparepart> dataObjects = null;
             SqlCommand command = new SqlCommand
             {
-                CommandType = System.Data.CommandType.Text,
+                CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT  sp.[part_id]
-    
-      ,sp.[part_no]
-      ,[part_name]
-      ,[part_desc]
-	  ,sp.part_value
-	  ,SUM([adj_part_value]) AS adj_part_value
-  FROM [ISEE].[dbo].[tbm_sparepart] sp
-  INNER join [ISEE].[dbo].[tbt_adj_sparepart] adj
-  ON adj.part_id =sp.part_id
-  GROUP BY  sp.[part_id]
-      ,sp.[part_no]
-      ,[part_name]
-      ,[part_desc]
-	  ,sp.part_value"
+                CommandText = @"[dbo].GET_TBT_ADJ_SPAREPART"
             };
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -383,7 +369,7 @@ namespace ISEEService.DataAccess
         #region " GET JOB DETAIL "
         public async ValueTask<close_job> GET_TBT_JOB_HEADERAsync(string job_id)
         {
-           close_job dataObjects = null;
+            close_job dataObjects = null;
             SqlCommand command = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
@@ -572,7 +558,7 @@ SELECT [ijob_id]
             }
             return dataObjects;
         }
-        public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid,bool isAdmin)
+        public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid, bool isAdmin)
         {
             List<job_detail_list> dataObjects = null;
             SqlCommand command = new SqlCommand
@@ -622,7 +608,7 @@ SELECT [ijob_id]
         {
             SqlCommand command = new SqlCommand("[dbo].[CheckPermissionAdmin]", this.sqlConnection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@UserId", userid);       
+            command.Parameters.AddWithValue("@UserId", userid);
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -630,7 +616,7 @@ SELECT [ijob_id]
                     return true;
                 }
             }
-            return false ;
+            return false;
         }
 
 
@@ -660,7 +646,7 @@ SELECT [ijob_id]
         }
         public async ValueTask<long> GET_TBT_JOB_PART_SEQ(string pjob_id)
         {
-            long seq = 0; 
+            long seq = 0;
             SqlCommand command = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
@@ -719,7 +705,7 @@ SELECT [ijob_id]
             if (data is not null && !string.IsNullOrWhiteSpace(data.fullname))
             {
                 command.CommandText += " AND fullname like @fullname";
-                command.Parameters.AddWithValue("@fullname", $"{data.fullname}%" );
+                command.Parameters.AddWithValue("@fullname", $"{data.fullname}%");
             }
             if (data is not null && !string.IsNullOrWhiteSpace(data.lastname))
             {
@@ -845,7 +831,7 @@ WHERE cu.status =1 "
             return dataObjects;
         }
 
-        public async ValueTask<List<tbm_vehicle>> GET_TBM_VEHICLEAsync(tbm_vehicle data,DateTime? sExpire_date,DateTime? eExpire_date,DateTime? sEffective_date,DateTime? eEffective_date)
+        public async ValueTask<List<tbm_vehicle>> GET_TBM_VEHICLEAsync(tbm_vehicle data, DateTime? sExpire_date, DateTime? eExpire_date, DateTime? sEffective_date, DateTime? eEffective_date)
         {
             List<tbm_vehicle> dataObjects = null;
             SqlCommand command = new SqlCommand
@@ -971,7 +957,7 @@ WHERE cu.status =1 "
                 command.CommandText += " AND period_year =@period_year";
                 command.Parameters.AddWithValue("@period_year", data.period_year);
             }
-            
+
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -1101,7 +1087,7 @@ SELECT
                 command.CommandText += " AND part.location_id =@location_id";
                 command.Parameters.AddWithValue("@location_id", data.location_id);
             }
-           
+
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -1213,7 +1199,7 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
         public async ValueTask<employee_info> UserLogin(UserLogin user)
         {
             employee_info employee_Info = null;
-              SqlCommand command = new SqlCommand
+            SqlCommand command = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
@@ -1223,15 +1209,16 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
                                         ,em.fullname
                                         ,em.lastname 
                                         ,em.position
-                                        ,po.position_description                                        
+                                        ,po.position_description   
+                                        ,po.security_level
                                 FROM [ISEE].[dbo].[tbm_employee] em 
                                 INNER JOIN [ISEE].[dbo].[tbm_employee_position] po on em.position =po.position_code
                                 WHERE UPPER(em.user_name) =@username                               
                                 AND em.status =1 
                                 AND po.status =1"
-              };
+            };
             command.Parameters.AddWithValue("@username", user.UserName.ToUpper());
-          
+
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -1284,7 +1271,7 @@ AND menu.status =1
   FROM [ISEE].[dbo].[tbm_config]
 "
             };
-           
+
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -1315,7 +1302,7 @@ AND menu.status =1
             return menu;
         }
 
-        public async ValueTask<List<tbm_location_store>> GET_TBM_LOCATION_STOREAsync(tbm_location_store condition )
+        public async ValueTask<List<tbm_location_store>> GET_TBM_LOCATION_STOREAsync(tbm_location_store condition)
         {
             List<tbm_location_store> menu = null;
             SqlCommand command = new SqlCommand
@@ -1336,7 +1323,7 @@ AND menu.status =1
       AND emp.status =1
                 "
             };
-            if(condition is not null &&!string.IsNullOrWhiteSpace( condition.location_id))
+            if (condition is not null && !string.IsNullOrWhiteSpace(condition.location_id))
             {
                 command.CommandText += " AND sto.location_id =@location_id";
                 command.Parameters.AddWithValue("@location_id", condition.location_id);
@@ -1362,7 +1349,7 @@ AND menu.status =1
             return menu;
         }
 
-        
+
 
         #endregion " GET DATA "
 
@@ -1464,7 +1451,7 @@ AND menu.status =1
             await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask INSERT_TBM_VEHICLEAsync(tbm_vehicle data,DateTime? effective_date,DateTime? expire_date)
+        public async ValueTask INSERT_TBM_VEHICLEAsync(tbm_vehicle data, DateTime? effective_date, DateTime? expire_date)
         {
 
             SqlCommand sql = new SqlCommand
@@ -1542,10 +1529,10 @@ AND menu.status =1
            ,1,@jobcode)"
             };
 
-            sql.Parameters.AddWithValue("@services_no", data.services_no ??(object)DBNull.Value);
+            sql.Parameters.AddWithValue("@services_no", data.services_no ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@services_name", data.services_name ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@period_year", data.period_year ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);          
+            sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@jobcode", data.jobcode ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
@@ -1567,7 +1554,7 @@ AND menu.status =1
            ,email_customer
            ,create_by
            ,create_date      
-          {(string.IsNullOrWhiteSpace(data.ref_hjob_id)?"": ",ref_hjob_id")}
+          {(string.IsNullOrWhiteSpace(data.ref_hjob_id) ? "" : ",ref_hjob_id")}
            ,status)
      VALUES
            (@job_id
@@ -1585,7 +1572,7 @@ AND menu.status =1
 
             sql.Parameters.AddWithValue("@job_id", data.job_id);
             sql.Parameters.AddWithValue("@type_job", data.type_job);
-            sql.Parameters.AddWithValue("@summary", data.summary?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@summary", data.summary ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@license_no", data.license_no);
             sql.Parameters.AddWithValue("@customer_id", data.customer_id);
             sql.Parameters.AddWithValue("@owner_id", data.owner_id);
@@ -1620,14 +1607,14 @@ AND menu.status =1
             sql.Parameters.AddWithValue("@description", data.description);
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask INSERT_TBT_JOB_DETAIL(tbt_job_detail data, string job_id,DateTime? CD_tag_date)
+        public async ValueTask INSERT_TBT_JOB_DETAIL(tbt_job_detail data, string job_id, DateTime? CD_tag_date)
         {
             SqlCommand sql = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                
+
                 CommandText = @"INSERT INTO [ISEE].[dbo].[tbt_job_detail]
            ( bjob_id
       ,B1_model
@@ -1684,7 +1671,7 @@ AND menu.status =1
       ,@fair_wear )"
             };
 
-           SqlParameter bjob_id = sql.Parameters.AddWithValue("@bjob_id", job_id);
+            SqlParameter bjob_id = sql.Parameters.AddWithValue("@bjob_id", job_id);
             if (job_id is null)
             {
                 bjob_id.Value = DBNull.Value;
@@ -1817,7 +1804,7 @@ AND menu.status =1
             await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask INSERT_TBT_JOB_IMAGE(tbt_job_image data,string userid)
+        public async ValueTask INSERT_TBT_JOB_IMAGE(tbt_job_image data, string userid)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -1846,13 +1833,13 @@ AND menu.status =1
 
             sql.Parameters.AddWithValue("@ijob_id", data.ijob_id);
             sql.Parameters.AddWithValue("@seq", data.seq);
-            sql.Parameters.AddWithValue("@img_name",data.img_name);
-            sql.Parameters.AddWithValue("@img_path",data.img_path);
+            sql.Parameters.AddWithValue("@img_name", data.img_name);
+            sql.Parameters.AddWithValue("@img_path", data.img_path);
             sql.Parameters.AddWithValue("@create_by", userid);
-            sql.Parameters.AddWithValue("@image_type",data.image_type);
+            sql.Parameters.AddWithValue("@image_type", data.image_type);
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask INSERT_TBT_JOB_PART(tbt_job_part data, string userid,string job_id)
+        public async ValueTask INSERT_TBT_JOB_PART(tbt_job_part data, string userid, string job_id)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -1998,7 +1985,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
             };
             sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",","") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
@@ -2033,7 +2020,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
 
         }
         public async ValueTask Close_jobAsync(close_job data)
-        {          
+        {
             SqlCommand command = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
@@ -2073,7 +2060,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 transfer_to.Value = DBNull.Value;
             }
             SqlParameter invoice_no = command.Parameters.AddWithValue("@invoice_no", data.invoice_no);
-            if(data.invoice_no is null)
+            if (data.invoice_no is null)
             {
                 invoice_no.Value = DBNull.Value;
             }
@@ -2139,7 +2126,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 where user_id =@user_id"
             };
 
-          
+
             sql.Parameters.AddWithValue("@fullname", data.fullname);
             sql.Parameters.AddWithValue("@lastname", data.lastname);
             sql.Parameters.AddWithValue("@idcard", data.idcard);
@@ -2174,7 +2161,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 where license_no = @license_no"
             };
 
-            
+
             sql.Parameters.AddWithValue("@seq", data.seq);
             sql.Parameters.AddWithValue("@brand_no", data.brand_no);
             sql.Parameters.AddWithValue("@model_no", data.model_no);
@@ -2207,7 +2194,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
             ,update_by=@create_by
 WHERE   services_no=@services_no"
 
-            };          
+            };
             sql.Parameters.AddWithValue("@services_name", data.services_name);
             sql.Parameters.AddWithValue("@period_year", data.period_year);
             sql.Parameters.AddWithValue("@create_by", data.create_by);
@@ -2215,7 +2202,7 @@ WHERE   services_no=@services_no"
             await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask UPDATE_TBT_JOB_DETAIL(tbt_job_detail data, string job_id,DateTime? CD_tag_date)
+        public async ValueTask UPDATE_TBT_JOB_DETAIL(tbt_job_detail data, string job_id, DateTime? CD_tag_date)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -2330,7 +2317,7 @@ WHERE   services_no=@services_no"
       ,update_by=@update_by
       {(data.status == "0" ? @",cancel_by = @cancel_by
       ,cancel_reason =@cancel_reason
-      ,cancal_date =GETDATE()" :"")}
+      ,cancal_date =GETDATE()" : "")}
       WHERE  part_id =@part_id"
             };
 
@@ -2347,12 +2334,12 @@ WHERE   services_no=@services_no"
             sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
-            if(data.status == "0")
+            if (data.status == "0")
             {
                 sql.Parameters.AddWithValue("@cancel_by", data.create_by ?? (object)DBNull.Value);
                 sql.Parameters.AddWithValue("@cancel_reason", data.cancel_reason ?? (object)DBNull.Value);
             }
-           
+
             await sql.ExecuteNonQueryAsync();
         }
 
@@ -2369,14 +2356,14 @@ WHERE   services_no=@services_no"
        adj_part_value =@adj_part_value
       ,update_date =GETDATE()
       ,update_by =@update_by
-     {(string.IsNullOrEmpty(data.cancel_by) ?"": 
+     {(string.IsNullOrEmpty(data.cancel_by) ? "" :
      @",cancel_by=@cancel_by
       ,cancel_reason =@cancel_reason")}   
       WHERE  adj_id =@adj_id"
             };
 
-            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",","") ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);        
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);
             if (!string.IsNullOrEmpty(data.cancel_by))
             {
                 sql.Parameters.AddWithValue("@cancel_by", data.cancel_by ?? (object)DBNull.Value);
@@ -2401,12 +2388,12 @@ WHERE   services_no=@services_no"
                         SET
                             STATUS =0
                      WHERE customer_id =@customer_id "
-            };          
+            };
             sql.Parameters.AddWithValue("@customer_id", customer_id);
 
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask TERMINATE_TBM_EMPLOYEEAsync(string user_id,string terminate_id)
+        public async ValueTask TERMINATE_TBM_EMPLOYEEAsync(string user_id, string terminate_id)
         {
 
             SqlCommand sql = new SqlCommand
@@ -2429,7 +2416,7 @@ WHERE   services_no=@services_no"
 
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask TERMINATE_TBM_SERVICESAsync(string services_no,string user_id)
+        public async ValueTask TERMINATE_TBM_SERVICESAsync(string services_no, string user_id)
         {
 
             SqlCommand sql = new SqlCommand
@@ -2449,7 +2436,7 @@ WHERE   services_no=@services_no"
             sql.Parameters.AddWithValue("@services_no", services_no);
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask TERMINATE_TBM_LOCATION_STOREAsync(string location_id,string user_id)
+        public async ValueTask TERMINATE_TBM_LOCATION_STOREAsync(string location_id, string user_id)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -2468,7 +2455,7 @@ WHERE   services_no=@services_no"
             sql.Parameters.AddWithValue("@location_id", location_id);
             await sql.ExecuteNonQueryAsync();
         }
-        public async ValueTask TERMINATE_TBM_SPAREPARTAsync(long? part_id,string user_id,string cancel_reason)
+        public async ValueTask TERMINATE_TBM_SPAREPARTAsync(long? part_id, string user_id, string cancel_reason)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -2481,7 +2468,7 @@ WHERE   services_no=@services_no"
       ,cancel_by =@cancel_by
       ,cancel_reason=@cancel_reason
       WHERE  part_id =@part_id"
-            };               
+            };
             sql.Parameters.AddWithValue("@cancel_by", user_id);
             sql.Parameters.AddWithValue("@cancel_reason", cancel_reason);
             sql.Parameters.AddWithValue("@part_id", part_id);
@@ -2528,11 +2515,11 @@ WHERE   services_no=@services_no"
                 CommandText = @"DELETE [ISEE].[dbo].[tbt_job_part] WHERE pjob_id =@job_id"
             };
 
-            sql.Parameters.AddWithValue("@job_id", job_id);         
+            sql.Parameters.AddWithValue("@job_id", job_id);
             await sql.ExecuteNonQueryAsync();
         }
 
-        public async ValueTask TERMINATE_TBT_JOB_IMAGE(string job_id,string seq )
+        public async ValueTask TERMINATE_TBT_JOB_IMAGE(string job_id, string seq)
         {
             SqlCommand sql = new SqlCommand
             {
@@ -2551,7 +2538,182 @@ WHERE  ijob_id =@ijob_id AND seq =@seq"
         }
         #endregion " TERMINATE "
 
+        #region " REPORT "
 
+        public async ValueTask<tbt_job_image> GET_IMAGE_SIG(string condition)
+        {
+            tbt_job_image dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"
+SELECT  [ijob_id]
+      ,[seq]
+      ,[img_name]
+      ,[img_path]
+      ,[create_date]
+      ,[create_by]
+      ,[status]
+      ,[image_type]
+  FROM [ISEE].[dbo].[tbt_job_image]
+  WHERE ijob_id =@job_id 
+  AND status =1
+  AND image_type='sig'
+ORDER BY seq DESC
+"
+            };
+            sql.Parameters.AddWithValue("@job_id", condition);
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbt_job_image>().FirstOrDefault();
+                }
+            }
+            return dataObjects;
+        }
+        public async ValueTask<List<summary_job_list>> GET_Summary_job_list(summary_job_list_condition condition,
+        DateTime? jobfrom,
+        DateTime? jobto,
+        DateTime? fixfrom,
+        DateTime? fixto,
+        DateTime? closefrom,
+        DateTime? closeto)
+        {
+            List<summary_job_list> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"
+SELECT JH.job_id
+	  ,JH.[create_date]
+      ,JH.[license_no]
+	  ,JH.[create_by]
+      ,CONCAT(emp.fullname,' ',emp.lastname)AS employeename
+      ,JH.[summary]
+	  ,JH.[fix_date]
+	  ,JH.[close_date]
+	  ,CONCAT(cus.fname,' ',cus.lname) customername
+	  ,[invoice_no]
+	  ,Jt.jobdescription
+	  ,COALESCE(JH.transfer_to,JH.[owner_id]) AS owner_id
+	  ,JH.type_job
+      ,img.seq
+  FROM [ISEE].[dbo].[tbt_job_header] JH
+  INNER JOIN [ISEE].[dbo].[tbm_employee] emp ON emp.user_id = COALESCE(JH.transfer_to,JH.[owner_id])
+  INNER JOIN [ISEE].[dbo].[tbm_customer] cus ON CUS.customer_id =JH.customer_id
+  INNER JOIN [ISEE].[dbo].[tbm_jobtype] Jt ON JT.jobcode =jh.type_job 
+  INNER JOIN [ISEE].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id AND img.image_type='rpt'
+WHERE JH.CLOSE_DATE IS NOT NULL"
+            };
+            if (jobfrom is not null)
+            {
+                sql.CommandText += $"{sql.CommandText} AND JH.create_date between @createfrm and @createto ";
+                sql.Parameters.AddWithValue("@createfrm", jobfrom);
+                sql.Parameters.AddWithValue("@createto", jobto);
+            }
+            if (fixfrom is not null)
+            {
+                sql.CommandText += $"{sql.CommandText} AND JH.fix_date between @fix_datefrm and @fix_dateto ";
+                sql.Parameters.AddWithValue("@fix_datefrm", fixfrom);
+                sql.Parameters.AddWithValue("@fix_dateto", fixto);
+            }
+            if (closefrom is not null)
+            {
+                sql.CommandText += $"{sql.CommandText} AND JH.close_date between @closefrom and @closeto ";
+                sql.Parameters.AddWithValue("@closefrom", closefrom);
+                sql.Parameters.AddWithValue("@closeto", closeto);
+            }
+            if (!string.IsNullOrEmpty(condition.license_no))
+            {
+                sql.CommandText += $"{sql.CommandText} AND JH.license_no =@license_no ";
+                sql.Parameters.AddWithValue("@license_no", condition.license_no);
+            }
+            if (!string.IsNullOrEmpty(condition.type_job))
+            {
+                sql.CommandText += $"{sql.CommandText} AND JH.type_job =@type_job ";
+                sql.Parameters.AddWithValue("@type_job", condition.type_job.ToUpper());
+            }
+            if (!string.IsNullOrEmpty(condition.Teachnicial))
+            {
+                sql.CommandText += $"{sql.CommandText} AND COALESCE(JH.transfer_to,JH.[owner_id]) =@Teachnicial ";
+                sql.Parameters.AddWithValue("@Teachnicial", condition.Teachnicial);
+            }
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<summary_job_list>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+        public async ValueTask<List<summary_stock_list>> GET_Summary_stock_list(summary_stock_list_condition condition,
+             DateTime? partcrtfrom,
+             DateTime? partcrtto)
+        {
+            List<summary_stock_list> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"
+SELECT  [part_id]
+      ,[part_no]
+      ,[part_name]
+      ,[part_desc]
+      ,[part_type]
+      ,[cost_price]    
+      ,[create_date] 
+	  ,[sale_price]
+      ,[unit_code]
+      ,[part_value]
+      ,[minimum_value]
+      ,[maximum_value]
+      ,[location_id]
+      ,[create_by]
+      ,[cancal_date]
+      ,[cancel_by]
+      ,[cancel_reason]
+      ,[update_date]
+      ,[update_by]
+  FROM [ISEE].[dbo].[tbm_sparepart] "
+            };
+            if (partcrtfrom is not null)
+            {
+                sql.CommandText += $"{sql.CommandText} AND create_date between @createfrm and @createto ";
+                sql.Parameters.AddWithValue("@createfrm", partcrtfrom);
+                sql.Parameters.AddWithValue("@createto", partcrtto);
+            }
+            if (!string.IsNullOrEmpty(condition.Partno))
+            {
+                sql.CommandText += $"{sql.CommandText} AND part_no=@part_no ";
+                sql.Parameters.AddWithValue("@part_no", condition.Partno);
+            }
+            if (!string.IsNullOrEmpty(condition.locationid))
+            {
+                sql.CommandText += $"{sql.CommandText} AND location_id=@location_id ";
+                sql.Parameters.AddWithValue("@location_id", condition.locationid);
+            }
+            if (!string.IsNullOrEmpty(condition.locationid))
+            {
+                sql.CommandText += $"{sql.CommandText} AND part_id=@part_id ";
+                sql.Parameters.AddWithValue("@part_id", condition.PartId);
+            }
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<summary_stock_list>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+
+
+        #endregion " REPORT "
 
     }
 }

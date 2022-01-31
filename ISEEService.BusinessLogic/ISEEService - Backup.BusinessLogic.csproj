@@ -1,0 +1,75 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="report\report_checklist.repx" />
+    <None Remove="report\report_close_job.repx" />
+    <None Remove="report\rpt_checklist.vsrepx" />
+    <None Remove="report\subreport\part_rpt.repx" />
+    <None Remove="report\summary_job_list.repx" />
+    <None Remove="report\summary_stock_list.repx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="report\report_checklist.repx" />
+    <EmbeddedResource Include="report\report_close_job.repx" />
+    <EmbeddedResource Include="report\rpt_checklist.vsrepx" />
+    <EmbeddedResource Include="report\subreport\part_rpt.repx" />
+    <EmbeddedResource Include="report\summary_job_list.repx" />
+    <EmbeddedResource Include="report\summary_stock_list.repx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.MailKitMailer" Version="1.1.2" />
+    <PackageReference Include="CryptoHelper" Version="3.0.2" />
+    <PackageReference Include="DevExpress.Reporting.Core" Version="21.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ISEEService.DataAccess\ISEEService.DataAccess.csproj" />
+    <ProjectReference Include="..\ISEEService.DataContract\ISEEService.DataContract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="report\report_checklist.cs">
+      <DependentUpon>report_checklist.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_checklist.Designer.cs">
+      <DependentUpon>report_checklist.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_close_job.cs">
+      <DependentUpon>report_close_job.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_close_job.Designer.cs">
+      <DependentUpon>report_close_job.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\rpt_checklist.cs">
+      <DependentUpon>rpt_checklist.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\rpt_checklist.Designer.cs">
+      <DependentUpon>rpt_checklist.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\subreport\part_rpt.cs">
+      <DependentUpon>part_rpt.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\subreport\part_rpt.Designer.cs">
+      <DependentUpon>part_rpt.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_job_list.cs">
+      <DependentUpon>summary_job_list.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_job_list.Designer.cs">
+      <DependentUpon>summary_job_list.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_stock_list.cs">
+      <DependentUpon>summary_stock_list.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_stock_list.Designer.cs">
+      <DependentUpon>summary_stock_list.repx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>
