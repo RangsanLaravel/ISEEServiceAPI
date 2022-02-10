@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <assembly>
+    <name>DevExpress.AspNetCore.Reporting.v21.2.Azure</name>
+  </assembly>
+  <members>
+    <member name="N:DevExpress.AspNetCore.Reporting.Azure">
+      <summary />
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.AzureReportingConfigurator">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.AzureReportingConfigurator.UseAzureCachedReportSourceBuilder(DevExpress.AspNetCore.Reporting.WebDocumentViewerConfigurationBuilder,System.String)">
+      <summary />
+      <param name="viewerConfigurator"></param>
+      <param name="cloudStorageConnectionString"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.AzureReportingConfigurator.UseAzureCachedReportSourceBuilder(DevExpress.AspNetCore.Reporting.WebDocumentViewerConfigurationBuilder,System.String,DevExpress.XtraReports.Web.WebDocumentViewer.StorageSynchronizationMode)">
+      <summary />
+      <param name="viewerConfigurator"></param>
+      <param name="cloudStorageConnectionString"></param>
+      <param name="storageSynchronizationMode"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.AzureReportingConfigurator.UseAzureEnvironment(DevExpress.AspNetCore.Reporting.WebDocumentViewerConfigurationBuilder,System.String)">
+      <summary />
+      <param name="viewerConfigurator"></param>
+      <param name="cloudStorageConnectionString"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.AzureReportingConfigurator.UseAzureEnvironment(DevExpress.AspNetCore.Reporting.WebDocumentViewerConfigurationBuilder,System.String,System.String)">
+      <summary />
+      <param name="viewerConfigurator"></param>
+      <param name="cloudStorageConnectionString"></param>
+      <param name="serviceBusConnectionString"></param>
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.IAzureSecureDataTableProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.IAzureSecureDataTableProvider.GetSecureDataTable">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.IAzureTableClientProvider">
+      <summary />
+    </member>
+    <member name="P:DevExpress.AspNetCore.Reporting.Azure.IAzureTableClientProvider.CloudTableClient">
+      <summary />
+      <value></value>
+    </member>
+    <member name="N:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer">
+      <summary />
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider.#ctor(System.String)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="cloudStorageConnectionString"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider.#ctor(System.String,System.String)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="cloudStorageConnectionString"></param>
+      <param name="serviceBusConnectionString"></param>
+    </member>
+    <member name="P:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider.CloudStorageConnectionString">
+      <summary />
+      <value></value>
+    </member>
+    <member name="P:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider.ServiceBusConnectionString">
+      <summary />
+      <value></value>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureStorageAccountProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureStorageAccountProvider.#ctor(DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureConnectionStringProvider)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.AzureStorageAccountProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="connectionStringProvider"></param>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureBlobStorageServiceAsync">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureBlobStorageServiceAsync.GetCloudBlobClient">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureBlobStorageServiceAsync.GetCommonBlobContainerAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureBlobStorageServiceAsync.GetDocumentBlobContainerAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureBlobStorageServiceAsync.GetReportBlobContainerAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCachedDocumentServiceTableProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCachedDocumentServiceTableProvider.GetDocumentMetadataTable">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCachedDocumentServiceTableProvider.GetDocumentStructureTable">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCleanerCloudQueueProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCleanerCloudQueueProvider.GetCloudQueue">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCleanerTableProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCleanerTableProvider.GetCleanerTable">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCosmosTableStorageAccountProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureCosmosTableStorageAccountProvider.GetStorageAccount">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureExportedDocumentTableProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureExportedDocumentTableProvider.GetExportedDocumentTable">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.ClearDocuments(System.TimeSpan)">
+      <summary />
+      <param name="timeToLive"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.ClearFiles(System.TimeSpan)">
+      <summary />
+      <param name="timeToLive"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.ClearReports(System.TimeSpan)">
+      <summary />
+      <param name="timeToLive"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.DeleteDocument(System.String)">
+      <summary />
+      <param name="documentId"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.DeleteFile(System.String)">
+      <summary />
+      <param name="fileName"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.DeleteReport(System.String)">
+      <summary />
+      <param name="reportId"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.SaveAllPages(System.String,System.Collections.Generic.IEnumerable{System.IO.Stream})">
+      <summary />
+      <param name="documentId"></param>
+      <param name="streams"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.SaveFile(System.String,System.IO.Stream)">
+      <summary />
+      <param name="fileName"></param>
+      <param name="stream"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.SavePage(System.String,System.Int32,System.IO.Stream)">
+      <summary />
+      <param name="documentId"></param>
+      <param name="pageIndex"></param>
+      <param name="stream"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.SaveReport(System.String,System.IO.Stream)">
+      <summary />
+      <param name="reportId"></param>
+      <param name="stream"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.TryGetAllPages(System.String,System.Collections.Generic.IEnumerable{System.IO.Stream})">
+      <summary />
+      <param name="documentId"></param>
+      <param name="streams"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.TryGetFile(System.String,System.IO.Stream)">
+      <summary />
+      <param name="fileName"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.TryGetPage(System.String,System.Int32,System.IO.Stream)">
+      <summary />
+      <param name="documentId"></param>
+      <param name="pageIndex"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.TryGetReport(System.String,System.IO.Stream)">
+      <summary />
+      <param name="reportId"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.UpdateDocumentLastAccessTime(System.String)">
+      <summary />
+      <param name="documentId"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.UpdateFileLastAccessTime(System.String)">
+      <summary />
+      <param name="fileName"></param>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManager.UpdateReportLastAccessTime(System.String)">
+      <summary />
+      <param name="reportId"></param>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.ClearDocumentsAsync(System.TimeSpan)">
+      <summary />
+      <param name="timeToLive"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.ClearFilesAsync(System.TimeSpan)">
+      <summary />
+      <param name="timeToLive"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.ClearReportsAsync(System.TimeSpan)">
+      <summary />
+      <param name="timeToLive"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.DeleteDocumentAsync(System.String)">
+      <summary />
+      <param name="documentId"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.DeleteFileAsync(System.String)">
+      <summary />
+      <param name="fileName"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.DeleteReportAsync(System.String)">
+      <summary />
+      <param name="reportId"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.SaveAllPagesAsync(System.String,System.Collections.Generic.IEnumerable{System.IO.Stream})">
+      <summary />
+      <param name="documentId"></param>
+      <param name="streams"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.SaveFileAsync(System.String,System.IO.Stream)">
+      <summary />
+      <param name="fileName"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.SavePageAsync(System.String,System.Int32,System.IO.Stream)">
+      <summary />
+      <param name="documentId"></param>
+      <param name="pageIndex"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.SaveReportAsync(System.String,System.IO.Stream)">
+      <summary />
+      <param name="reportId"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.TryGetAllPagesAsync(System.String,System.Collections.Generic.IEnumerable{System.IO.Stream})">
+      <summary />
+      <param name="documentId"></param>
+      <param name="streams"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.TryGetFileAsync(System.String,System.IO.Stream)">
+      <summary />
+      <param name="fileName"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.TryGetPageAsync(System.String,System.Int32,System.IO.Stream)">
+      <summary />
+      <param name="documentId"></param>
+      <param name="pageIndex"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.TryGetReportAsync(System.String,System.IO.Stream)">
+      <summary />
+      <param name="reportId"></param>
+      <param name="stream"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.UpdateDocumentLastAccessTimeAsync(System.String)">
+      <summary />
+      <param name="documentId"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.UpdateFileLastAccessTimeAsync(System.String)">
+      <summary />
+      <param name="fileName"></param>
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureFileStorageManagerAsync.UpdateReportLastAccessTimeAsync(System.String)">
+      <summary />
+      <param name="reportId"></param>
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureReportTableProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureReportTableProvider.GetReportTable">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureStorageBlobAccountProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IAzureStorageBlobAccountProvider.GetStorageAccount">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusManagementClientProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusManagementClientProvider.GetManagementClient">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusQueueClientProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusQueueClientProvider.GetRequestQueueClientAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusQueueClientProvider.GetRequestSessionClientAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusQueueClientProvider.GetResponseQueueClientAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.Azure.WebDocumentViewer.IServiceBusQueueClientProvider.GetResponseSessionClientAsync">
+      <summary />
+      <returns></returns>
+    </member>
+    <member name="N:DevExpress.AspNetCore.Reporting.WebDocumentViewer">
+      <summary>
+        <para>Contains classes that implement functionality specific to the ASP.NET Core Document Viewer.</para>
+      </summary>
+    </member>
+    <member name="T:DevExpress.AspNetCore.Reporting.WebDocumentViewer.IAzureCloudStorageAccountProvider">
+      <summary />
+    </member>
+    <member name="M:DevExpress.AspNetCore.Reporting.WebDocumentViewer.IAzureCloudStorageAccountProvider.GetStorageAccount">
+      <summary />
+      <returns></returns>
+    </member>
+  </members>
+</doc>

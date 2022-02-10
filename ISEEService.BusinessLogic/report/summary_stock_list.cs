@@ -9,7 +9,7 @@ namespace ISEEService.BusinessLogic.report
         public summary_stock_list(summary_stock_list_condition condition)
         {
             InitializeComponent();
-            this.objectDataSource1.DataSource = condition;
+            this.objectDataSource2.DataSource = condition;
         }
     }
 }

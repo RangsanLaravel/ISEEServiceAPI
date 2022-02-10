@@ -1,29 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="report\report_checklist.vsrepx" />
-    <None Remove="report\report_close_job.repx" />
-    <None Remove="report\subreport\part_rpt.repx" />
     <None Remove="report\summary_job_list.repx" />
     <None Remove="report\summary_stock_list.repx" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="report\report_checklist.vsrepx" />
-    <EmbeddedResource Include="report\report_close_job.repx" />
-    <EmbeddedResource Include="report\subreport\part_rpt.repx" />
     <EmbeddedResource Include="report\summary_job_list.repx" />
     <EmbeddedResource Include="report\summary_stock_list.repx" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AspNetCore.MailKitMailer" Version="1.1.2" />
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.5" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,81 +27,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DevExpress.Charts.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.Charts.v21.2.Core.dll</HintPath>
-    </Reference>
     <Reference Include="DevExpress.Data.v21.2">
-      <HintPath>..\DevExpress\DevExpress.Data.v21.2.dll</HintPath>
+      <HintPath>DevExpress\DevExpress.Data.v21.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.DataAccess.v21.2">
-      <HintPath>..\DevExpress\DevExpress.DataAccess.v21.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.DataAccess.v21.2.UI">
-      <HintPath>..\DevExpress\DevExpress.DataAccess.v21.2.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Office.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.Office.v21.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.Pdf.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.Pdf.v21.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.PivotGrid.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.PivotGrid.v21.2.Core.dll</HintPath>
+      <HintPath>DevExpress\DevExpress.DataAccess.v21.2.dll</HintPath>
     </Reference>
     <Reference Include="DevExpress.Printing.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.Printing.v21.2.Core.dll</HintPath>
+      <HintPath>DevExpress\DevExpress.Printing.v21.2.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DevExpress.RichEdit.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.RichEdit.v21.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.RichEdit.v21.2.Export">
-      <HintPath>..\DevExpress\DevExpress.RichEdit.v21.2.Export.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraCharts.v21.2">
-      <HintPath>..\DevExpress\DevExpress.XtraCharts.v21.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraGauges.v21.2.Core">
-      <HintPath>..\DevExpress\DevExpress.XtraGauges.v21.2.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraPdfViewer.v21.2">
-      <HintPath>..\DevExpress\DevExpress.XtraPdfViewer.v21.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraPivotGrid.v21.2">
-      <HintPath>..\DevExpress\DevExpress.XtraPivotGrid.v21.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraPrinting.v21.2">
-      <HintPath>..\DevExpress\DevExpress.XtraPrinting.v21.2.dll</HintPath>
+    <Reference Include="DevExpress.Xpo.v21.2">
+      <HintPath>DevExpress.Xpo.v21.2, Version=21.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</HintPath>
     </Reference>
     <Reference Include="DevExpress.XtraReports.v21.2">
-      <HintPath>..\DevExpress\DevExpress.XtraReports.v21.2.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v21.2.Extensions">
-      <HintPath>..\DevExpress\DevExpress.XtraReports.v21.2.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="DevExpress.XtraRichEdit.v21.2">
-      <HintPath>..\DevExpress\DevExpress.XtraRichEdit.v21.2.dll</HintPath>
+      <HintPath>DevExpress\DevExpress.XtraReports.v21.2.dll</HintPath>
     </Reference>
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="report\report_checklist.cs">
-      <DependentUpon>report_checklist.vsrepx</DependentUpon>
-    </Compile>
-    <Compile Update="report\report_checklist.Designer.cs">
-      <DependentUpon>report_checklist.vsrepx</DependentUpon>
-    </Compile>
-    <Compile Update="report\report_close_job.cs">
-      <DependentUpon>report_close_job.repx</DependentUpon>
-    </Compile>
-    <Compile Update="report\report_close_job.Designer.cs">
-      <DependentUpon>report_close_job.repx</DependentUpon>
-    </Compile>
-    <Compile Update="report\subreport\part_rpt.cs">
-      <DependentUpon>part_rpt.repx</DependentUpon>
-    </Compile>
-    <Compile Update="report\subreport\part_rpt.Designer.cs">
-      <DependentUpon>part_rpt.repx</DependentUpon>
-    </Compile>
     <Compile Update="report\summary_job_list.cs">
       <DependentUpon>summary_job_list.repx</DependentUpon>
     </Compile>
@@ -119,6 +57,12 @@
     <Compile Update="report\summary_stock_list.Designer.cs">
       <DependentUpon>summary_stock_list.repx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="I_SEE.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

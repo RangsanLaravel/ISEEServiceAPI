@@ -27,6 +27,8 @@ namespace ISEEServiceAPI.Controllers
         private readonly ServiceAction service = null;
         private readonly IConfiguration Configuration = null;
         private readonly IWebHostEnvironment _hostingEnvironment;
+
+       
         // private readonly MailSettings mailService;
         public ISEEServicesController(IWebHostEnvironment hostingEnvironment, IConfiguration Configuration)
         {

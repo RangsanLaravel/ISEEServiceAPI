@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <assembly>
+    <name>DevExpress.Blazor.Server.WebAssembly.v21.2</name>
+  </assembly>
+  <members>
+    <member name="N:Microsoft.Extensions.DependencyInjection">
+      <summary>
+        <para>Contains classes that contain methods to register internal DevExpress services for DevExpress Blazor components.</para>
+      </summary>
+    </member>
+    <member name="T:Microsoft.Extensions.DependencyInjection.DevExpressWasmMasksApplicationBuilderExtensions">
+      <summary>
+        <para>Contains extension methods that register the DevExpress middleware for client-side masks in Blazor Server applications.</para>
+      </summary>
+    </member>
+    <member name="M:Microsoft.Extensions.DependencyInjection.DevExpressWasmMasksApplicationBuilderExtensions.UseDevExpressBlazorWasmMasksStaticFiles(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+      <summary>
+        <para>Enables serving static files for client-side masks in Blazor Server applications.</para>
+      </summary>
+      <param name="builder">An object that defines the mechanisms to configure an application’s request pipeline.</param>
+      <returns>An object that defines the mechanisms to configure an application’s request pipeline.</returns>
+    </member>
+    <member name="T:Microsoft.Extensions.DependencyInjection.DevExpressWasmMasksServiceCollectionExtensions">
+      <summary>
+        <para>Contains extension methods to configure <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> for client-side masks in Blazor Server applications.</para>
+      </summary>
+    </member>
+    <member name="M:Microsoft.Extensions.DependencyInjection.DevExpressWasmMasksServiceCollectionExtensions.AddDevExpressBlazorWasmMasks(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+      <summary>
+        <para>Adds internal DevExpress Blazor services to <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> and sets up client-side masks in Blazor Server applications.</para>
+      </summary>
+      <param name="services">A <see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/> object that specifies the service collection.</param>
+    </member>
+  </members>
+</doc>

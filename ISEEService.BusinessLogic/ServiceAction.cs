@@ -1,9 +1,9 @@
 ﻿using CryptoHelper;
-using ISEEService.BusinessLogic.report;
+//using ISEEService.BusinessLogic.report;
 using ISEEService.DataAccess;
 using ISEEService.DataContract;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
+//using iTextSharp.text;
+//using iTextSharp.text.pdf;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 using ISEEService.BusinessLogic.Extensions;
 using ITUtility;
 using MimeKit;
+using iTextSharp.text.pdf;
+using iTextSharp.text;
+using ISEEService.BusinessLogic.report;
 
 namespace ISEEService.BusinessLogic
 {
@@ -1394,6 +1397,7 @@ namespace ISEEService.BusinessLogic
             DataFile file = new DataFile();
             try
             {
+          
                 report.summary_job_list rpt = new report.summary_job_list(condition);
                 if (condition.report_type.ToUpper() == "PDF")
                 {
@@ -1409,8 +1413,8 @@ namespace ISEEService.BusinessLogic
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToXlsAsync(stream);
                     file.FileData = stream.ToArray();
-                    file.FileName = "summaryJob.xlsx";
-                    file.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    file.FileName = "summaryJob.xls";
+                    file.ContentType = "application/vnd.ms-excel";
 
                 }
             }
@@ -1493,7 +1497,7 @@ namespace ISEEService.BusinessLogic
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToPdfAsync(stream);
                     file.FileData = stream.ToArray();
-                    file.FileName = "summaryJob.pdf";
+                    file.FileName = "summaryStock.pdf";
                     file.ContentType = "application/pdf";
 
                 }
@@ -1502,8 +1506,8 @@ namespace ISEEService.BusinessLogic
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToXlsxAsync(stream);
                     file.FileData = stream.ToArray();
-                    file.FileName = "summaryJob.xlsx";
-                    file.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                    file.FileName = "summaryStock.xls";
+                    file.ContentType = "	application/vnd.ms-excel";
 
                 }
             }

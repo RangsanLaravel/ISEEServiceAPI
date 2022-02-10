@@ -2660,46 +2660,54 @@ WHERE JH.CLOSE_DATE IS NOT NULL"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 CommandText = @"
-SELECT  [part_id]
-      ,[part_no]
+SELECT  sp.[part_id]
+      ,sp.[part_no]
       ,[part_name]
       ,[part_desc]
       ,[part_type]
       ,[cost_price]    
-      ,[create_date] 
+      ,sp.[create_date] 
 	  ,[sale_price]
-      ,[unit_code]
+      ,sp.[unit_code]
+	  , unit_name
       ,[part_value]
       ,[minimum_value]
       ,[maximum_value]
-      ,[location_id]
-      ,[create_by]
+      ,sp.[location_id]
+	  ,lo.location_name
+      ,sp.[create_by]
       ,[cancal_date]
-      ,[cancel_by]
-      ,[cancel_reason]
-      ,[update_date]
-      ,[update_by]
-  FROM [ISEE].[dbo].[tbm_sparepart] "
+      ,sp.[cancel_by]
+      ,sp.[cancel_reason]
+      ,sp.[update_date]
+      ,sp.[update_by]
+	  ,adj.adj_part_value
+  FROM [ISEE].[dbo].[tbm_sparepart] sp
+left join [ISEE].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
+left join [ISEE].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
+left JOIN [ISEE].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
+
+"
             };
             if (partcrtfrom is not null)
             {
-                sql.CommandText += $"{sql.CommandText} AND create_date between @createfrm and @createto ";
+                sql.CommandText += $"{sql.CommandText} AND sp.create_date between @createfrm and @createto ";
                 sql.Parameters.AddWithValue("@createfrm", partcrtfrom);
                 sql.Parameters.AddWithValue("@createto", partcrtto);
             }
             if (!string.IsNullOrEmpty(condition.Partno))
             {
-                sql.CommandText += $"{sql.CommandText} AND part_no=@part_no ";
+                sql.CommandText += $"{sql.CommandText} AND sp.part_no=@part_no ";
                 sql.Parameters.AddWithValue("@part_no", condition.Partno);
             }
             if (!string.IsNullOrEmpty(condition.locationid))
             {
-                sql.CommandText += $"{sql.CommandText} AND location_id=@location_id ";
+                sql.CommandText += $"{sql.CommandText} AND sp.location_id=@location_id ";
                 sql.Parameters.AddWithValue("@location_id", condition.locationid);
             }
             if (!string.IsNullOrEmpty(condition.locationid))
             {
-                sql.CommandText += $"{sql.CommandText} AND part_id=@part_id ";
+                sql.CommandText += $"{sql.CommandText} AND sp.part_id=@part_id ";
                 sql.Parameters.AddWithValue("@part_id", condition.PartId);
             }
             using (DataTable dt = await Utility.FillDataTableAsync(sql))

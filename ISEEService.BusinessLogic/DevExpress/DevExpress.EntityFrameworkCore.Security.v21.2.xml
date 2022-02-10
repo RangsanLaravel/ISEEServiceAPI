@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <assembly>
+    <name>DevExpress.EntityFrameworkCore.Security.v21.2</name>
+  </assembly>
+  <members>
+    <member name="N:DevExpress.EntityFrameworkCore.Security">
+      <summary>
+        <para>Contains classes of the Security System Module for EF Core-based applications.</para>
+      </summary>
+    </member>
+    <member name="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace">
+      <summary>
+        <para>An Object Space for EF Core-based applications that use the Security System.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace.#ctor(DevExpress.ExpressApp.DC.ITypesInfo,DevExpress.ExpressApp.DC.IEntityStore,System.Func{Microsoft.EntityFrameworkCore.DbContext})">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace"/> class with specified settings.</para>
+      </summary>
+      <param name="typesInfo">An <see cref="T:DevExpress.ExpressApp.DC.ITypesInfo"/> object that provides access to XAF-related information on business classes.</param>
+      <param name="entityStore">An IEntityStore object.</param>
+      <param name="createDbContext">A method that returns <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace.#ctor(DevExpress.ExpressApp.DC.ITypesInfo,DevExpress.ExpressApp.DC.IEntityStore,System.Func{Microsoft.EntityFrameworkCore.DbContext},DevExpress.ExpressApp.Security.ISecurityStrategyBase)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace"/> class with specified settings.</para>
+      </summary>
+      <param name="typesInfo">An <see cref="T:DevExpress.ExpressApp.DC.ITypesInfo"/> object that provides access to XAF-related information on business classes.</param>
+      <param name="entityStore">An IEntityStore object.</param>
+      <param name="createDbContext">A method that returns <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/>.</param>
+      <param name="security">The ISecurityStrategyBase object that is the Security Strategy used in the application.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace.GetEvaluatorContextDescriptor(System.Type)">
+      <summary>
+        <para>For internal use.</para>
+      </summary>
+      <param name="type"></param>
+      <returns></returns>
+    </member>
+    <member name="P:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace.SessionObject">
+      <summary>
+        <para>For internal use.</para>
+      </summary>
+      <value></value>
+    </member>
+    <member name="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider">
+      <summary>
+        <para>Provides an Object Space in EF Core-based applications that use the Security System.</para>
+      </summary>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,Microsoft.EntityFrameworkCore.IDbContextFactory{Microsoft.EntityFrameworkCore.DbContext})">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider"></param>
+      <param name="dbContextFactory"></param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,Microsoft.EntityFrameworkCore.IDbContextFactory{Microsoft.EntityFrameworkCore.DbContext},DevExpress.ExpressApp.DC.ITypesInfo)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider"></param>
+      <param name="dbContextFactory"></param>
+      <param name="typesInfo"></param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,System.Type,DevExpress.ExpressApp.DC.ITypesInfo,DevExpress.ExpressApp.EFCore.EFCoreTypeInfoSource,System.String,DevExpress.ExpressApp.EFCore.EFCoreDatabaseProviderHandler)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider">An object that implements the ISelectDataSecurityProvider interface (for example, a <see cref="T:DevExpress.ExpressApp.Security.SecurityStrategyComplex"/> instance).</param>
+      <param name="contextType">A type of a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> descendant your application uses.</param>
+      <param name="typesInfo">An <see cref="T:DevExpress.ExpressApp.DC.ITypesInfo"/> object that provides access to XAF-related information on business classes.</param>
+      <param name="typeInfoSource">A source of EF Core-related information on business classes.</param>
+      <param name="connectionString">An application’s connection string.</param>
+      <param name="databaseProviderHandler">A delegate with <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder"/> and string parameters where you can specify the database provider your application uses.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,System.Type,DevExpress.ExpressApp.DC.ITypesInfo,System.String,DevExpress.ExpressApp.EFCore.EFCoreDatabaseProviderHandler)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider">An object that implements the ISelectDataSecurityProvider interface (for example, a <see cref="T:DevExpress.ExpressApp.Security.SecurityStrategyComplex"/> instance).</param>
+      <param name="contextType">A type of a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> descendant your application uses.</param>
+      <param name="typesInfo">An <see cref="T:DevExpress.ExpressApp.DC.ITypesInfo"/> object that provides access to XAF-related information on business classes.</param>
+      <param name="connectionString">An application’s connection string.</param>
+      <param name="databaseProviderHandler">A delegate with <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder"/> and string parameters where you can specify the database provider your application uses.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,System.Type,DevExpress.ExpressApp.EFCore.EFCoreDatabaseProviderHandler)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider">An object that implements the ISelectDataSecurityProvider interface (for example, a <see cref="T:DevExpress.ExpressApp.Security.SecurityStrategyComplex"/> instance).</param>
+      <param name="contextType">A type of a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> descendant your application uses.</param>
+      <param name="databaseProviderHandler">A delegate with <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder"/> and string parameters where you can specify the database provider your application uses.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,System.Type,Microsoft.Extensions.DependencyInjection.ServiceCollection,DevExpress.ExpressApp.DC.ITypesInfo,System.String,DevExpress.ExpressApp.EFCore.EFCoreDatabaseProviderHandler)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider">An object that implements the ISelectDataSecurityProvider interface (for example, a <see cref="T:DevExpress.ExpressApp.Security.SecurityStrategyComplex"/> instance).</param>
+      <param name="contextType">A type of a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> descendant your application uses.</param>
+      <param name="services">A collection of services registered in your application (see Dependency injection).</param>
+      <param name="typesInfo">An <see cref="T:DevExpress.ExpressApp.DC.ITypesInfo"/> object that provides access to XAF-related information on business classes.</param>
+      <param name="connectionString">An application’s connection string.</param>
+      <param name="databaseProviderHandler">A delegate with <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder"/> and string parameters where you can specify the database provider your application uses.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,System.Type,Microsoft.Extensions.DependencyInjection.ServiceCollection,Microsoft.EntityFrameworkCore.DbContextOptions,DevExpress.ExpressApp.DC.ITypesInfo,System.String)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider">An object that implements the ISelectDataSecurityProvider interface (for example, a <see cref="T:DevExpress.ExpressApp.Security.SecurityStrategyComplex"/> instance).</param>
+      <param name="contextType">A type of a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> descendant your application uses.</param>
+      <param name="services">A collection of services registered in your application (see Dependency injection).</param>
+      <param name="dbContextOptions">An object that allows you to configure <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> your application uses.</param>
+      <param name="typesInfo">An <see cref="T:DevExpress.ExpressApp.DC.ITypesInfo"/> object that provides access to XAF-related information on business classes.</param>
+      <param name="connectionString">An application’s connection string.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.#ctor(DevExpress.ExpressApp.Security.ISelectDataSecurityProvider,System.Type,System.String,DevExpress.ExpressApp.EFCore.EFCoreDatabaseProviderHandler)">
+      <summary>
+        <para>Initializes a new instance of the <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider"/> class with specified settings.</para>
+      </summary>
+      <param name="selectDataSecurityProvider">An object that implements the ISelectDataSecurityProvider interface (for example, a <see cref="T:DevExpress.ExpressApp.Security.SecurityStrategyComplex"/> instance).</param>
+      <param name="contextType">A type of a <see cref="T:Microsoft.EntityFrameworkCore.DbContext"/> descendant your application uses.</param>
+      <param name="connectionString">An application’s connection string.</param>
+      <param name="databaseProviderHandler">A delegate with <see cref="T:Microsoft.EntityFrameworkCore.DbContextOptionsBuilder"/> and string parameters where you can specify the database provider your application uses.</param>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.CreateNonsecuredObjectSpace">
+      <summary>
+        <para>Creates a <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace"/> instance that an application uses when a user tries to log on.</para>
+      </summary>
+      <returns>A <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace"/> instance that an application uses when a user tries to log on.</returns>
+    </member>
+    <member name="M:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpaceProvider.CreateObjectSpace">
+      <summary>
+        <para>Creates a new <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace"/> instance.</para>
+      </summary>
+      <returns>A new <see cref="T:DevExpress.EntityFrameworkCore.Security.SecuredEFCoreObjectSpace"/> instance.</returns>
+    </member>
+  </members>
+</doc>
