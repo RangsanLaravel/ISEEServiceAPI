@@ -2,12 +2,19 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 RUN apt-get update
-RUN apt-get install -y libgdiplus libc6-dev
+RUN apt-get install -y libgdiplus libc6-dev libharfbuzz-dev
+#Add these two lines
+#RUN sed -i'.bak' 's/$/ contrib/' /etc/apt/sources.list
+#RUN apt-get update; apt-get install -y ttf-mscorefonts-installer fontconfig
+#RUN apt-get update; apt-get install -y fontconfig fonts-liberation
+#RUN fc-cache -f -v
+
 WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+
 COPY ["ISEEServiceAPI/ISEEServiceAPI.csproj", "ISEEServiceAPI/"]
 COPY ["ISEEService.DataContract/ISEEService.DataContract.csproj", "ISEEService.DataContract/"]
 COPY ["ITUtility/ITUtility.csproj", "ITUtility/"]
