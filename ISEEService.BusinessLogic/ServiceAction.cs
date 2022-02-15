@@ -973,11 +973,11 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
-                if (data is not null && string.IsNullOrWhiteSpace(data.part_id) && data.location_id == "001")
+                if (data is not null && string.IsNullOrWhiteSpace(data.part_id) && data.location_id == "L01")
                 {
                     await repository.INSERT_TBM_SPAREPARTAsync(data);//สร้างใหม่
                 }
-                else if (data.location_id != "001" && !string.IsNullOrWhiteSpace(data.part_id))
+                else if (data.location_id != "L01" && !string.IsNullOrWhiteSpace(data.part_id))
                 {
                     var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id });
                     if (spart is not null)
@@ -1380,7 +1380,8 @@ namespace ISEEService.BusinessLogic
                     condition.summary_job_list = new List<DataContract.summary_job_list>();
                     condition.summary_job_list = dataObjects;
                 }
-
+                var emp = await repository.GET_TBM_EMPLOYEEAsync(new tbm_employee { user_id = condition .user_print});
+                condition.user_print = $"{emp.FirstOrDefault().fullname}   {emp.FirstOrDefault().lastname}";
             }
             catch (Exception ex)
             {

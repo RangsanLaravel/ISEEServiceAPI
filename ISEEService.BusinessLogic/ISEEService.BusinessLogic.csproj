@@ -5,11 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="report\report_checklist.vsrepx" />
+    <None Remove="report\report_close_job.repx" />
+    <None Remove="report\subreport\part_rpt.repx" />
     <None Remove="report\summary_job_list.repx" />
     <None Remove="report\summary_stock_list.repx" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="report\report_checklist.vsrepx" />
+    <EmbeddedResource Include="report\report_close_job.repx" />
+    <EmbeddedResource Include="report\subreport\part_rpt.repx" />
     <EmbeddedResource Include="report\summary_job_list.repx" />
     <EmbeddedResource Include="report\summary_stock_list.repx" />
   </ItemGroup>
@@ -45,6 +51,24 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="report\report_checklist.cs">
+      <DependentUpon>report_checklist.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_checklist.Designer.cs">
+      <DependentUpon>report_checklist.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_close_job.cs">
+      <DependentUpon>report_close_job.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_close_job.Designer.cs">
+      <DependentUpon>report_close_job.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\subreport\part_rpt.cs">
+      <DependentUpon>part_rpt.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\subreport\part_rpt.Designer.cs">
+      <DependentUpon>part_rpt.repx</DependentUpon>
+    </Compile>
     <Compile Update="report\summary_job_list.cs">
       <DependentUpon>summary_job_list.repx</DependentUpon>
     </Compile>

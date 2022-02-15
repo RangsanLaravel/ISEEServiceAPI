@@ -1,39 +1,47 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<XtraReportsLayoutSerializer SerializerVersion="18.2.14.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v18.2, Version=18.2.14.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="_part_rpt" Margins="0, 20, 0, 0" PageWidth="850" PageHeight="1100" Version="18.2" DataSource="#Ref-0">
+<XtraReportsLayoutSerializer SerializerVersion="21.2.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v21.2, Version=21.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="_part_rpt" Margins="0, 20, 0, 0" PageWidth="850" PageHeight="1100" Version="21.2" DataSource="#Ref-0" Font="Arial, 9.75pt">
+  <Extensions>
+    <Item1 Ref="2" Key="VSReportExtInfo" Value=".repx" />
+  </Extensions>
   <Bands>
-    <Item1 Ref="2" ControlType="TopMarginBand" Name="topMarginBand1" HeightF="0" />
-    <Item2 Ref="3" ControlType="DetailBand" Name="detailBand1" HeightF="25">
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="topMarginBand1" HeightF="0" />
+    <Item2 Ref="4" ControlType="DetailBand" Name="detailBand1" HeightF="25">
       <Controls>
-        <Item1 Ref="4" ControlType="XRTable" Name="table1" TextAlignment="MiddleCenter" SizeF="830,25" LocationFloat="0, 0" Font="TH Sarabun New, 16pt, style=Bold" Padding="2,2,0,0,96" Borders="All">
+        <Item1 Ref="5" ControlType="XRTable" Name="table1" TextAlignment="MiddleCenter" SizeF="830,25" LocationFloat="0,0" Font="TH Sarabun New, 16pt, style=Bold" Padding="2,2,0,0,96" Borders="All">
           <Rows>
-            <Item1 Ref="5" ControlType="XRTableRow" Name="tableRow1" Weight="1">
+            <Item1 Ref="6" ControlType="XRTableRow" Name="tableRow1" Weight="1">
               <Cells>
-                <Item1 Ref="6" ControlType="XRTableCell" Name="tableCell1" Weight="0.73059913994175962" Multiline="true" Text="PART NUMBER">
+                <Item1 Ref="7" ControlType="XRTableCell" Name="tableCell1" Weight="0.73059913994175962" Multiline="true" Text="PART NUMBER" Font="Arial, 9pt">
                   <ExpressionBindings>
-                    <Item1 Ref="7" Expression="[part_no]" PropertyName="Text" EventName="BeforePrint" />
+                    <Item1 Ref="8" EventName="BeforePrint" PropertyName="Text" Expression="[part_no]" />
                   </ExpressionBindings>
+                  <StylePriority Ref="9" UseFont="false" />
                 </Item1>
-                <Item2 Ref="8" ControlType="XRTableCell" Name="tableCell2" Weight="1.2694008600582403" Multiline="true" Text="DESCRIPTION">
+                <Item2 Ref="10" ControlType="XRTableCell" Name="tableCell2" Weight="1.2694008600582403" Multiline="true" Text="DESCRIPTION" Font="Arial, 9pt">
                   <ExpressionBindings>
-                    <Item1 Ref="9" Expression="[part_desc]" PropertyName="Text" EventName="BeforePrint" />
+                    <Item1 Ref="11" EventName="BeforePrint" PropertyName="Text" Expression="[part_desc]" />
                   </ExpressionBindings>
+                  <StylePriority Ref="12" UseFont="false" />
                 </Item2>
-                <Item3 Ref="10" ControlType="XRTableCell" Name="tableCell3" Weight="1" Multiline="true" Text="QTY">
+                <Item3 Ref="13" ControlType="XRTableCell" Name="tableCell3" Weight="1" Multiline="true" Text="QTY" Font="Arial, 9pt">
                   <ExpressionBindings>
-                    <Item1 Ref="11" Expression="[total]" PropertyName="Text" EventName="BeforePrint" />
+                    <Item1 Ref="14" EventName="BeforePrint" PropertyName="Text" Expression="[total]" />
                   </ExpressionBindings>
+                  <StylePriority Ref="15" UseFont="false" />
                 </Item3>
-                <Item4 Ref="12" ControlType="XRTableCell" Name="tableCell4" Weight="1.0048250904704463" Multiline="true" Text="LOCATION" />
+                <Item4 Ref="16" ControlType="XRTableCell" Name="tableCell4" Weight="1.0048250904704463" Multiline="true" Text="LOCATION" Font="Arial, 9pt">
+                  <StylePriority Ref="17" UseFont="false" />
+                </Item4>
               </Cells>
             </Item1>
           </Rows>
-          <StylePriority Ref="13" UseFont="false" UseBorders="false" UseTextAlignment="false" />
+          <StylePriority Ref="18" UseFont="false" UseBorders="false" UseTextAlignment="false" />
         </Item1>
       </Controls>
     </Item2>
-    <Item3 Ref="14" ControlType="BottomMarginBand" Name="bottomMarginBand1" HeightF="0" />
+    <Item3 Ref="19" ControlType="BottomMarginBand" Name="bottomMarginBand1" HeightF="0" />
   </Bands>
   <ComponentStorage>
-    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v18.2" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiPjxEYXRhU291cmNlIFR5cGU9IklTRUVTZXJ2aWNlLkRhdGFDb250cmFjdC50YnRfam9iX3BhcnQsIElTRUVTZXJ2aWNlLkRhdGFDb250cmFjdCwgVmVyc2lvbj0xLjAuMC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPW51bGwiIC8+PC9PYmplY3REYXRhU291cmNlPg==" />
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v21.2" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiIC8+" />
   </ComponentStorage>
 </XtraReportsLayoutSerializer>

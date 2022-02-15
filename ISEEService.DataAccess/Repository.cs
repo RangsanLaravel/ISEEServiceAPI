@@ -1087,7 +1087,7 @@ SELECT
                 command.CommandText += " AND part.location_id =@location_id";
                 command.Parameters.AddWithValue("@location_id", data.location_id);
             }
-
+           
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -2032,7 +2032,8 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                                     action= @action,
                                     result =@result,
                                     transfer_to =@transfer_to,
-                                     {(data.flg_close == "N" ? "" : "fix_date =GETDATE(),")}
+                                    fix_date =GETDATE(),
+                                     {(data.flg_close == "N" ? "" : "Close_DATE =GETDATE(),")}
                                     invoice_no=@invoice_no,
                                     update_date=GETDATE(),
                                     update_by=@update_by
@@ -2070,6 +2071,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
 
         }
 
+        
         public async ValueTask UPDATE_TBM_CUSTOMERAsync(tbm_customer data)
         {
             SqlCommand sql = new SqlCommand
@@ -2586,8 +2588,7 @@ ORDER BY seq DESC
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"
-SELECT JH.job_id
+                CommandText = @"SELECT JH.job_id
 	  ,JH.[create_date]
       ,JH.[license_no]
 	  ,JH.[create_by]
@@ -2600,45 +2601,46 @@ SELECT JH.job_id
 	  ,Jt.jobdescription
 	  ,COALESCE(JH.transfer_to,JH.[owner_id]) AS owner_id
 	  ,JH.type_job
-      ,img.seq
+      , (select top 1 seq from [ISEE].[dbo].[tbt_job_image] where status =1 and image_type ='rpt'
+	  )seq
   FROM [ISEE].[dbo].[tbt_job_header] JH
   INNER JOIN [ISEE].[dbo].[tbm_employee] emp ON emp.user_id = COALESCE(JH.transfer_to,JH.[owner_id])
   INNER JOIN [ISEE].[dbo].[tbm_customer] cus ON CUS.customer_id =JH.customer_id
   INNER JOIN [ISEE].[dbo].[tbm_jobtype] Jt ON JT.jobcode =jh.type_job 
-  INNER JOIN [ISEE].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id AND img.image_type='rpt'
-WHERE JH.CLOSE_DATE IS NOT NULL"
+ -- INNER JOIN [ISEE].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id 
+WHERE 1=1 "
             };
             if (jobfrom is not null)
             {
-                sql.CommandText += $"{sql.CommandText} AND JH.create_date between @createfrm and @createto ";
+                sql.CommandText = $"{sql.CommandText} AND JH.create_date between @createfrm and @createto ";
                 sql.Parameters.AddWithValue("@createfrm", jobfrom);
                 sql.Parameters.AddWithValue("@createto", jobto);
             }
             if (fixfrom is not null)
             {
-                sql.CommandText += $"{sql.CommandText} AND JH.fix_date between @fix_datefrm and @fix_dateto ";
+                sql.CommandText = $"{sql.CommandText} AND JH.fix_date between @fix_datefrm and @fix_dateto ";
                 sql.Parameters.AddWithValue("@fix_datefrm", fixfrom);
                 sql.Parameters.AddWithValue("@fix_dateto", fixto);
             }
             if (closefrom is not null)
             {
-                sql.CommandText += $"{sql.CommandText} AND JH.close_date between @closefrom and @closeto ";
+                sql.CommandText = $"{sql.CommandText} AND JH.close_date between @closefrom and @closeto ";
                 sql.Parameters.AddWithValue("@closefrom", closefrom);
                 sql.Parameters.AddWithValue("@closeto", closeto);
             }
             if (!string.IsNullOrEmpty(condition.license_no))
             {
-                sql.CommandText += $"{sql.CommandText} AND JH.license_no =@license_no ";
+                sql.CommandText = $"{sql.CommandText} AND JH.license_no =@license_no ";
                 sql.Parameters.AddWithValue("@license_no", condition.license_no);
             }
             if (!string.IsNullOrEmpty(condition.type_job))
             {
-                sql.CommandText += $"{sql.CommandText} AND JH.type_job =@type_job ";
+                sql.CommandText = $"{sql.CommandText} AND JH.type_job =@type_job ";
                 sql.Parameters.AddWithValue("@type_job", condition.type_job.ToUpper());
             }
             if (!string.IsNullOrEmpty(condition.Teachnicial))
             {
-                sql.CommandText += $"{sql.CommandText} AND COALESCE(JH.transfer_to,JH.[owner_id]) =@Teachnicial ";
+                sql.CommandText = $"{sql.CommandText} AND COALESCE(JH.transfer_to,JH.[owner_id]) =@Teachnicial ";
                 sql.Parameters.AddWithValue("@Teachnicial", condition.Teachnicial);
             }
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
@@ -2691,23 +2693,23 @@ left JOIN [ISEE].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
             };
             if (partcrtfrom is not null)
             {
-                sql.CommandText += $"{sql.CommandText} AND sp.create_date between @createfrm and @createto ";
+                sql.CommandText = $"{sql.CommandText} AND sp.create_date between @createfrm and @createto ";
                 sql.Parameters.AddWithValue("@createfrm", partcrtfrom);
                 sql.Parameters.AddWithValue("@createto", partcrtto);
             }
             if (!string.IsNullOrEmpty(condition.Partno))
             {
-                sql.CommandText += $"{sql.CommandText} AND sp.part_no=@part_no ";
+                sql.CommandText = $"{sql.CommandText} AND sp.part_no=@part_no ";
                 sql.Parameters.AddWithValue("@part_no", condition.Partno);
             }
             if (!string.IsNullOrEmpty(condition.locationid))
             {
-                sql.CommandText += $"{sql.CommandText} AND sp.location_id=@location_id ";
+                sql.CommandText = $"{sql.CommandText} AND sp.location_id=@location_id ";
                 sql.Parameters.AddWithValue("@location_id", condition.locationid);
             }
             if (!string.IsNullOrEmpty(condition.locationid))
             {
-                sql.CommandText += $"{sql.CommandText} AND sp.part_id=@part_id ";
+                sql.CommandText = $"{sql.CommandText} AND sp.part_id=@part_id ";
                 sql.Parameters.AddWithValue("@part_id", condition.PartId);
             }
             using (DataTable dt = await Utility.FillDataTableAsync(sql))

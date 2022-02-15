@@ -16,6 +16,12 @@ namespace ISEEService.BusinessLogic.report
             this.objectDataSource1.DataSource = data;
         }
 
+        public Image ByteArrayToImage(byte[] byteArrayIn)
+        {
+            MemoryStream ms = new MemoryStream(byteArrayIn);
+            Image returnImage = Image.FromStream(ms);
+            return returnImage;
+        }
 
         private void report_close_job_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
         {
@@ -28,15 +34,7 @@ namespace ISEEService.BusinessLogic.report
                 pictureBox2.Image = img;
             }
             if (data.job_parts is not null)
-                tableCell7.Text = data.job_parts.Sum(a => Convert.ToInt32(a.total)).ToString();
-
-
-        }
-        public Image ByteArrayToImage(byte[] byteArrayIn)
-        {
-            MemoryStream ms = new MemoryStream(byteArrayIn);
-            Image returnImage = Image.FromStream(ms);
-            return returnImage;
+                tableCell7.Text = data.job_parts.Sum(a => Convert.ToDecimal(a.total)).ToString();
         }
     }
 }
