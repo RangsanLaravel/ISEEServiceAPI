@@ -16,5 +16,6 @@ namespace ISEEService.DataContract
         public string idcard { get; set; }
         public string position { get; set; }        
         public string position_description { get; set; }
+        public string showstock { get; set; }
     }
 }

@@ -310,7 +310,8 @@ namespace ISEEServiceAPI.Controllers
             List<tbm_sparepart> dataObjects = null;
             try
             {
-                dataObjects = await this.service.GET_TBM_SPAREPARTAsync(condition);
+               var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                dataObjects = await this.service.GET_TBM_SPAREPARTAsync(condition,user_id);
                 return Ok(dataObjects);
             }
             catch (Exception ex)

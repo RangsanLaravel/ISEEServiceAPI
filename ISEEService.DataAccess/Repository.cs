@@ -684,9 +684,10 @@ SELECT [ijob_id]
 	  ,emp.position_description
       ,em.[status]
       ,[create_date]
-      ,[create_by]
+      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = em.create_by) as [create_by]
       ,[update_date]
       ,[update_by]
+      ,showstock
   FROM [ISEE].[dbo].[tbm_employee] em
   INNER JOIN [ISEE].[dbo].[tbm_employee_position] emp on em.position =emp.position_code
   WHERE em.status =1
@@ -991,6 +992,62 @@ WHERE cu.status =1 "
                 }
             }
             return service_no;
+        }
+
+        public async ValueTask<tbm_location_store> GET_LocalAsync(string userid)
+        {
+            tbm_location_store dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"SELECT *
+                            FROM [ISEE].[dbo].[tbm_location_store]
+                            where status =1
+                            AND owner_id =@userid"
+            };
+
+            if (!string.IsNullOrWhiteSpace(userid))
+            {
+                command.Parameters.AddWithValue("@userid", userid);
+            }
+
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_location_store>().FirstOrDefault();
+                }
+            }
+            return dataObjects;
+        }
+        public async ValueTask<tbm_employee> GET_EM_PERMISSIONAsync(string userid)
+        {
+            tbm_employee dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = @"select * from tbm_employee
+                                em 
+                                INNER JOIN tbm_employee_position ps on ps.position_code =em.position
+                                where em.user_id =@userid
+                                AND em.status =1"
+            };
+            
+            if (!string.IsNullOrWhiteSpace(userid)) 
+            {              
+                command.Parameters.AddWithValue("@userid", userid);
+            }
+
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_employee>().FirstOrDefault();
+                }
+            }
+            return dataObjects;
         }
         public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data)
         {
@@ -2707,7 +2764,7 @@ left JOIN [ISEE].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
                 sql.CommandText = $"{sql.CommandText} AND sp.location_id=@location_id ";
                 sql.Parameters.AddWithValue("@location_id", condition.locationid);
             }
-            if (!string.IsNullOrEmpty(condition.locationid))
+            if (!string.IsNullOrEmpty(condition.PartId))
             {
                 sql.CommandText = $"{sql.CommandText} AND sp.part_id=@part_id ";
                 sql.Parameters.AddWithValue("@part_id", condition.PartId);

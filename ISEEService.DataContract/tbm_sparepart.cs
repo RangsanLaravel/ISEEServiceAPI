@@ -32,5 +32,6 @@ namespace ISEEService.DataContract
         public string update_date { get; set; }
         public string update_by { get; set; }
         public string status { get; set; }
+        public string page { get; set; }
     }
 }

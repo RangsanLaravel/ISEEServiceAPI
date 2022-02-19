@@ -372,14 +372,52 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
-        public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data)
+        public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data, string userid)
         {
             List<tbm_sparepart> dataObjects = null;
+            tbm_employee emp = null;
             Repository repository = new Repository(_connectionstring);
             await repository.OpenConnectionAsync();
             try
             {
-                dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                emp = await repository.GET_EM_PERMISSIONAsync(userid);
+                if (data.page == "STOCK")
+                {
+                    if (emp is not null)
+                    {
+                        if (emp.position == "MN" || emp.position == "OS")
+                        {
+                            if (emp.showstock == "1")
+                            {
+                                dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                            }
+                            else
+                            {
+                                var store = await repository.GET_LocalAsync(userid);
+                                data.location_id = store.location_id;
+                                dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                            }
+                        }
+                        else
+                        {
+                            dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                        }
+                    }
+                }
+                else if (data.page == "JOB")
+                {
+                    if (emp.position == "MN" || emp.position == "OS")
+                    {
+                        var store = await repository.GET_LocalAsync(userid);
+                        data.location_id = store.location_id;
+                        dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                    }
+                    else
+                    {
+                        dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -979,7 +1017,7 @@ namespace ISEEService.BusinessLogic
                 }
                 else if (data.location_id != "L01" && !string.IsNullOrWhiteSpace(data.part_id))
                 {
-                    var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id });
+                    var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id }, data.create_by);
                     if (spart is not null)
                     {
                         if (spart.FirstOrDefault().location_id != data.location_id)
@@ -1052,7 +1090,7 @@ namespace ISEEService.BusinessLogic
             {
                 var seq = await GET_SEQ_IMAGEAsync(job_id);
                 seq = seq + 1;
-                data.seq = seq.ToString();            
+                data.seq = seq.ToString();
                 await repository.INSERT_TBT_JOB_IMAGE(data, userid);
 
                 await repository.CommitTransection();
@@ -1380,7 +1418,7 @@ namespace ISEEService.BusinessLogic
                     condition.summary_job_list = new List<DataContract.summary_job_list>();
                     condition.summary_job_list = dataObjects;
                 }
-                var emp = await repository.GET_TBM_EMPLOYEEAsync(new tbm_employee { user_id = condition .user_print});
+                var emp = await repository.GET_TBM_EMPLOYEEAsync(new tbm_employee { user_id = condition.user_print });
                 condition.user_print = $"{emp.FirstOrDefault().fullname}   {emp.FirstOrDefault().lastname}";
             }
             catch (Exception ex)
@@ -1398,7 +1436,7 @@ namespace ISEEService.BusinessLogic
             DataFile file = new DataFile();
             try
             {
-          
+
                 report.summary_job_list rpt = new report.summary_job_list(condition);
                 if (condition.report_type.ToUpper() == "PDF")
                 {
