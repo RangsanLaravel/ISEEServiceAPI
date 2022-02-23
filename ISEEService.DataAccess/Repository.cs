@@ -1002,7 +1002,7 @@ WHERE cu.status =1 "
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 CommandText = @"SELECT *
-                            FROM [ISEE].[dbo].[tbm_location_store]
+                            FROM [ISEE].[dbo].[tbm_employee]
                             where status =1
                             AND owner_id =@userid"
             };
@@ -1430,7 +1430,8 @@ AND menu.status =1
            ,create_date
            ,create_by
            ,update_date
-           ,update_by)
+           ,update_by
+           ,location_id)
      VALUES
            (@user_name
            ,@password
@@ -1442,7 +1443,8 @@ AND menu.status =1
            ,GETDATE()
            ,@create_by
            ,null
-           ,null)"
+           ,null
+            @location_id)"
             };
 
             sql.Parameters.AddWithValue("@user_name", data.user_name);
@@ -1452,6 +1454,7 @@ AND menu.status =1
             sql.Parameters.AddWithValue("@idcard", data.idcard);
             sql.Parameters.AddWithValue("@position", data.position);
             sql.Parameters.AddWithValue("@create_by", data.create_by);
+            sql.Parameters.AddWithValue("@location_id", data.locationstore);
 
             await sql.ExecuteNonQueryAsync();
         }
@@ -2182,6 +2185,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
            ,position=@position
            ,update_date =GETDATE()
            ,update_by =@create_by
+           , location_id=@location_id
                 where user_id =@user_id"
             };
 
@@ -2192,6 +2196,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
             sql.Parameters.AddWithValue("@position", data.position);
             sql.Parameters.AddWithValue("@create_by", data.create_by);
             sql.Parameters.AddWithValue("@user_id", data.user_id);
+            sql.Parameters.AddWithValue("@location_id", data.locationstore);
 
             await sql.ExecuteNonQueryAsync();
         }

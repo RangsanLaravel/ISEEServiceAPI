@@ -17,5 +17,7 @@ namespace ISEEService.DataContract
         public string position { get; set; }        
         public string position_description { get; set; }
         public string showstock { get; set; }
+        public string locationstore { get; set; }
+
     }
 }

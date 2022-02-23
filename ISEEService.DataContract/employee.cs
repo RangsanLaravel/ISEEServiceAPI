@@ -18,5 +18,6 @@ namespace ISEEService.DataContract
         public string idcard { get; set; }
         public string position { get; set; }
         public string create_by { get; set; }
+        public string locationstore { get; set; }
     }
 }

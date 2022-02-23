@@ -393,8 +393,8 @@ namespace ISEEService.BusinessLogic
                             }
                             else
                             {
-                                var store = await repository.GET_LocalAsync(userid);
-                                data.location_id = store.location_id;
+                                //var store = await repository.GET_LocalAsync(userid);
+                                data.location_id = emp.locationstore;
                                 dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                             }
                         }
@@ -408,8 +408,8 @@ namespace ISEEService.BusinessLogic
                 {
                     if (emp.position == "MN" || emp.position == "OS")
                     {
-                        var store = await repository.GET_LocalAsync(userid);
-                        data.location_id = store.location_id;
+                        //var store = await repository.GET_LocalAsync(userid);
+                        data.location_id = emp.locationstore;
                         dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                     }
                     else
