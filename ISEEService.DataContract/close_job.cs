@@ -31,6 +31,7 @@ namespace ISEEService.DataContract
         public List<tbt_job_part> job_parts { get; set; }
 
         public string flg_close { get; set; }
+        public string job_status { get; set; } 
         public string rptsig { get; set; }
     }
 }

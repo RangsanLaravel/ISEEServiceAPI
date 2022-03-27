@@ -49,6 +49,26 @@ namespace ISEEService.BusinessLogic
                 throw;
             }
         }
+        public async ValueTask<long?> CHECK_STOCK(string part_id, string location_id)
+        {
+            long? dataObjects = null;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.CHECK_STOCK(part_id, location_id);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<tbm_province>> GET_PROVINCE()
         {
             List<tbm_province> dataObjects = null;
@@ -69,7 +89,6 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
-
         public async ValueTask<List<tbm_district>> GET_DISTRICT(string province_code)
         {
             List<tbm_district> dataObjects = null;
@@ -394,7 +413,7 @@ namespace ISEEService.BusinessLogic
                             else
                             {
                                 //var store = await repository.GET_LocalAsync(userid);
-                                data.location_id = emp.locationstore;
+                                data.location_id = emp.location_id;
                                 dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                             }
                         }
@@ -409,13 +428,18 @@ namespace ISEEService.BusinessLogic
                     if (emp.position == "MN" || emp.position == "OS")
                     {
                         //var store = await repository.GET_LocalAsync(userid);
-                        data.location_id = emp.locationstore;
+                        data.location_id = emp.location_id;
                         dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                     }
                     else
                     {
                         dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                     }
+                }
+                else
+                {
+                    dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+
                 }
 
             }
@@ -437,6 +461,26 @@ namespace ISEEService.BusinessLogic
             try
             {
                 dataObjects = await repository.GET_IMAGE_ID();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+
+        public async ValueTask<tbt_job_image> CHECK_RESEND_EMAIL(string Jobid)
+        {
+            tbt_job_image dataObjects = null;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.CHECK_RESEND_EMAIL(Jobid);
             }
             catch (Exception ex)
             {
@@ -559,7 +603,47 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
-
+        public async ValueTask<tbt_job_header> GET_TBT_JOB(string job_id)
+        {
+            tbt_job_header dataObjects = null;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                // isAdmin = await repository.CheckPermissionAdmin(userid);
+                dataObjects = await repository.GET_TBT_JOB(job_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+        public async ValueTask<bool> CheckPermissionAdmin(string userid)
+        {
+            //tbt_job_header dataObjects = null;
+            bool isAdmin = false;
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                isAdmin = await repository.CheckPermissionAdmin(userid);
+                // dataObjects = await repository.GET_TBT_JOB(job_id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return isAdmin;
+        }
         public async ValueTask<tbt_job_image> GET_PATHFILE(string ijob_id, string seq)
         {
             tbt_job_image dataObjects = null;
@@ -681,6 +765,8 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
+
+
         public async ValueTask<List<tbm_checklist_group>> CHECK_LIST()
         {
             List<tbm_checklist_group> dataObjects = null;
@@ -844,6 +930,7 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
+                data.service_price = data.service_price.Replace(",", "");
                 if (data is not null)
                 {
                     if (!string.IsNullOrWhiteSpace(data.effective_date))
@@ -974,7 +1061,28 @@ namespace ISEEService.BusinessLogic
             }
 
         }
+        private async ValueTask CheckDuplicateStore(tbm_location_store data, string edit_flg)
+        {
+            var olddata = await GET_TBM_LOCATION_STOREAsync(new tbm_location_store { owner_id = data.owner_id });
+            if (edit_flg == "Y")
+            {
+                if (olddata is null)
+                    return;
+                olddata = olddata.Where(a => a.location_id != data.location_id).ToList();
+                if (olddata is not null && olddata.Count > 0)
+                {
+                    throw new Exception($"{olddata.FirstOrDefault().owner_name } ประจำที่ {olddata.FirstOrDefault().location_name}");
+                }
+            }
+            else
+            {
+                if (olddata is not null)
+                {
+                    throw new Exception($"{olddata.FirstOrDefault().owner_name } ประจำที่ {olddata.FirstOrDefault().location_name}");
+                }
+            }
 
+        }
         public async ValueTask INSERT_TBM_LOCATION_STOREAsync(tbm_location_store data)
         {
             Repository repository = new Repository(_connectionstring);
@@ -985,10 +1093,20 @@ namespace ISEEService.BusinessLogic
                 var olddata = await GET_TBM_LOCATION_STOREAsync(new tbm_location_store { location_id = data.location_id });
                 if (olddata is null)
                 {
+                    await CheckDuplicateStore(data, "N");
                     await repository.INSERT_TBM_LOCATION_STOREAsync(data);
                 }
                 else
                 {
+                    if (olddata.FirstOrDefault().owner_id is not null && data.owner_id is not null && olddata.FirstOrDefault().owner_id != data.owner_id)
+                    {
+                        throw new Exception("รถคันนี้มีช่างประจำอยู่แล้ว");
+                    }
+                    if (data.owner_id is not null)
+                    {
+                        await CheckDuplicateStore(data, "Y");
+                    }
+
                     await repository.UPDATE_TBM_LOCATION_STOREAsync(data);
                 }
                 await repository.CommitTransection();
@@ -1303,8 +1421,9 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
+                var job = await GET_TBT_JOB(data.job_id);
 
-                await repository.Close_jobAsync(data);
+                await repository.Close_jobAsync(data, job);
                 if (data.job_checklists is not null && data.job_checklists.Count > 0)
                 {
                     await repository.TERMINATE_TBT_JOB_CHECKLISTAsync(data.job_id);
@@ -1346,11 +1465,11 @@ namespace ISEEService.BusinessLogic
                         await repository.INSERT_TBT_JOB_IMAGE(item, data.userid);
                     }
                 }
-
+                await repository.TERMINATE_TBT_JOB_PART(data.job_id);
                 if (data.job_parts is not null && data.job_parts.Count > 0)
                 {
                     var seq = await GET_TBT_JOB_PART_SEQ(data.job_id);
-                    await repository.TERMINATE_TBT_JOB_PART(data.job_id);
+
                     foreach (var item in data.job_parts)
                     {
                         seq = seq + 1;
@@ -1622,19 +1741,7 @@ namespace ISEEService.BusinessLogic
                 var chklist = await checklistreport(chkheader);
                 var allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist });
                 pdf = new DataFile { FileData = allpdf, FileName = "job.pdf", ContentType = "application/pdf" };
-                List<DataFile> Attachments = new List<DataFile>();
-                Attachments.Add(pdf);
-                MailRequest request = new MailRequest
-                {
-                    Attachments = Attachments,
-                    Body = "<span>รายละเอียดการซ่อมบำรุง</span>",
-                    Subject = "รายละเอียดการซ่อมบำรุง",
-                    //ToEmail = "Dethman_light@hotmail.com"
-                    ToEmail = listdata.email_customer
-
-                };
-                await IMailService.SendEmailAsync(request);
-
+                await sendemail(pdf, listdata.email_customer);
             }
             catch (Exception ex)
             {
@@ -1645,6 +1752,22 @@ namespace ISEEService.BusinessLogic
                 //await repository.CloseConnectionAsync();
             }
             return pdf;
+        }
+        public async ValueTask sendemail(DataFile pdf, string email)
+        {
+            List<DataFile> Attachments = new List<DataFile>();
+            Attachments.Add(pdf);
+            MailRequest request = new MailRequest
+            {
+                Attachments = Attachments,
+                Body = "<span>รายละเอียดการซ่อมบำรุง</span>",
+                Subject = "รายละเอียดการซ่อมบำรุง",
+                //ToEmail = "Dethman_light@hotmail.com"
+                ToEmail = email
+
+            };
+            await IMailService.SendEmailAsync(request);
+
         }
 
         private async ValueTask<byte[]> CombineMultiplePDFs(List<byte[]> dataFiles)
@@ -1711,6 +1834,30 @@ namespace ISEEService.BusinessLogic
             var mainreport = stream.ToArray();
             return mainreport;
 
+        }
+        public async ValueTask<List<ReportPPM>> sp_getReportPPM(string customerid,
+            string date_from,
+            string date_to)
+        {
+            Repository repository = new Repository(_connectionstring);
+            await repository.OpenConnectionAsync();
+            List<ReportPPM> dataObjects = new List<ReportPPM>();
+            try
+            {
+                DateTime? date_fromdt = null;
+                DateTime? date_todt = null;
+                convertDate(ref date_fromdt, ref date_todt, date_from, date_to);
+                dataObjects = await repository.sp_getReportPPM(customerid, date_fromdt, date_todt);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
         }
         #endregion " REPORT "
 

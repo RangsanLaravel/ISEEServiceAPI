@@ -23,6 +23,7 @@ namespace ISEEService.DataContract
         public string owner_id { get; set; }
         public string signnature { get; set; }    
         public string ref_hjob_id { get; set; }
-       
+        public string job_status { get; set; } 
+
     }
 }
