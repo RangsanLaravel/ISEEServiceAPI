@@ -84,7 +84,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="I_SEE.jpg">
+    <None Update="I_SEE_BK.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

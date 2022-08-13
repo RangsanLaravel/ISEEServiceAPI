@@ -12,5 +12,8 @@ namespace ISEEService.DataContract
         public string seq { get; set; }
         public string NT { get; set; }
         public string Alldates { get; set; }
+        public string customerid { get; set; }
+        public string date_from { get; set; }
+        public string date_to { get; set; }
     }
 }

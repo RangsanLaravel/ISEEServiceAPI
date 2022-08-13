@@ -43,7 +43,7 @@ namespace ISEEServiceAPI.Controllers
                 Password = Configuration["MailSettings:Password"],
                 Port = Convert.ToInt32(Configuration["MailSettings:Port"])
             };
-            this.service = new ServiceAction(this.Configuration.GetConnectionString("ConnectionSQLServer"), mailSettings);
+            this.service = new ServiceAction(this.Configuration.GetConnectionString("ConnectionSQLServer"), mailSettings, Configuration["ConfigSetting:DBENV"]);
             //this.mailService = mailService;
         }
         [HttpGet("HealthCheck")]
@@ -1076,15 +1076,13 @@ namespace ISEEServiceAPI.Controllers
             }
         }
 
-        [HttpPost("sp_getReportPPM/{customerid}/{date_from}/{date_to}")]
-        public async ValueTask<IActionResult> sp_getReportPPM(string customerid,
-           string date_from,
-           string date_to)
+        [HttpPost("sp_getReportPPM")]
+        public async ValueTask<IActionResult> sp_getReportPPM(ReportPPM condition)
         {
             List<ReportPPM> dataObjects = null;
             try
             {
-                dataObjects = await this.service.sp_getReportPPM(customerid, date_from, date_to);
+                dataObjects = await this.service.sp_getReportPPM(condition.customerid, condition.date_from, condition.date_to);
                 return Ok(dataObjects);
             }
             catch (Exception ex)

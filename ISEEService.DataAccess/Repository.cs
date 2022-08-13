@@ -18,13 +18,15 @@ namespace ISEEService.DataAccess
         private readonly SqlConnection sqlConnection = null;
         private SqlTransaction transaction;
 
-        public Repository(string connectionstring) : this(new SqlConnection(connectionstring))
+        private readonly string DBENV = string.Empty;
+        public Repository(string connectionstring,string DBENV) : this(new SqlConnection(connectionstring), DBENV)
         {
 
         }
-        public Repository(SqlConnection ConnectionString)
+        public Repository(SqlConnection ConnectionString,string DBENV)
         {
             this.sqlConnection = ConnectionString;
+            this.DBENV = DBENV;
         }
         public async ValueTask OpenConnectionAsync() =>
        await this.sqlConnection.OpenAsync();
@@ -50,8 +52,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"select  [ISEE].dbo.fn_showOnhand(sp.part_id) as 'onhand' 
- from [ISEE].[dbo].[tbm_sparepart] sp
+                CommandText = $@"select  [ISEE].dbo.fn_showOnhand(sp.part_id) as 'onhand' 
+ from [{DBENV}].[dbo].[tbm_sparepart] sp
  WHERE sp.part_id = @part_id
  AND sp.location_id=@location_id "
             };
@@ -80,8 +82,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbm_province]
+                CommandText = $@"SELECT *
+                                FROM [{DBENV}].[dbo].[tbm_province]
                             WHERE status =1 "
             };
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
@@ -100,8 +102,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                            FROM [ISEE].[dbo].[tbm_district]
+                CommandText = $@"SELECT *
+                            FROM [{DBENV}].[dbo].[tbm_district]
                             WHERE province_code = @inprovince_code 
                             AND status =1 "
             };
@@ -123,8 +125,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbm_sub_district]
+                CommandText = $@"SELECT *
+                                FROM [{DBENV}].[dbo].[tbm_sub_district]
                                 where district_code =@district_code
                                 AND status =1 "
             };
@@ -145,8 +147,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbm_employee_position]
+                CommandText = $@"SELECT *
+                                FROM [{DBENV}].[dbo].[tbm_employee_position]
                                 WHERE STATUS =1 "
             };
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
@@ -165,8 +167,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                            FROM [ISEE].[dbo].[tbm_jobtype]
+                CommandText = $@"SELECT *
+                            FROM [{DBENV}].[dbo].[tbm_jobtype]
                             where status=1 "
             };
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
@@ -186,7 +188,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT * FROM [ISEE].[dbo].[tbm_brand] WHERE ACTIVE_FLAG =1"
+                CommandText = $@"SELECT * FROM [{DBENV}].[dbo].[tbm_brand] WHERE ACTIVE_FLAG =1"
             };
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
             {
@@ -204,7 +206,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"select v.license_no
+                CommandText = $@"select v.license_no
         ,cu.customer_id
       ,id_card
       ,cust_type
@@ -224,11 +226,11 @@ namespace ISEEService.DataAccess
 	  ,pr.province_name_tha
       ,cu.zip_code
       ,phone_no
-      ,Email from [ISEE].[dbo].[tbm_vehicle] v
-                            INNER JOIN [ISEE].[dbo].[tbm_customer] cu ON cu.customer_id =v.customer_id
-  INNER JOIN [ISEE].[dbo].[tbm_province] pr on pr.province_code =cu.province_code
-  INNER JOIN [ISEE].[dbo].[tbm_district] ds on ds.district_code =cu.district_code
-  INNER JOIN [ISEE].[dbo].[tbm_sub_district] sd on sd.sub_district_code =cu.sub_district_no
+      ,Email from [{DBENV}].[dbo].[tbm_vehicle] v
+                            INNER JOIN [{DBENV}].[dbo].[tbm_customer] cu ON cu.customer_id =v.customer_id
+  INNER JOIN [{DBENV}].[dbo].[tbm_province] pr on pr.province_code =cu.province_code
+  INNER JOIN [{DBENV}].[dbo].[tbm_district] ds on ds.district_code =cu.district_code
+  INNER JOIN [{DBENV}].[dbo].[tbm_sub_district] sd on sd.sub_district_code =cu.sub_district_no
                             WHERE v.license_no like @license_no "
             };
             command.Parameters.AddWithValue("@license_no", $"%{license_no}%");
@@ -249,8 +251,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                             FROM [ISEE].[dbo].[tbt_job_header]
+                CommandText = $@"SELECT *
+                             FROM [{DBENV}].[dbo].[tbt_job_header]
                              WHERE status =1 
                              AND license_no =@license_no
                              AND customer_id =@customer_id "
@@ -270,7 +272,7 @@ namespace ISEEService.DataAccess
         public async ValueTask<string> GET_SP_GET_RUNNING_NOAsync(string running_type)
         {
             string running_no = string.Empty;
-            SqlCommand cmd = new SqlCommand("[ISEE].[dbo].[sp_get_running_no]", this.sqlConnection);
+            SqlCommand cmd = new SqlCommand("[{DBENV}].[dbo].[sp_get_running_no]", this.sqlConnection);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@running_type", running_type);
             cmd.Parameters.Add("@running_no", SqlDbType.VarChar, 30);
@@ -287,8 +289,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                             FROM [ISEE].[dbo].[tbm_checklist_group]
+                CommandText = $@"SELECT *
+                             FROM [{DBENV}].[dbo].[tbm_checklist_group]
                              where status =1"
             };
 
@@ -308,8 +310,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-  FROM [ISEE].[dbo].[tbm_checklist]
+                CommandText = $@"SELECT *
+  FROM [{DBENV}].[dbo].[tbm_checklist]
   WHERE check_group_id =@check_group_id
   AND status =1"
             };
@@ -331,8 +333,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-  FROM [ISEE].[dbo].[tbt_job_detail]
+                CommandText = $@"SELECT *
+  FROM [{DBENV}].[dbo].[tbt_job_detail]
   where bjob_id =@job_id"
             };
             command.Parameters.AddWithValue("@job_id", tbt_job_detail.bjob_id);
@@ -354,8 +356,8 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbt_job_header]
+                CommandText = $@"SELECT *
+                                FROM [{DBENV}].[dbo].[tbt_job_header]
                                 where job_id =@job_id
                                 AND STATUS =1 "
             };
@@ -377,15 +379,15 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT  sp.[part_id],
+                CommandText = $@"SELECT  sp.[part_id],
        adj.adj_id
       ,sp.[part_no]
       ,[part_name]
       ,[part_desc]
 	  ,sp.part_value
 	  ,[adj_part_value]
-  FROM [ISEE].[dbo].[tbm_sparepart] sp
-  INNER join [ISEE].[dbo].[tbt_adj_sparepart] adj
+  FROM [{DBENV}].[dbo].[tbm_sparepart] sp
+  INNER join [{DBENV}].[dbo].[tbt_adj_sparepart] adj
   ON adj.part_id =sp.part_id
   WHERE sp.[part_id] =@part_id "
             };
@@ -407,7 +409,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = @"[dbo].GET_TBT_ADJ_SPAREPART"
+                CommandText = $@"[dbo].GET_TBT_ADJ_SPAREPART"
             };
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -428,7 +430,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT  [job_id],type_job,hd.job_status
+                CommandText = $@"SELECT  [job_id],type_job,hd.job_status
       ,[license_no]
       ,hd.customer_id
 	  ,concat(tc.fname,' ',tc.lname) customer_name
@@ -448,9 +450,9 @@ namespace ISEEService.DataAccess
       ,hd.update_date
       ,[ref_hjob_id]
       ,hd.status
- FROM [ISEE].[dbo].[tbt_job_header] hd
- INNER JOIN [ISEE].[dbo].[tbm_customer] tc on hd.customer_id =tc.customer_id 
- INNER JOIN [ISEE].[dbo].[tbm_employee] te on hd.owner_id =te.user_id
+ FROM [{DBENV}].[dbo].[tbt_job_header] hd
+ INNER JOIN [{DBENV}].[dbo].[tbm_customer] tc on hd.customer_id =tc.customer_id 
+ INNER JOIN [{DBENV}].[dbo].[tbm_employee] te on hd.owner_id =te.user_id
  where job_id =@job_id 
  AND hd.STATUS =1"
             };
@@ -472,7 +474,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT [bjob_id]
+                CommandText = $@"SELECT [bjob_id]
       ,[B1_model]
       ,[B1_serial]
       ,[B1_amp_hrs]
@@ -503,7 +505,7 @@ namespace ISEEService.DataAccess
       ,[V_total]
       ,[failure_code]
       ,[fair_wear]
-                                FROM [ISEE].[dbo].[tbt_job_detail]
+                                FROM [{DBENV}].[dbo].[tbt_job_detail]
                                 where bjob_id =@job_id"
             };
             command.Parameters.AddWithValue("@job_id", job_id);
@@ -524,11 +526,11 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT [ckjob_id]
+                CommandText = $@"SELECT [ckjob_id]
                                     ,[ck_id]
                                     ,[description]
 	                                ,'Y' AS check_list
-                                FROM [ISEE].[dbo].[tbt_job_checklist]
+                                FROM [{DBENV}].[dbo].[tbt_job_checklist]
                                 where ckjob_id =@job_id"
             };
             command.Parameters.AddWithValue("@job_id", job_id);
@@ -549,7 +551,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"
+                CommandText = $@"
 SELECT  [pjob_id]
       ,[seq]
       ,spar.[part_no]
@@ -566,8 +568,8 @@ SELECT  [pjob_id]
       ,jpar.[create_date]
       ,jpar.[create_by]
       ,[status]
-  FROM [ISEE].[dbo].[tbt_job_part] jpar
-  INNER JOIN [ISEE].[dbo].[tbm_sparepart] spar on jpar.part_id =spar.part_id
+  FROM [{DBENV}].[dbo].[tbt_job_part] jpar
+  INNER JOIN [{DBENV}].[dbo].[tbm_sparepart] spar on jpar.part_id =spar.part_id
   WHERE jpar.status =1
   AND jpar.pjob_id =@job_id"
             };
@@ -589,7 +591,7 @@ SELECT  [pjob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"
+                CommandText = $@"
 SELECT [ijob_id]
       ,[seq]
       ,[img_name]
@@ -599,7 +601,7 @@ SELECT [ijob_id]
       ,[create_by]
       ,im.[status]
       ,[image_type]
-  FROM [ISEE].[dbo].[tbt_job_image] im
+  FROM [{DBENV}].[dbo].[tbt_job_image] im
   INNER JOIN tbm_image_type imt ON im.image_type =imt.image_code
   WHERE imt.status= 1
   AND im.status= 1
@@ -624,7 +626,7 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT [job_id]
+                CommandText = $@"SELECT [job_id]
                                 ,type_job
                                 ,jh.[license_no]
                                 ,jh.[customer_id]
@@ -644,14 +646,14 @@ SELECT [ijob_id]
                                 ,jh.[update_by]
                                 ,jh.[update_date]
                                 ,[ref_hjob_id]
-                FROM [ISEE].[dbo].[tbt_job_header] jh
-                INNER JOIN [ISEE].[dbo].[tbm_customer] cus on jh.customer_id =cus.customer_id
-                INNER JOIN [ISEE].[dbo].[tbm_employee] emp on emp.user_id =jh.owner_id
+                FROM [{DBENV}].[dbo].[tbt_job_header] jh
+                INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus on jh.customer_id =cus.customer_id
+                INNER JOIN [{DBENV}].[dbo].[tbm_employee] emp on emp.user_id =jh.owner_id
                 where jh.status =1 "
             };
             if (!isAdmin)
             {
-                command.CommandText += @" AND owner_id =@owner_id";
+                command.CommandText += $@" AND owner_id =@owner_id";
                 command.Parameters.AddWithValue("@owner_id", userid);
             }
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -688,8 +690,8 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbt_job_part]
+                CommandText = $@"SELECT *
+                                FROM [{DBENV}].[dbo].[tbt_job_part]
                                 where pjob_id =@job_id AND STATUS =1"
             };
             command.Parameters.AddWithValue("@job_id", pjob_id);
@@ -710,8 +712,8 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT ISNULL(MAX(SEQ),0)
-                                FROM [ISEE].[dbo].[tbt_job_part]
+                CommandText = $@"SELECT ISNULL(MAX(SEQ),0)
+                                FROM [{DBENV}].[dbo].[tbt_job_part]
                                 where pjob_id =@job_id AND STATUS =1"
             };
             command.Parameters.AddWithValue("@job_id", pjob_id);
@@ -733,7 +735,7 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT [user_id]
+                CommandText = $@"SELECT [user_id]
       ,[user_name]
       ,[password]
       ,[fullname]
@@ -743,14 +745,14 @@ SELECT [ijob_id]
 	  ,emp.position_description
       ,em.[status]
       ,em.[create_date]
-      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = em.create_by) as [create_by]
+      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = em.create_by) as [create_by]
       ,em.[update_date]
-      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = em.update_by) as [update_by]
+      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = em.update_by) as [update_by]
       ,showstock
 	  ,loc.location_name
-  FROM [ISEE].[dbo].[tbm_employee] em
-  INNER JOIN [ISEE].[dbo].[tbm_employee_position] emp on em.position =emp.position_code
-  LEFT JOIN [ISEE].[dbo].[tbm_location_store] loc on loc.owner_id =em.user_id AND loc.status =1
+  FROM [{DBENV}].[dbo].[tbm_employee] em
+  INNER JOIN [{DBENV}].[dbo].[tbm_employee_position] emp on em.position =emp.position_code
+  LEFT JOIN [{DBENV}].[dbo].[tbm_location_store] loc on loc.owner_id =em.user_id AND loc.status =1
   WHERE emp.status =1
   AND em.status =1
   "
@@ -802,7 +804,7 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT customer_id
+                CommandText = $@"SELECT customer_id
       ,id_card
       ,cust_type
 	  , 
@@ -822,10 +824,10 @@ SELECT [ijob_id]
       ,cu.zip_code
       ,phone_no
       ,Email
-  FROM [ISEE].[dbo].[tbm_customer] cu
-  INNER JOIN [ISEE].[dbo].[tbm_province] pr on pr.province_code =cu.province_code
-  INNER JOIN [ISEE].[dbo].[tbm_district] ds on ds.district_code =cu.district_code
-  INNER JOIN [ISEE].[dbo].[tbm_sub_district] sd on sd.sub_district_code =cu.sub_district_no
+  FROM [{DBENV}].[dbo].[tbm_customer] cu
+  INNER JOIN [{DBENV}].[dbo].[tbm_province] pr on pr.province_code =cu.province_code
+  INNER JOIN [{DBENV}].[dbo].[tbm_district] ds on ds.district_code =cu.district_code
+  INNER JOIN [{DBENV}].[dbo].[tbm_sub_district] sd on sd.sub_district_code =cu.sub_district_no
 WHERE cu.status =1 "
             };
             if (data is not null && !string.IsNullOrWhiteSpace(data.customer_id))
@@ -901,7 +903,7 @@ WHERE cu.status =1 "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT  license_no
+                CommandText = $@"SELECT  license_no
       ,seq
       ,brand_no
       ,br.brand_name_tha
@@ -916,10 +918,10 @@ WHERE cu.status =1 "
       ,contract_no
       ,cus.customer_id
 	  ,CONCAT(cus.fname,' ',cus.lname) customer_name
-  FROM [ISEE].[dbo].[tbm_vehicle] v
-  INNER JOIN [ISEE].[dbo].[tbm_services] s on s.services_no =v.service_no
-  INNER JOIN [ISEE].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
-  LEFT JOIN [ISEE].[dbo].[tbm_brand] br on br.brand_code =v.brand_no 
+  FROM [{DBENV}].[dbo].[tbm_vehicle] v
+  INNER JOIN [{DBENV}].[dbo].[tbm_services] s on s.services_no =v.service_no
+  INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
+  LEFT JOIN [{DBENV}].[dbo].[tbm_brand] br on br.brand_code =v.brand_no 
   WHERE s.status =1 "
             };
             if (data is not null && !string.IsNullOrWhiteSpace(data.license_no))
@@ -1001,8 +1003,8 @@ WHERE cu.status =1 "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                        FROM [ISEE].[dbo].[tbm_services]
+                CommandText = $@"SELECT *
+                        FROM [{DBENV}].[dbo].[tbm_services]
                          WHERE status= 1 "
             };
             if (data is not null && !string.IsNullOrWhiteSpace(data.services_no))
@@ -1037,8 +1039,8 @@ WHERE cu.status =1 "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT MAX(services_no)
-                        FROM [ISEE].[dbo].[tbm_services]
+                CommandText = $@"SELECT MAX(services_no)
+                        FROM [{DBENV}].[dbo].[tbm_services]
                          WHERE status= 1 "
             };
             if (!string.IsNullOrWhiteSpace(data))
@@ -1063,7 +1065,7 @@ WHERE cu.status =1 "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"select * from tbm_employee
+                CommandText = $@"select * from tbm_employee
                                 em 
                                 INNER JOIN tbm_employee_position ps on ps.position_code =em.position
                                 LEFT JOIN tbm_location_store loc on loc.owner_id =em.user_id
@@ -1092,7 +1094,7 @@ WHERE cu.status =1 "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"
+                CommandText = $@"
 SELECT 
 	part_id
       ,part_no
@@ -1120,9 +1122,9 @@ SELECT
       ,part.cancel_reason
       ,part.update_date
       ,part.update_by
-  FROM [ISEE].[dbo].[tbm_sparepart] part 
-  INNER JOIN [ISEE].[dbo].[tbm_unit] un ON un.unit_code =part.unit_code
-  INNER JOIN [ISEE].[dbo].[tbm_location_store] loca on loca.location_id =part.location_id
+  FROM [{DBENV}].[dbo].[tbm_sparepart] part 
+  INNER JOIN [{DBENV}].[dbo].[tbm_unit] un ON un.unit_code =part.unit_code
+  INNER JOIN [{DBENV}].[dbo].[tbm_location_store] loca on loca.location_id =part.location_id
   WHERE 1=1 "
             };
 
@@ -1201,7 +1203,7 @@ SELECT
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT NEXT VALUE FOR image_id"
+                CommandText = $@"SELECT NEXT VALUE FOR image_id"
             };
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -1220,8 +1222,8 @@ SELECT
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-  FROM [ISEE].[dbo].[tbt_job_image]
+                CommandText = $@"SELECT *
+  FROM [{DBENV}].[dbo].[tbt_job_image]
   where status =1
   AND ijob_id =@jobid
   AND image_type ='rpt'"
@@ -1243,7 +1245,7 @@ SELECT
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT [ijob_id]
+                CommandText = $@"SELECT [ijob_id]
       ,[seq]
       ,[img_name]
       ,[img_path]
@@ -1251,7 +1253,7 @@ SELECT
       ,[create_by]
       ,[status]
       ,[image_type]
-  FROM [ISEE].[dbo].[tbt_job_image]
+  FROM [{DBENV}].[dbo].[tbt_job_image]
 WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
             };
             command.Parameters.AddWithValue("@ijob_id", ijob_id);
@@ -1274,8 +1276,8 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT *
-                                FROM [ISEE].[dbo].[tbm_image_type]
+                CommandText = $@"SELECT *
+                                FROM [{DBENV}].[dbo].[tbm_image_type]
                                 where status=1"
             };
 
@@ -1297,8 +1299,8 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT ISNULL(MAX(SEQ),0)
-                               FROM [ISEE].[dbo].[tbt_job_image]
+                CommandText = $@"SELECT ISNULL(MAX(SEQ),0)
+                               FROM [{DBENV}].[dbo].[tbt_job_image]
                                 WHERE status =1
                         AND ijob_id =@ijob_id"
             };
@@ -1321,7 +1323,7 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT  user_id
+                CommandText = $@"SELECT  user_id
                                         ,em.user_name 
                                         ,em.password
                                         ,em.fullname
@@ -1329,8 +1331,8 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
                                         ,em.position
                                         ,po.position_description   
                                         ,po.security_level
-                                FROM [ISEE].[dbo].[tbm_employee] em 
-                                INNER JOIN [ISEE].[dbo].[tbm_employee_position] po on em.position =po.position_code
+                                FROM [{DBENV}].[dbo].[tbm_employee] em 
+                                INNER JOIN [{DBENV}].[dbo].[tbm_employee_position] po on em.position =po.position_code
                                 WHERE UPPER(em.user_name) =@username                               
                                 AND em.status =1 
                                 AND po.status =1"
@@ -1354,10 +1356,10 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"select menu.* from [ISEE].[dbo].[tbm_employee] em
-INNER JOIN [ISEE].[dbo].[tbm_employee_position] pos on pos.position_code =em.position
-INNER JOIN [ISEE].[dbo].tbm_permission per on per.tep_id =pos.tep_id
-INNER JOIN [ISEE].[dbo].tbm_menu menu on menu.menu_id =per.menu_id
+                CommandText = $@"select menu.* from [{DBENV}].[dbo].[tbm_employee] em
+INNER JOIN [{DBENV}].[dbo].[tbm_employee_position] pos on pos.position_code =em.position
+INNER JOIN [{DBENV}].[dbo].tbm_permission per on per.tep_id =pos.tep_id
+INNER JOIN [{DBENV}].[dbo].tbm_menu menu on menu.menu_id =per.menu_id
 where em.user_id =@user_id
 AND em.status =1
 AND pos.status =1
@@ -1383,10 +1385,10 @@ AND menu.status =1
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT  [config_id]
+                CommandText = $@"SELECT  [config_id]
       ,[config_key]
       ,[config_value]
-  FROM [ISEE].[dbo].[tbm_config]
+  FROM [{DBENV}].[dbo].[tbm_config]
 "
             };
 
@@ -1406,7 +1408,7 @@ AND menu.status =1
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"select * from [ISEE].[dbo].[tbm_unit]
+                CommandText = $@"select * from [{DBENV}].[dbo].[tbm_unit]
 "
             };
 
@@ -1427,16 +1429,16 @@ AND menu.status =1
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT sto.location_id
+                CommandText = $@"SELECT sto.location_id
       ,sto.location_name
       ,sto.owner_id
 	  ,CONCAT(emp.fullname,' ',emp.lastname) owner_name
-      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = sto.create_by) as [create_by]
+      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sto.create_by) as [create_by]
       ,sto.create_date
-      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = sto.update_by ) as [update_by]
+      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sto.update_by ) as [update_by]
       ,sto.update_date
-      FROM [ISEE].[dbo].[tbm_location_store] sto 
-      LEFT JOIN [ISEE].[dbo].[tbm_employee] emp on emp.user_id =sto.owner_id AND emp.status =1
+      FROM [{DBENV}].[dbo].[tbm_location_store] sto 
+      LEFT JOIN [{DBENV}].[dbo].[tbm_employee] emp on emp.user_id =sto.owner_id AND emp.status =1
       WHERE sto.status =1
                 "
             };
@@ -1480,7 +1482,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [dbo].[tbm_employee]
+                CommandText = $@"INSERT INTO [dbo].[tbm_employee]
            (user_name
            ,password
            ,fullname
@@ -1526,7 +1528,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [ISEE].[dbo].[tbm_customer]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbm_customer]
            (
            cust_type
            ,fname
@@ -1579,7 +1581,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [ISEE].[dbo].[tbm_vehicle]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbm_vehicle]
            (license_no
            ,seq
            ,brand_no
@@ -1631,7 +1633,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [ISEE].[dbo].[tbm_services]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbm_services]
            (
              services_no
             ,services_name
@@ -1664,7 +1666,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @$"INSERT INTO [ISEE].[dbo].[tbt_job_header]
+                CommandText = @$"INSERT INTO [{DBENV}].[dbo].[tbt_job_header]
            (job_id
             ,type_job
             ,summary
@@ -1712,7 +1714,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [ISEE].[dbo].[tbt_job_checklist]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbt_job_checklist]
            ( ckjob_id
             ,ck_id
             ,description)
@@ -1735,7 +1737,7 @@ AND menu.status =1
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
 
-                CommandText = @"INSERT INTO [ISEE].[dbo].[tbt_job_detail]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbt_job_detail]
            ( bjob_id
       ,B1_model
       ,B1_serial
@@ -1931,7 +1933,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO  [ISEE].[dbo].[tbt_job_image]
+                CommandText = $@"INSERT INTO  [{DBENV}].[dbo].[tbt_job_image]
      ( ijob_id
       ,seq
       ,img_name
@@ -1966,7 +1968,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO [ISEE].[dbo].[tbt_job_part]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbt_job_part]
      ( pjob_id
       ,seq
       ,part_no
@@ -2001,7 +2003,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO  [ISEE].[dbo].[tbm_location_store]
+                CommandText = $@"INSERT INTO  [{DBENV}].[dbo].[tbm_location_store]
      ( location_id
       ,location_name
       ,owner_id
@@ -2031,7 +2033,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"INSERT INTO  [ISEE].[dbo].[tbm_sparepart]
+                CommandText = $@"INSERT INTO  [{DBENV}].[dbo].[tbm_sparepart]
      ( 
       [part_no]
       ,[part_name]
@@ -2086,7 +2088,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"
+                CommandText = $@"
 INSERT INTO [dbo].[tbt_adj_sparepart]
            (
            [part_id]
@@ -2121,7 +2123,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbt_job_header] 
+                CommandText = $@"UPDATE [dbo].[tbt_job_header] 
                                 SET
                                     license_no=@license_no,
                                    email_customer= @email_customer,
@@ -2146,7 +2148,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [ISEE].[dbo].[tbt_job_header]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_header]
                                 SET
                                     summary=@summary,
                                     action= @action,
@@ -2205,7 +2207,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbm_customer]
+                CommandText = $@"UPDATE [dbo].[tbm_customer]
            SET
            cust_type =@cust_type
            ,fname=@fname
@@ -2243,7 +2245,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbm_employee]
+                CommandText = $@"UPDATE [dbo].[tbm_employee]
            SET  
            fullname =@fullname
            ,lastname=@lastname
@@ -2275,7 +2277,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [ISEE].[dbo].[tbm_vehicle]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_vehicle]
            SET     
                      seq=@seq
                     ,brand_no=@brand_no
@@ -2316,7 +2318,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbm_services]
+                CommandText = $@"UPDATE [dbo].[tbm_services]
            SET          
             services_name=@services_name
             ,period_year=@period_year
@@ -2339,7 +2341,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [ISEE].[dbo].[tbt_job_detail]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_detail]
            SET
       B1_model =@B1_model
       ,B1_serial=@B1_serial
@@ -2407,7 +2409,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE  [ISEE].[dbo].[tbm_location_store]
+                CommandText = $@"UPDATE  [{DBENV}].[dbo].[tbm_location_store]
      set
       location_name=@location_name
       ,owner_id =@owner_id
@@ -2430,7 +2432,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @$"UPDATE  [ISEE].[dbo].[tbm_sparepart]
+                CommandText = @$"UPDATE  [{DBENV}].[dbo].[tbm_sparepart]
      set
       part_no=@part_no
       ,part_name=@part_name
@@ -2445,7 +2447,7 @@ WHERE   services_no=@services_no"
       ,location_id=@location_id
       ,update_date =GETDATE()
       ,update_by=@update_by
-      {(data.status == "0" ? @",cancel_by = @cancel_by
+      {(data.status == "0" ? $@",cancel_by = @cancel_by
       ,cancel_reason =@cancel_reason
       ,cancal_date =GETDATE()" : "")}
       WHERE  part_id =@part_id"
@@ -2481,13 +2483,13 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @$"UPDATE  [ISEE].[dbo].[tbt_adj_sparepart]
+                CommandText = @$"UPDATE  [{DBENV}].[dbo].[tbt_adj_sparepart]
      set
        adj_part_value =@adj_part_value
       ,update_date =GETDATE()
       ,update_by =@update_by
      {(string.IsNullOrEmpty(data.cancel_by) ? "" :
-     @",cancel_by=@cancel_by
+     $@",cancel_by=@cancel_by
       ,cancel_reason =@cancel_reason")}   
       WHERE  adj_id =@adj_id"
             };
@@ -2514,7 +2516,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbm_customer]
+                CommandText = $@"UPDATE [dbo].[tbm_customer]
                         SET
                             STATUS =0
                      WHERE customer_id =@customer_id "
@@ -2531,7 +2533,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbm_employee]
+                CommandText = $@"UPDATE [dbo].[tbm_employee]
                 SET  
                 STATUS=0,
                 update_date=GETDATE(),
@@ -2554,7 +2556,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [dbo].[tbm_services]
+                CommandText = $@"UPDATE [dbo].[tbm_services]
            SET          
             status =0
             ,update_date=GETDATE()
@@ -2573,7 +2575,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE  [ISEE].[dbo].[tbm_location_store]
+                CommandText = $@"UPDATE  [{DBENV}].[dbo].[tbm_location_store]
         set    
             status =0
             ,update_by =@update_by
@@ -2592,7 +2594,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE  [ISEE].[dbo].[tbm_sparepart]
+                CommandText = $@"UPDATE  [{DBENV}].[dbo].[tbm_sparepart]
      set
       cancal_date=GETDATE()
       ,cancel_by =@cancel_by
@@ -2611,7 +2613,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE  [ISEE].[dbo].[tbt_adj_sparepart]
+                CommandText = $@"UPDATE  [{DBENV}].[dbo].[tbt_adj_sparepart]
      set
       cancal_date=GETDATE()
       ,cancel_by =@cancel_by
@@ -2630,7 +2632,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"DELETE [ISEE].[dbo].[tbt_job_checklist] WHERE ckjob_id =@job_id"
+                CommandText = $@"DELETE [{DBENV}].[dbo].[tbt_job_checklist] WHERE ckjob_id =@job_id"
             };
             sql.Parameters.AddWithValue("@job_id", Job_id);
             await sql.ExecuteNonQueryAsync();
@@ -2642,7 +2644,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"DELETE [ISEE].[dbo].[tbt_job_part] WHERE pjob_id =@job_id"
+                CommandText = $@"DELETE [{DBENV}].[dbo].[tbt_job_part] WHERE pjob_id =@job_id"
             };
 
             sql.Parameters.AddWithValue("@job_id", job_id);
@@ -2656,7 +2658,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = @"UPDATE [ISEE].[dbo].[tbt_job_image]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_image]
 SET  status =0
 WHERE  ijob_id =@ijob_id AND seq =@seq"
             };
@@ -2677,7 +2679,7 @@ WHERE  ijob_id =@ijob_id AND seq =@seq"
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"
+                CommandText = $@"
 SELECT  [ijob_id]
       ,[seq]
       ,[img_name]
@@ -2686,7 +2688,7 @@ SELECT  [ijob_id]
       ,[create_by]
       ,[status]
       ,[image_type]
-  FROM [ISEE].[dbo].[tbt_job_image]
+  FROM [{DBENV}].[dbo].[tbt_job_image]
   WHERE ijob_id =@job_id 
   AND status =1
   AND image_type='sig'
@@ -2716,10 +2718,10 @@ ORDER BY seq DESC
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"SELECT JH.job_id
+                CommandText = $@"SELECT JH.job_id
 	  ,JH.[create_date]
       ,JH.[license_no]
-	  ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = JH.[create_by]) as [create_by]
+	  ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = JH.[create_by]) as [create_by]
       ,CONCAT(emp.fullname,' ',emp.lastname)AS employeename
       ,JH.[summary]
 	  ,JH.[fix_date]
@@ -2727,15 +2729,15 @@ ORDER BY seq DESC
 	  ,CONCAT(cus.fname,' ',cus.lname) customername
 	  ,[invoice_no]
 	  ,Jt.jobdescription
-	  ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = COALESCE(JH.transfer_to,JH.[owner_id])) AS owner_id
+	  ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = COALESCE(JH.transfer_to,JH.[owner_id])) AS owner_id
 	  ,JH.type_job
-      , (select top 1 seq from [ISEE].[dbo].[tbt_job_image] where status =1 and image_type ='rpt'
+      , (select top 1 seq from [{DBENV}].[dbo].[tbt_job_image] where status =1 and image_type ='rpt'
 	  )seq
-  FROM [ISEE].[dbo].[tbt_job_header] JH
-  INNER JOIN [ISEE].[dbo].[tbm_employee] emp ON emp.user_id = COALESCE(JH.transfer_to,JH.[owner_id])
-  INNER JOIN [ISEE].[dbo].[tbm_customer] cus ON CUS.customer_id =JH.customer_id
-  INNER JOIN [ISEE].[dbo].[tbm_jobtype] Jt ON JT.jobcode =jh.type_job 
- -- INNER JOIN [ISEE].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id 
+  FROM [{DBENV}].[dbo].[tbt_job_header] JH
+  INNER JOIN [{DBENV}].[dbo].[tbm_employee] emp ON emp.user_id = COALESCE(JH.transfer_to,JH.[owner_id])
+  INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus ON CUS.customer_id =JH.customer_id
+  INNER JOIN [{DBENV}].[dbo].[tbm_jobtype] Jt ON JT.jobcode =jh.type_job 
+ -- INNER JOIN [{DBENV}].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id 
 WHERE 1=1  "
             };
             if (jobfrom is not null)
@@ -2794,7 +2796,7 @@ WHERE 1=1  "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = @"
+                CommandText = $@"
 SELECT  sp.[part_id]
       ,sp.[part_no]
       ,[part_name]
@@ -2810,17 +2812,17 @@ SELECT  sp.[part_id]
       ,[maximum_value]
       ,sp.[location_id]
 	  ,lo.location_name
-      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = sp.[create_by] ) as [create_by]
+      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[create_by] ) as [create_by]
       ,[cancal_date]
       ,sp.[cancel_by]
       ,sp.[cancel_reason]
       ,sp.[update_date]
-      ,(select CONCAT(fullname,' ',lastname) from [ISEE].[dbo].[tbm_employee] where user_id = sp.[update_by]) as [update_by]
+      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[update_by]) as [update_by]
 	  ,adj.adj_part_value
-  FROM [ISEE].[dbo].[tbm_sparepart] sp
-left join [ISEE].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
-left join [ISEE].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
-left JOIN [ISEE].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
+  FROM [{DBENV}].[dbo].[tbm_sparepart] sp
+left join [{DBENV}].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
+left join [{DBENV}].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
+left JOIN [{DBENV}].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
 WHERE 1=1 
 "
             };
@@ -2875,6 +2877,20 @@ WHERE 1=1
             return dataObjects;
         }
         #endregion " REPORT "
+
+        #region " CALL STORE "
+        public async ValueTask sp_gen_remind_table(string licenseno)
+        {
+            SqlCommand command = new SqlCommand("[dbo].sp_gen_remind_table", this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Connection = this.sqlConnection;
+            command.Transaction = this.transaction;
+            command.Parameters.AddWithValue("@license_no", licenseno);
+            command.ExecuteNonQuery();
+        }
+
+
+        #endregion " CALL STORE "
 
     }
 }
