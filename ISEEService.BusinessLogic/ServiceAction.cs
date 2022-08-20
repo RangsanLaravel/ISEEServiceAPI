@@ -1716,7 +1716,7 @@ namespace ISEEService.BusinessLogic
                         DESCRIPTION = $"{item.check_group_name}",
                         Header = "Y"
                     });
-                    foreach (var _item in item.check_list)
+                    foreach (var _item in item.check_list.Where(a=>a.show_in_rpt == "1"))
                     {
                         chkpt.Add(new check_list_rpt
                         {

@@ -22,6 +22,7 @@ namespace ISEEService.BusinessLogic.report {
             this.DetailReport = reportInitializer.GetControl<DevExpress.XtraReports.UI.DetailReportBand>("DetailReport");
             this.PageHeader = reportInitializer.GetControl<DevExpress.XtraReports.UI.PageHeaderBand>("PageHeader");
             this.DetailReport1 = reportInitializer.GetControl<DevExpress.XtraReports.UI.DetailReportBand>("DetailReport1");
+            this.PageFooter = reportInitializer.GetControl<DevExpress.XtraReports.UI.PageFooterBand>("PageFooter");
             this.label1 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRLabel>("label1");
             this.pictureBox1 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRPictureBox>("pictureBox1");
             this.SubBand1 = reportInitializer.GetControl<DevExpress.XtraReports.UI.SubBand>("SubBand1");
@@ -52,27 +53,22 @@ namespace ISEEService.BusinessLogic.report {
             this.tableRow5 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableRow>("tableRow5");
             this.tableCell14 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell14");
             this.tableCell15 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell15");
-            this.tableCell16 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell16");
             this.Detail2 = reportInitializer.GetControl<DevExpress.XtraReports.UI.DetailBand>("Detail2");
             this.table6 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTable>("table6");
             this.tableRow6 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableRow>("tableRow6");
             this.tableCell17 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell17");
             this.tableCell18 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell18");
-            this.tableCell19 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell19");
             this.richText3 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRRichText>("richText3");
             this.richText4 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRRichText>("richText4");
+            this.label2 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRLabel>("label2");
+            this.table4 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTable>("table4");
+            this.tableRow4 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableRow>("tableRow4");
+            this.tableCell13 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell13");
+            this.tableCell16 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell16");
             this.table7 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTable>("table7");
             this.tableRow7 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableRow>("tableRow7");
+            this.tableCell19 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell19");
             this.tableCell20 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell20");
-            this.tableCell21 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell21");
-            this.tableCell22 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell22");
-            this.table8 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTable>("table8");
-            this.tableRow8 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableRow>("tableRow8");
-            this.tableCell23 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell23");
-            this.tableCell24 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell24");
-            this.tableCell25 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRTableCell>("tableCell25");
-            this.PageFooter = reportInitializer.GetControl<DevExpress.XtraReports.UI.PageFooterBand>("PageFooter");
-            this.label2 = reportInitializer.GetControl<DevExpress.XtraReports.UI.XRLabel>("label2");
 
             // Data Sources
             this.objectDataSource1 = reportInitializer.GetDataSource<DevExpress.DataAccess.ObjectBinding.ObjectDataSource>("objectDataSource1");
@@ -87,6 +83,7 @@ namespace ISEEService.BusinessLogic.report {
         private DevExpress.XtraReports.UI.DetailReportBand DetailReport;
         private DevExpress.XtraReports.UI.PageHeaderBand PageHeader;
         private DevExpress.XtraReports.UI.DetailReportBand DetailReport1;
+        private DevExpress.XtraReports.UI.PageFooterBand PageFooter;
         private DevExpress.XtraReports.UI.XRLabel label1;
         private DevExpress.XtraReports.UI.XRPictureBox pictureBox1;
         private DevExpress.XtraReports.UI.SubBand SubBand1;
@@ -118,28 +115,23 @@ namespace ISEEService.BusinessLogic.report {
         private DevExpress.XtraReports.UI.XRTableRow tableRow5;
         private DevExpress.XtraReports.UI.XRTableCell tableCell14;
         private DevExpress.XtraReports.UI.XRTableCell tableCell15;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell16;
         private DevExpress.XtraReports.UI.DetailBand Detail2;
         private DevExpress.XtraReports.UI.XRTable table6;
         private DevExpress.XtraReports.UI.XRTableRow tableRow6;
         private DevExpress.XtraReports.UI.XRTableCell tableCell17;
         private DevExpress.XtraReports.UI.XRTableCell tableCell18;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell19;
         private DevExpress.XtraReports.UI.XRRichText richText3;
         private DevExpress.XtraReports.UI.XRRichText richText4;
+        private DevExpress.XtraReports.UI.XRLabel label2;
         private DevExpress.DataAccess.ObjectBinding.ObjectDataSource objectDataSource2;
         private DevExpress.DataAccess.ObjectBinding.ObjectDataSource objectDataSource3;
+        private DevExpress.XtraReports.UI.XRTable table4;
+        private DevExpress.XtraReports.UI.XRTableRow tableRow4;
+        private DevExpress.XtraReports.UI.XRTableCell tableCell13;
+        private DevExpress.XtraReports.UI.XRTableCell tableCell16;
         private DevExpress.XtraReports.UI.XRTable table7;
         private DevExpress.XtraReports.UI.XRTableRow tableRow7;
+        private DevExpress.XtraReports.UI.XRTableCell tableCell19;
         private DevExpress.XtraReports.UI.XRTableCell tableCell20;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell21;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell22;
-        private DevExpress.XtraReports.UI.XRTable table8;
-        private DevExpress.XtraReports.UI.XRTableRow tableRow8;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell23;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell24;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell25;
-        private DevExpress.XtraReports.UI.PageFooterBand PageFooter;
-        private DevExpress.XtraReports.UI.XRLabel label2;
     }
 }

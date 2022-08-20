@@ -52,7 +52,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"select  [ISEE].dbo.fn_showOnhand(sp.part_id) as 'onhand' 
+                CommandText = $@"select  [{DBENV}].dbo.fn_showOnhand(sp.part_id) as 'onhand' 
  from [{DBENV}].[dbo].[tbm_sparepart] sp
  WHERE sp.part_id = @part_id
  AND sp.location_id=@location_id "
@@ -272,7 +272,7 @@ namespace ISEEService.DataAccess
         public async ValueTask<string> GET_SP_GET_RUNNING_NOAsync(string running_type)
         {
             string running_no = string.Empty;
-            SqlCommand cmd = new SqlCommand("[{DBENV}].[dbo].[sp_get_running_no]", this.sqlConnection);
+            SqlCommand cmd = new SqlCommand($"[{DBENV}].[dbo].[sp_get_running_no]", this.sqlConnection);
             cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("@running_type", running_type);
             cmd.Parameters.Add("@running_no", SqlDbType.VarChar, 30);
@@ -310,10 +310,21 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT *
+                CommandText = $@"SELECT
+        [ch_id]
+      ,[check_name_E]
+      ,[show_in_rpt]
+      ,[check_name_T] AS check_name
+      ,[status]
+      ,[show_in_rpt]
+      ,[check_group_id]
+      ,[create_date]
+      ,[create_by]
+      ,[update_date]
+      ,[update_by]
   FROM [{DBENV}].[dbo].[tbm_checklist]
   WHERE check_group_id =@check_group_id
-  AND status =1"
+  AND status =1  "
             };
             command.Parameters.AddWithValue("@check_group_id", ch_group_id);
 
@@ -409,7 +420,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = $@"[dbo].GET_TBT_ADJ_SPAREPART"
+                CommandText = $@"[{DBENV}].[dbo].GET_TBT_ADJ_SPAREPART"
             };
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -602,7 +613,7 @@ SELECT [ijob_id]
       ,im.[status]
       ,[image_type]
   FROM [{DBENV}].[dbo].[tbt_job_image] im
-  INNER JOIN tbm_image_type imt ON im.image_type =imt.image_code
+  INNER JOIN  [{DBENV}].tbm_image_type imt ON im.image_type =imt.image_code
   WHERE imt.status= 1
   AND im.status= 1
   and im.ijob_id =@job_id
@@ -667,7 +678,7 @@ SELECT [ijob_id]
         }
         public async ValueTask<bool> CheckPermissionAdmin(string userid)
         {
-            SqlCommand command = new SqlCommand("[dbo].[CheckPermissionAdmin]", this.sqlConnection);
+            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].[CheckPermissionAdmin]", this.sqlConnection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@UserId", userid);
             using (DataTable dt = await Utility.FillDataTableAsync(command))
@@ -1065,10 +1076,10 @@ WHERE cu.status =1 "
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"select * from tbm_employee
+                CommandText = $@"select * from [{DBENV}].[dbo].tbm_employee
                                 em 
-                                INNER JOIN tbm_employee_position ps on ps.position_code =em.position
-                                LEFT JOIN tbm_location_store loc on loc.owner_id =em.user_id
+                                INNER JOIN [{DBENV}].[dbo].tbm_employee_position ps on ps.position_code =em.position
+                                LEFT JOIN [{DBENV}].[dbo].tbm_location_store loc on loc.owner_id =em.user_id
                                 where em.user_id =@userid
                                 AND em.status =1"
             };
@@ -1110,7 +1121,7 @@ SELECT
       ,sale_price
       ,part.unit_code
 	  ,un.unit_name
-      ,[ISEE].dbo.fn_showOnHand(part_id,@jobid) AS  part_value
+      ,[{DBENV}].dbo.fn_showOnHand(part_id,@jobid) AS  part_value
       ,minimum_value
       ,maximum_value
       ,part.location_id
@@ -1482,7 +1493,7 @@ AND menu.status =1
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"INSERT INTO [dbo].[tbm_employee]
+                CommandText = $@"INSERT INTO [{DBENV}].[dbo].[tbm_employee]
            (user_name
            ,password
            ,fullname
@@ -2070,12 +2081,12 @@ AND menu.status =1
             sql.Parameters.AddWithValue("@part_name", data.part_name ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_desc", data.part_desc ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_type", data.part_type ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@cost_price", data.cost_price ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@sale_price", data.sale_price ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@unit_code", data.unit_code ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@part_value", data.part_value ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@cost_price", data.cost_price?.Replace(",","") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@sale_price", data.sale_price?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@unit_code", data.unit_code?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_value", data.part_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
@@ -2089,7 +2100,7 @@ AND menu.status =1
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
                 CommandText = $@"
-INSERT INTO [dbo].[tbt_adj_sparepart]
+INSERT INTO  [{DBENV}].[dbo].[tbt_adj_sparepart]
            (
            [part_id]
            ,[part_no]
@@ -2107,7 +2118,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
             };
             sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
@@ -2123,7 +2134,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbt_job_header] 
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_header] 
                                 SET
                                     license_no=@license_no,
                                    email_customer= @email_customer,
@@ -2207,7 +2218,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbm_customer]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_customer]
            SET
            cust_type =@cust_type
            ,fname=@fname
@@ -2245,7 +2256,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbm_employee]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_employee]
            SET  
            fullname =@fullname
            ,lastname=@lastname
@@ -2318,7 +2329,7 @@ INSERT INTO [dbo].[tbt_adj_sparepart]
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbm_services]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_services]
            SET          
             services_name=@services_name
             ,period_year=@period_year
@@ -2457,12 +2468,12 @@ WHERE   services_no=@services_no"
             sql.Parameters.AddWithValue("@part_name", data.part_name ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_desc", data.part_desc ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_type", data.part_type ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@cost_price", data.cost_price ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@sale_price", data.sale_price ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@cost_price", data.cost_price?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@sale_price", data.sale_price?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@unit_code", data.unit_code ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@part_value", data.part_value ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value ?? (object)DBNull.Value);
-            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_value", data.part_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@minimum_value", data.minimum_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@maximum_value", data.maximum_value?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
@@ -2516,7 +2527,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbm_customer]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_customer]
                         SET
                             STATUS =0
                      WHERE customer_id =@customer_id "
@@ -2533,7 +2544,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbm_employee]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_employee]
                 SET  
                 STATUS=0,
                 update_date=GETDATE(),
@@ -2556,7 +2567,7 @@ WHERE   services_no=@services_no"
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
-                CommandText = $@"UPDATE [dbo].[tbm_services]
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbm_services]
            SET          
             status =0
             ,update_date=GETDATE()
@@ -2862,7 +2873,7 @@ WHERE 1=1
             DateTime? date_to)
         {
             List<ReportPPM> dataObjects = null;
-            SqlCommand command = new SqlCommand("[dbo].[sp_getReportPPM]", this.sqlConnection);
+            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].[sp_getReportPPM]", this.sqlConnection);
             command.CommandType = CommandType.StoredProcedure;
             command.Parameters.AddWithValue("@date_from", date_from);
             command.Parameters.AddWithValue("@date_to", date_to);
@@ -2881,7 +2892,7 @@ WHERE 1=1
         #region " CALL STORE "
         public async ValueTask sp_gen_remind_table(string licenseno)
         {
-            SqlCommand command = new SqlCommand("[dbo].sp_gen_remind_table", this.sqlConnection);
+            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].sp_gen_remind_table", this.sqlConnection);
             command.CommandType = CommandType.StoredProcedure;
             command.Connection = this.sqlConnection;
             command.Transaction = this.transaction;
