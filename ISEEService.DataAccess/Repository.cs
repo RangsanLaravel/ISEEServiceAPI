@@ -388,19 +388,21 @@ namespace ISEEService.DataAccess
             List<tbt_adj_sparepart> dataObjects = null;
             SqlCommand command = new SqlCommand
             {
-                CommandType = System.Data.CommandType.Text,
+                CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT  sp.[part_id],
-       adj.adj_id
-      ,sp.[part_no]
-      ,[part_name]
-      ,[part_desc]
-	  ,sp.part_value
-	  ,[adj_part_value]
-  FROM [{DBENV}].[dbo].[tbm_sparepart] sp
-  INNER join [{DBENV}].[dbo].[tbt_adj_sparepart] adj
-  ON adj.part_id =sp.part_id
-  WHERE sp.[part_id] =@part_id "
+                /*              CommandText = $@"SELECT  sp.[part_id],
+                     adj.adj_id
+                    ,sp.[part_no]
+                    ,[part_name]
+                    ,[part_desc]
+                 ,sp.part_value
+                 ,[adj_part_value]
+                FROM [{DBENV}].[dbo].[tbm_sparepart] sp
+                INNER join [{DBENV}].[dbo].[tbt_adj_sparepart] adj
+                ON adj.part_id =sp.part_id
+                WHERE sp.[part_id] =@part_id "
+                          };*/
+                CommandText =$"[{DBENV}].[dbo].[get_tbt_adj_sparepart_detail]"
             };
             command.Parameters.AddWithValue("@part_id", part_id);
 
@@ -613,7 +615,7 @@ SELECT [ijob_id]
       ,im.[status]
       ,[image_type]
   FROM [{DBENV}].[dbo].[tbt_job_image] im
-  INNER JOIN  [{DBENV}].tbm_image_type imt ON im.image_type =imt.image_code
+  INNER JOIN  [{DBENV}].[dbo].tbm_image_type imt ON im.image_type =imt.image_code
   WHERE imt.status= 1
   AND im.status= 1
   and im.ijob_id =@job_id
@@ -723,6 +725,7 @@ SELECT [ijob_id]
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
+                Transaction = this.transaction,
                 CommandText = $@"SELECT ISNULL(MAX(SEQ),0)
                                 FROM [{DBENV}].[dbo].[tbt_job_part]
                                 where pjob_id =@job_id AND STATUS =1"
@@ -1098,115 +1101,115 @@ WHERE cu.status =1 "
             }
             return dataObjects;
         }
-        public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data)
-        {
-            List<tbm_sparepart> dataObjects = null;
-            SqlCommand command = new SqlCommand
-            {
-                CommandType = System.Data.CommandType.Text,
-                Connection = this.sqlConnection,
-                CommandText = $@"
-SELECT 
-	part_id
-      ,part_no
-      ,part_name
-      ,part_desc
-      ,part_type
-	  ,case
-	  WHEN part_type ='00' then
-	  'Normal Part'
-	  ELSE 'Dummy Part (ช่างกำหนด)'
-	  END AS part_type_desc
-      ,cost_price
-      ,sale_price
-      ,part.unit_code
-	  ,un.unit_name
-      ,[{DBENV}].dbo.fn_showOnHand(part_id,@jobid) AS  part_value
-      ,minimum_value
-      ,maximum_value
-      ,part.location_id
-	  ,loca.location_name
-      ,part.create_date
-      ,part.create_by
-      ,part.cancal_date
-      ,part.cancel_by
-      ,part.cancel_reason
-      ,part.update_date
-      ,part.update_by
-  FROM [{DBENV}].[dbo].[tbm_sparepart] part 
-  INNER JOIN [{DBENV}].[dbo].[tbm_unit] un ON un.unit_code =part.unit_code
-  INNER JOIN [{DBENV}].[dbo].[tbm_location_store] loca on loca.location_id =part.location_id
-  WHERE 1=1 "
-            };
+      /*  public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data)
+          {
+              List<tbm_sparepart> dataObjects = null;
+              SqlCommand command = new SqlCommand
+              {
+                  CommandType = System.Data.CommandType.Text,
+                  Connection = this.sqlConnection,
+                  CommandText = $@"
+  SELECT 
+      part_id
+        ,part_no
+        ,part_name
+        ,part_desc
+        ,part_type
+        ,case
+        WHEN part_type ='00' then
+        'Normal Part'
+        ELSE 'Dummy Part (ช่างกำหนด)'
+        END AS part_type_desc
+        ,cost_price
+        ,sale_price
+        ,part.unit_code
+        ,un.unit_name
+        ,[{DBENV}].dbo.fn_showOnHand(part_id,@jobid) AS  part_value
+        ,minimum_value
+        ,maximum_value
+        ,part.location_id
+        ,loca.location_name
+        ,part.create_date
+        ,part.create_by
+        ,part.cancal_date
+        ,part.cancel_by
+        ,part.cancel_reason
+        ,part.update_date
+        ,part.update_by
+    FROM [{DBENV}].[dbo].[tbm_sparepart] part 
+    INNER JOIN [{DBENV}].[dbo].[tbm_unit] un ON un.unit_code =part.unit_code
+    INNER JOIN [{DBENV}].[dbo].[tbm_location_store] loca on loca.location_id =part.location_id
+    WHERE 1=1 "
+              };
 
-            command.Parameters.AddWithValue("@jobid", data.jobid ?? (object)DBNull.Value);
+              command.Parameters.AddWithValue("@jobid", data.jobid ?? (object)DBNull.Value);
 
-            if (data is not null && !string.IsNullOrWhiteSpace(data.part_id))
-            {
-                command.CommandText += " AND part_id =@part_id";
-                command.Parameters.AddWithValue("@part_id", data.part_id);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.part_no))
-            {
-                command.CommandText += " AND part_no =@part_no";
-                command.Parameters.AddWithValue("@part_no", data.part_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.part_desc))
-            {
-                command.CommandText += " AND part_desc =@part_desc";
-                command.Parameters.AddWithValue("@part_desc", data.part_desc);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.part_type))
-            {
-                command.CommandText += " AND part_type =@part_type";
-                command.Parameters.AddWithValue("@part_type", data.part_type);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.cost_price))
-            {
-                command.CommandText += " AND cost_price =@cost_price";
-                command.Parameters.AddWithValue("@cost_price", data.cost_price);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.sale_price))
-            {
-                command.CommandText += " AND sale_price =@sale_price";
-                command.Parameters.AddWithValue("@sale_price", data.sale_price);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.unit_code))
-            {
-                command.CommandText += " AND part.unit_code =@unit_code";
-                command.Parameters.AddWithValue("@unit_code", data.unit_code);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.part_value))
-            {
-                command.CommandText += " AND part_value =@part_value";
-                command.Parameters.AddWithValue("@part_value", data.part_value);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.minimum_value))
-            {
-                command.CommandText += " AND minimum_value =@minimum_value";
-                command.Parameters.AddWithValue("@minimum_value", data.minimum_value);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.maximum_value))
-            {
-                command.CommandText += " AND maximum_value =@maximum_value";
-                command.Parameters.AddWithValue("@maximum_value", data.maximum_value);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.location_id))
-            {
-                command.CommandText += " AND part.location_id =@location_id";
-                command.Parameters.AddWithValue("@location_id", data.location_id);
-            }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.part_id))
+              {
+                  command.CommandText += " AND part_id =@part_id";
+                  command.Parameters.AddWithValue("@part_id", data.part_id);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.part_no))
+              {
+                  command.CommandText += " AND part_no =@part_no";
+                  command.Parameters.AddWithValue("@part_no", data.part_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.part_desc))
+              {
+                  command.CommandText += " AND part_desc =@part_desc";
+                  command.Parameters.AddWithValue("@part_desc", data.part_desc);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.part_type))
+              {
+                  command.CommandText += " AND part_type =@part_type";
+                  command.Parameters.AddWithValue("@part_type", data.part_type);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.cost_price))
+              {
+                  command.CommandText += " AND cost_price =@cost_price";
+                  command.Parameters.AddWithValue("@cost_price", data.cost_price);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.sale_price))
+              {
+                  command.CommandText += " AND sale_price =@sale_price";
+                  command.Parameters.AddWithValue("@sale_price", data.sale_price);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.unit_code))
+              {
+                  command.CommandText += " AND part.unit_code =@unit_code";
+                  command.Parameters.AddWithValue("@unit_code", data.unit_code);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.part_value))
+              {
+                  command.CommandText += " AND part_value =@part_value";
+                  command.Parameters.AddWithValue("@part_value", data.part_value);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.minimum_value))
+              {
+                  command.CommandText += " AND minimum_value =@minimum_value";
+                  command.Parameters.AddWithValue("@minimum_value", data.minimum_value);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.maximum_value))
+              {
+                  command.CommandText += " AND minimum_value =@maximum_value";
+                  command.Parameters.AddWithValue("@maximum_value", data.maximum_value);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.location_id))
+              {
+                  command.CommandText += " AND part.location_id =@location_id";
+                  command.Parameters.AddWithValue("@location_id", data.location_id);
+              }
 
-            using (DataTable dt = await Utility.FillDataTableAsync(command))
-            {
-                if (dt.Rows.Count > 0)
-                {
-                    dataObjects = dt.AsEnumerable<tbm_sparepart>().ToList();
-                }
-            }
-            return dataObjects;
-        }
-
+              using (DataTable dt = await Utility.FillDataTableAsync(command))
+              {
+                  if (dt.Rows.Count > 0)
+                  {
+                      dataObjects = dt.AsEnumerable<tbm_sparepart>().ToList();
+                  }
+              }
+              return dataObjects;
+          }*/
+       
         public async ValueTask<long?> GET_IMAGE_ID()
         {
             long? image_id = null;
@@ -2054,11 +2057,14 @@ AND menu.status =1
       ,[sale_price]
       ,[unit_code]
       ,[part_value]
+      ,[part_weight]
       ,[minimum_value]
       ,[maximum_value]
       ,[location_id]
       ,[create_date]
       ,[create_by]
+      ,[ref_group]
+      ,[ref_other]  
      )
      VALUES
       (
@@ -2070,11 +2076,15 @@ AND menu.status =1
       ,@sale_price
       ,@unit_code
       ,@part_value
+      ,@part_weight 
       ,@minimum_value
       ,@maximum_value
       ,@location_id
       ,GETDATE()
-      ,@create_by)"
+      ,@create_by
+      ,@ref_group
+      ,@ref_other
+)"
             };
 
             sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
@@ -2085,10 +2095,13 @@ AND menu.status =1
             sql.Parameters.AddWithValue("@sale_price", data.sale_price?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@unit_code", data.unit_code?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_value", data.part_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_weight", data.part_weight?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@minimum_value", data.minimum_value?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@maximum_value", data.maximum_value?.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@ref_group", data.ref_group ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@ref_other", data.ref_other ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
 
@@ -2105,21 +2118,27 @@ INSERT INTO  [{DBENV}].[dbo].[tbt_adj_sparepart]
            [part_id]
            ,[part_no]
            ,[adj_part_value]
+           ,[remark]
            ,[create_date]
-           ,[create_by])
+           ,[create_by]
+           ,[adj_type])
      VALUES
            (
            @part_id
            ,@part_no
            ,@adj_part_value
+           ,@remark
            ,GETDATE()
-           ,@create_by)
+           ,@create_by
+           ,@adj_type)
 "
             };
             sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@remark", data.remark ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_type", data.adj_type ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
         }
 
@@ -2458,6 +2477,8 @@ WHERE   services_no=@services_no"
       ,location_id=@location_id
       ,update_date =GETDATE()
       ,update_by=@update_by
+      ,ref_group=@ref_group
+      ,ref_other=@ref_other
       {(data.status == "0" ? $@",cancel_by = @cancel_by
       ,cancel_reason =@cancel_reason
       ,cancal_date =GETDATE()" : "")}
@@ -2477,6 +2498,8 @@ WHERE   services_no=@services_no"
             sql.Parameters.AddWithValue("@location_id", data.location_id ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@ref_group", data.ref_group ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@ref_other", data.ref_other ?? (object)DBNull.Value);
             if (data.status == "0")
             {
                 sql.Parameters.AddWithValue("@cancel_by", data.create_by ?? (object)DBNull.Value);
@@ -2497,6 +2520,7 @@ WHERE   services_no=@services_no"
                 CommandText = @$"UPDATE  [{DBENV}].[dbo].[tbt_adj_sparepart]
      set
        adj_part_value =@adj_part_value
+      ,remark =@remark
       ,update_date =GETDATE()
       ,update_by =@update_by
      {(string.IsNullOrEmpty(data.cancel_by) ? "" :
@@ -2507,6 +2531,7 @@ WHERE   services_no=@services_no"
 
             sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value.Replace(",", "") ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@update_by", data.create_by ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@remark", data.remark ?? (object)DBNull.Value);
             if (!string.IsNullOrEmpty(data.cancel_by))
             {
                 sql.Parameters.AddWithValue("@cancel_by", data.cancel_by ?? (object)DBNull.Value);
@@ -2798,76 +2823,78 @@ WHERE 1=1  "
             }
             return dataObjects;
         }
-        public async ValueTask<List<summary_stock_list>> GET_Summary_stock_list(summary_stock_list_condition condition,
-             DateTime? partcrtfrom,
-             DateTime? partcrtto)
-        {
-            List<summary_stock_list> dataObjects = null;
-            SqlCommand sql = new SqlCommand
-            {
-                CommandType = System.Data.CommandType.Text,
-                Connection = this.sqlConnection,
-                CommandText = $@"
-SELECT  sp.[part_id]
-      ,sp.[part_no]
-      ,[part_name]
-      ,[part_desc]
-      ,[part_type]
-      ,[cost_price]    
-      ,sp.[create_date]
-	  ,[sale_price]
-      ,sp.[unit_code]
-	  , unit_name
-      ,[part_value]
-      ,[minimum_value]
-      ,[maximum_value]
-      ,sp.[location_id]
-	  ,lo.location_name
-      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[create_by] ) as [create_by]
-      ,[cancal_date]
-      ,sp.[cancel_by]
-      ,sp.[cancel_reason]
-      ,sp.[update_date]
-      ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[update_by]) as [update_by]
-	  ,adj.adj_part_value
-  FROM [{DBENV}].[dbo].[tbm_sparepart] sp
-left join [{DBENV}].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
-left join [{DBENV}].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
-left JOIN [{DBENV}].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
-WHERE 1=1 
-"
-            };
-            if (partcrtfrom is not null)
-            {
-                sql.CommandText += $" AND sp.create_date between @createfrm and @createto ";
-                sql.Parameters.AddWithValue("@createfrm", partcrtfrom);
-                sql.Parameters.AddWithValue("@createto", partcrtto);
-            }
-            if (!string.IsNullOrEmpty(condition.Partno))
-            {
-                sql.CommandText += $" AND (sp.part_name like @part_no or sp.part_no like @part_no ) ";
-                sql.Parameters.AddWithValue("@part_no", $"%{condition.Partno}%");
-            }
-            if (!string.IsNullOrEmpty(condition.locationid))
-            {
-                sql.CommandText += $" AND sp.location_id=@location_id ";
-                sql.Parameters.AddWithValue("@location_id", condition.locationid);
-            }
-            if (!string.IsNullOrEmpty(condition.PartId))
-            {
-                sql.CommandText += $" AND sp.part_id=@part_id ";
-                sql.Parameters.AddWithValue("@part_id", condition.PartId);
-            }
-            using (DataTable dt = await Utility.FillDataTableAsync(sql))
-            {
-                if (dt.Rows.Count > 0)
-                {
-                    dataObjects = dt.AsEnumerable<summary_stock_list>().ToList();
-                }
-            }
-            return dataObjects;
-        }
+        /*   public async ValueTask<List<summary_stock_list>> GET_Summary_stock_list(summary_stock_list_condition condition,
+                DateTime? partcrtfrom,
+                DateTime? partcrtto)
+           {
+               List<summary_stock_list> dataObjects = null;
+               SqlCommand sql = new SqlCommand
+               {
+                   CommandType = System.Data.CommandType.Text,
+                   Connection = this.sqlConnection,
+                   CommandText = $@"
+   SELECT  sp.[part_id]
+         ,sp.[part_no]
+         ,[part_name]
+         ,[part_desc]
+         ,[part_type]
+         ,[cost_price]    
+         ,sp.[create_date]
+         ,[sale_price]
+         ,sp.[unit_code]
+         , unit_name
+         ,[part_value]
+         ,[minimum_value]
+         ,[maximum_value]
+         ,sp.[location_id]
+         ,lo.location_name
+         ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[create_by] ) as [create_by]
+         ,[cancal_date]
+         ,sp.[cancel_by]
+         ,sp.[cancel_reason]
+         ,sp.[update_date]
+         ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[update_by]) as [update_by]
+         ,adj.adj_part_value
+         ,adj.remark
+     FROM [{DBENV}].[dbo].[tbm_sparepart] sp
+   left join [{DBENV}].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
+   left join [{DBENV}].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
+   left JOIN [{DBENV}].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
+   WHERE 1=1 
+   "
+               };
+               if (partcrtfrom is not null)
+               {
+                   sql.CommandText += $" AND sp.create_date between @createfrm and @createto ";
+                   sql.Parameters.AddWithValue("@createfrm", partcrtfrom);
+                   sql.Parameters.AddWithValue("@createto", partcrtto);
+               }
+               if (!string.IsNullOrEmpty(condition.Partno))
+               {
+                   sql.CommandText += $" AND (sp.part_name like @part_no or sp.part_no like @part_no ) ";
+                   sql.Parameters.AddWithValue("@part_no", $"%{condition.Partno}%");
+               }
+               if (!string.IsNullOrEmpty(condition.locationid))
+               {
+                   sql.CommandText += $" AND sp.location_id=@location_id ";
+                   sql.Parameters.AddWithValue("@location_id", condition.locationid);
+               }
+               if (!string.IsNullOrEmpty(condition.PartId))
+               {
+                   sql.CommandText += $" AND sp.part_id=@part_id ";
+                   sql.Parameters.AddWithValue("@part_id", condition.PartId);
+               }
+               using (DataTable dt = await Utility.FillDataTableAsync(sql))
+               {
+                   if (dt.Rows.Count > 0)
+                   {
+                       dataObjects = dt.AsEnumerable<summary_stock_list>().ToList();
+                   }
+               }
+               return dataObjects;
+           }*/
 
+      
         public async ValueTask<List<ReportPPM>> sp_getReportPPM(string customerid,
             DateTime? date_from,
             DateTime? date_to)
@@ -2901,6 +2928,105 @@ WHERE 1=1
         }
 
 
+        public async ValueTask<List<tbm_sparepart>> GET_TBM_SPAREPARTAsync(tbm_sparepart data)
+        {
+            List<tbm_sparepart> dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[get_tbm_sparepart]"
+            };
+            command.Parameters.AddWithValue("@P_part_no", data.part_no ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@P_location_id", data.location_id ?? (object)DBNull.Value);
+            command.Parameters.AddWithValue("@P_job_id", data.jobid ?? (object)DBNull.Value);
+
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_sparepart>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+
+
+        public async ValueTask<List<summary_stock_list>> GET_Summary_stock_list(summary_stock_list_condition condition,
+          DateTime? partcrtfrom,
+          DateTime? partcrtto)
+        {
+            List<summary_stock_list> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[sp_getReportStock]"
+            };
+            sql.Parameters.AddWithValue("@P_part_no", condition.Partno ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_create_from", partcrtfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_create_to", partcrtto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@p_location_id", condition.locationid ?? (object)DBNull.Value);        
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<summary_stock_list>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+        public async ValueTask MOVECAR_TBM_SPAREPARTAsync(tbm_sparepart data)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"[{DBENV}].[dbo].[sp_update_sparepart]"
+            };
+
+            sql.Parameters.AddWithValue("@P_part_id", data.part_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_location_id", data.location_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_part_value", data.part_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_user_id", data.create_by ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_part_no", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_part_name", data.part_name ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@p_part_desc", data.part_desc ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@p_part_type", data.part_type ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@p_cost_price", data.cost_price?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@p_sale_price", data.sale_price?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@p_unit_code", data.unit_code?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_minimum", data.minimum_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_maximum", data.maximum_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_ref_group", data.ref_group ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_ref_other", data.ref_other ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@P_part_weight", data.part_weight?.Replace(",", "") ?? (object)DBNull.Value);
+
+            await sql.ExecuteNonQueryAsync();
+        }
+
+        public async ValueTask<List<tbm_sparepart>> sp_tbm_sparepart_detail(string part_id)
+        {
+            List<tbm_sparepart> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[sp_tbm_sparepart_detail]"
+            };
+
+            sql.Parameters.AddWithValue("@P_part_id", part_id ?? (object)DBNull.Value);
+
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_sparepart>().ToList();
+                }
+            }
+            return dataObjects;
+        }
         #endregion " CALL STORE "
 
     }

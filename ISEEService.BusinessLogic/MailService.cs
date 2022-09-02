@@ -24,6 +24,13 @@ namespace ISEEService.BusinessLogic
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
             email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
+            if (mailRequest.Cc != null && mailRequest.Cc.Count > 0)
+            {
+                foreach (var item in mailRequest.Cc)
+                {
+                    email.Cc.Add(MailboxAddress.Parse(item));
+                }
+            }
             email.Subject = mailRequest.Subject;
             var builder = new BodyBuilder();
             if (mailRequest.Attachments != null)

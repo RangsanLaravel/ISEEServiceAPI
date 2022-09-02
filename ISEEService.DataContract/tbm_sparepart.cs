@@ -20,6 +20,7 @@ namespace ISEEService.DataContract
         public string unit_code { get; set; }
         public string unit_name { get; set; }
         public string part_value { get; set; }
+        public string part_weight { get; set; }
         public string minimum_value { get; set; }
         public string maximum_value { get; set; }
         public string location_id { get; set; }
@@ -34,5 +35,7 @@ namespace ISEEService.DataContract
         public string status { get; set; }
         public string page { get; set; }
         public string jobid { get; set; }
+        public string ref_group { get; set; }
+        public string ref_other { get; set; }
     }
 }

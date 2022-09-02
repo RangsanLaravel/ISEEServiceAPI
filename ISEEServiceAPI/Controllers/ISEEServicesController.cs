@@ -345,7 +345,22 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("SPARE_PART_DETAIL/{part_id}")]
 
+        public async ValueTask<IActionResult> SPARE_PART_DETAIL(string part_id)
+        {
+            List<tbm_sparepart> dataObjects = null;
+            try
+            {
+                var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                dataObjects = await this.service.sp_tbm_sparepart_detail(part_id);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("GET_TBM_BRAND")]
         public async ValueTask<IActionResult> GET_BRANDAsync()
         {

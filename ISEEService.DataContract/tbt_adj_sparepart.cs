@@ -22,6 +22,9 @@ namespace ISEEService.DataContract
 
      public string part_name { get; set; }
       public string part_desc { get; set; }
-        public string part_value { get; set; }
+     public string part_value { get; set; }
+     public string Total { get; set; }
+     public string remark { get; set; }
+     public string adj_type { get; set; }
     }
 }

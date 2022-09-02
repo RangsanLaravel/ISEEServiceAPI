@@ -29,7 +29,7 @@ namespace ISEEService.BusinessLogic
         private readonly IMailService IMailService;
         private readonly string DBENV = string.Empty;
         //string contentRootPath = _hostingEnvironment.ContentRootPath + @"\ImageMaster";
-        public ServiceAction(string connectionstring, MailSettings mailSettings,string DBENV)
+        public ServiceAction(string connectionstring, MailSettings mailSettings, string DBENV)
         {
             this._connectionstring = connectionstring;
             this.IMailService = new MailService(mailSettings);
@@ -37,7 +37,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask CheckConnectDB()
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             try
             {
                 await repository.OpenConnectionAsync();
@@ -55,7 +55,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<long?> CHECK_STOCK(string part_id, string location_id)
         {
             long? dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -75,7 +75,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_province>> GET_PROVINCE()
         {
             List<tbm_province> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -117,7 +117,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_sub_district>> GET_SUB_DISTRICT(string district_code)
         {
             List<tbm_sub_district> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -137,7 +137,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_employee_position>> GET_EMPLOYEE_POSITIONAsync()
         {
             List<tbm_employee_position> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -157,7 +157,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_jobtype>> GET_JOBTYPEAsync()
         {
             List<tbm_jobtype> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -176,7 +176,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_unit>> GET_TBM_UNITAsync()
         {
             List<tbm_unit> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -196,7 +196,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<Customer>> GET_CUSTOMER(string license_no)
         {
             List<Customer> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -215,7 +215,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_brand>> GET_BRANDAsync()
         {
             List<tbm_brand> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -234,7 +234,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbt_job_header>> GET_JOBREFAsync(job_ref data)
         {
             List<tbt_job_header> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -254,7 +254,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_employee>> GET_TBM_EMPLOYEEAsync(tbm_employee data)
         {
             List<tbm_employee> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -274,7 +274,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_customer>> GET_TBM_CUSTOMERAsync(tbm_customer data)
         {
             List<tbm_customer> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -302,7 +302,7 @@ namespace ISEEService.BusinessLogic
             TimeSpan timestart = new TimeSpan(0, 0, 0);
             TimeSpan timelast = new TimeSpan(23, 59, 59);
 
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -338,7 +338,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_location_store>> GET_TBM_LOCATION_STOREAsync(tbm_location_store condition)
         {
             List<tbm_location_store> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -358,7 +358,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_services>> GET_TBM_SERVICESAsync(tbm_services data)
         {
             List<tbm_services> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -378,7 +378,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<string> GET_TBM_SERVICES_BY_JOBTYPE(string JOBTYPE)
         {
             string dataObjects = string.Empty;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -398,7 +398,7 @@ namespace ISEEService.BusinessLogic
         {
             List<tbm_sparepart> dataObjects = null;
             tbm_employee emp = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -456,10 +456,31 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
+
+        public async ValueTask<List<tbm_sparepart>> sp_tbm_sparepart_detail(string part_id)
+        {
+            List<tbm_sparepart> dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.sp_tbm_sparepart_detail(part_id);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
         public async ValueTask<long?> GET_IMAGE_ID()
         {
             long? dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -479,7 +500,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<tbt_job_image> CHECK_RESEND_EMAIL(string Jobid)
         {
             tbt_job_image dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -498,7 +519,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<long> GET_SEQ_IMAGEAsync(string ijob_id)
         {
             long dataObjects = 0;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -517,7 +538,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART_DETAIL(string part_id)
         {
             List<tbt_adj_sparepart> dataObjects = new List<tbt_adj_sparepart>();
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -536,7 +557,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
         {
             List<tbt_adj_sparepart> dataObjects = new List<tbt_adj_sparepart>();
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -557,7 +578,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<close_job> GET_JOB_DETAIL(string job_id)
         {
             close_job dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -589,7 +610,7 @@ namespace ISEEService.BusinessLogic
         {
             List<job_detail_list> dataObjects = null;
             bool isAdmin = true;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -609,7 +630,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<tbt_job_header> GET_TBT_JOB(string job_id)
         {
             tbt_job_header dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -630,7 +651,7 @@ namespace ISEEService.BusinessLogic
         {
             //tbt_job_header dataObjects = null;
             bool isAdmin = false;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -650,7 +671,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<tbt_job_image> GET_PATHFILE(string ijob_id, string seq)
         {
             tbt_job_image dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -673,7 +694,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<string> GET_SP_GET_RUNNING_NOAsync(string running_type)
         {
             string dataObjects = string.Empty;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -693,14 +714,19 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<long> GET_TBT_JOB_PART_SEQ(string job_id)
         {
             long dataObjects = 0;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
+            
             await repository.OpenConnectionAsync();
+            await repository.beginTransection();
             try
             {
                 dataObjects = await repository.GET_TBT_JOB_PART_SEQ(job_id);
+                await repository.CommitTransection();
+
             }
             catch (Exception ex)
             {
+                await repository.RollbackTransection();
                 throw ex;
             }
             finally
@@ -712,7 +738,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbt_job_part>> GET_TBT_JOB_PART(string pjob_id)
         {
             List<tbt_job_part> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -732,7 +758,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbt_job_detail>> GET_TBT_JOB_DETAIL(tbt_job_detail tbt_job_detail)
         {
             List<tbt_job_detail> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -752,7 +778,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_image_type>> GET_TBM_IMAGE_TYPEAsync()
         {
             List<tbm_image_type> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -773,7 +799,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<tbm_checklist_group>> CHECK_LIST()
         {
             List<tbm_checklist_group> dataObjects = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -803,7 +829,7 @@ namespace ISEEService.BusinessLogic
         {
 
             employee_info employee_Info = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -833,7 +859,7 @@ namespace ISEEService.BusinessLogic
 
             List<tbm_menu> dataObjects = null;
             List<tbm_config> configs = null;
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
@@ -857,11 +883,31 @@ namespace ISEEService.BusinessLogic
             return dataObjects;
 
         }
+        public async ValueTask<List<tbm_config>> GET_CONFIG()
+        {
+            List<tbm_config> configs = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                configs = await repository.GET_TBM_CONFIG();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return configs;
+
+        }
 
         public async ValueTask INSERT_TBM_EMPLOYEEAsync(employee data)
         {
 
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -893,7 +939,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask INSERT_TBM_CUSTOMERAsync(tbm_customer data)
         {
 
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -928,7 +974,7 @@ namespace ISEEService.BusinessLogic
             DateTime? expire_date = null;
             CultureInfo culture = new CultureInfo("th-TH");
 
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -981,7 +1027,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask INSERT_TBM_SERVICESAsync(tbm_services data)
         {
 
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1031,7 +1077,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask INSERT_TBT_JOB_HEADERAsync(create_job data)
         {
 
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             List<tbm_jobtype> tbm_Jobtypes = null;
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
@@ -1088,7 +1134,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask INSERT_TBM_LOCATION_STOREAsync(tbm_location_store data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1127,7 +1173,7 @@ namespace ISEEService.BusinessLogic
 
         public async ValueTask INSERT_TBM_SPAREPARTAsync(tbm_sparepart data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1136,31 +1182,33 @@ namespace ISEEService.BusinessLogic
                 {
                     await repository.INSERT_TBM_SPAREPARTAsync(data);//สร้างใหม่
                 }
-                else if (data.location_id != "L01" && !string.IsNullOrWhiteSpace(data.part_id))
+                else/* if (data.location_id != "L01" && !string.IsNullOrWhiteSpace(data.part_id))*/
                 {
-                    var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id }, data.create_by);
-                    if (spart is not null)
-                    {
-                        if (spart.FirstOrDefault().location_id != data.location_id)
-                        {
-                            await repository.INSERT_TBM_SPAREPARTAsync(data);//ย้ายไปคันอื่น
-                            spart.FirstOrDefault().part_value = (Convert.ToUInt32(spart.FirstOrDefault().part_value) - Convert.ToInt32(data.part_value)).ToString();
-                            await repository.UPDATE_TBM_SPAREPARTAsync(spart.FirstOrDefault());
-                        }
-                        else
-                        {
-                            await repository.UPDATE_TBM_SPAREPARTAsync(data);//แก้ไขคันเดิม
-                        }
-                    }
+
+                    await repository.MOVECAR_TBM_SPAREPARTAsync(data);
+                    //var spart = await GET_TBM_SPAREPARTAsync(new tbm_sparepart { part_id = data.part_id }, data.create_by);
+                    //if (spart is not null)
+                    //{
+                    //    if (spart.FirstOrDefault().location_id != data.location_id)
+                    //    {
+                    //        await repository.INSERT_TBM_SPAREPARTAsync(data);//ย้ายไปคันอื่น
+                    //        spart.FirstOrDefault().part_value = (Convert.ToUInt32(spart.FirstOrDefault().part_value) - Convert.ToInt32(data.part_value)).ToString();
+                    //        await repository.UPDATE_TBM_SPAREPARTAsync(spart.FirstOrDefault());
+                    //    }
+                    //    else
+                    //    {
+                    //        await repository.UPDATE_TBM_SPAREPARTAsync(data);//แก้ไขคันเดิม
+                    //    }
+                    //}
                 }
-                else
-                {
-                    if (data.status == "0")
-                    {
-                        data.cancel_by = data.create_by;
-                    }
-                    await repository.UPDATE_TBM_SPAREPARTAsync(data);
-                }
+                //else
+                //{
+                //    if (data.status == "0")
+                //    {
+                //        data.cancel_by = data.create_by;
+                //    }
+                //    await repository.UPDATE_TBM_SPAREPARTAsync(data);
+                //}
                 await repository.CommitTransection();
             }
             catch (Exception ex)
@@ -1176,7 +1224,7 @@ namespace ISEEService.BusinessLogic
 
         public async ValueTask INSERT_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1204,7 +1252,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask INSERT_TBT_JOB_IMAGE(tbt_job_image data, string userid, string job_id)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1228,7 +1276,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask TERMINATE_TBM_CUSTOMERAsync(customer_terminate data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1258,7 +1306,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask TERMINATE_TBM_EMPLOYEEAsync(employee_terminate data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1288,7 +1336,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask TERMINATE_TBM_SERVICESAsync(service_terminate data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1318,7 +1366,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask TERMINATE_TBM_LOCATION_STOREAsync(location_store_terminate data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1348,7 +1396,7 @@ namespace ISEEService.BusinessLogic
 
         public async ValueTask TERMINATE_TBM_SPAREPARTAsync(sparepart_terminate data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1375,7 +1423,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask TERMINATE_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1399,7 +1447,7 @@ namespace ISEEService.BusinessLogic
 
         public async ValueTask TERMINATE_TBT_JOB_IMAGE(string job_id, string seq)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1419,7 +1467,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask Close_jobAsync(close_job data, List<tbt_job_image> image)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1471,8 +1519,8 @@ namespace ISEEService.BusinessLogic
                 await repository.TERMINATE_TBT_JOB_PART(data.job_id);
                 if (data.job_parts is not null && data.job_parts.Count > 0)
                 {
-                    var seq = await GET_TBT_JOB_PART_SEQ(data.job_id);
-
+                    //var seq = await GET_TBT_JOB_PART_SEQ(data.job_id);
+                    var seq = await  repository.GET_TBT_JOB_PART_SEQ(data.job_id); 
                     foreach (var item in data.job_parts)
                     {
                         seq = seq + 1;
@@ -1497,7 +1545,7 @@ namespace ISEEService.BusinessLogic
         #region " REPORT "
         public async ValueTask<tbt_job_image> GET_IMAGE_SIG(string condition)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             tbt_job_image dataObjects = new tbt_job_image();
             try
@@ -1517,7 +1565,7 @@ namespace ISEEService.BusinessLogic
 
         public async ValueTask<summary_job_list_condition> GET_Summary_job_list(summary_job_list_condition condition)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             List<DataContract.summary_job_list> dataObjects = new List<DataContract.summary_job_list>();
             try
@@ -1619,7 +1667,7 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask<summary_stock_list_condition> GET_Summary_stock_list(summary_stock_list_condition condition)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             List<DataContract.summary_stock_list> dataObjects = new List<DataContract.summary_stock_list>();
             try
@@ -1716,7 +1764,7 @@ namespace ISEEService.BusinessLogic
                         DESCRIPTION = $"{item.check_group_name}",
                         Header = "Y"
                     });
-                    foreach (var _item in item.check_list.Where(a=>a.show_in_rpt == "1"))
+                    foreach (var _item in item.check_list.Where(a => a.show_in_rpt == "1"))
                     {
                         chkpt.Add(new check_list_rpt
                         {
@@ -1758,6 +1806,12 @@ namespace ISEEService.BusinessLogic
         }
         public async ValueTask sendemail(DataFile pdf, string email)
         {
+            var config =await GET_CONFIG();
+            List<string> Cc = new List<string>();
+            if(config !=null)
+            {
+                Cc = config.Where(a => a.config_key == "CC-Mail").Select(a=>a.config_value).FirstOrDefault().Split(',')?.ToList();
+            }
             List<DataFile> Attachments = new List<DataFile>();
             Attachments.Add(pdf);
             MailRequest request = new MailRequest
@@ -1766,7 +1820,8 @@ namespace ISEEService.BusinessLogic
                 Body = "<span>รายละเอียดการซ่อมบำรุง</span>",
                 Subject = "รายละเอียดการซ่อมบำรุง",
                 //ToEmail = "Dethman_light@hotmail.com"
-                ToEmail = email
+                ToEmail = email,
+                Cc =Cc
 
             };
             await IMailService.SendEmailAsync(request);
@@ -1842,7 +1897,7 @@ namespace ISEEService.BusinessLogic
             string date_from,
             string date_to)
         {
-            Repository repository = new Repository(_connectionstring,DBENV);
+            Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             List<ReportPPM> dataObjects = new List<ReportPPM>();
             try
