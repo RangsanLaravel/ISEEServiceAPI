@@ -415,7 +415,7 @@ namespace ISEEService.DataAccess
             }
             return dataObjects;
         }
-        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
+        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART(string adj_type)
         {
             List<tbt_adj_sparepart> dataObjects = null;
             SqlCommand command = new SqlCommand
@@ -424,6 +424,7 @@ namespace ISEEService.DataAccess
                 Connection = this.sqlConnection,
                 CommandText = $@"[{DBENV}].[dbo].GET_TBT_ADJ_SPAREPART"
             };
+            command.Parameters.AddWithValue("@P_adj_type", adj_type);
 
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {

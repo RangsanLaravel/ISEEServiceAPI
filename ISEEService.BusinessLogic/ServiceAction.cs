@@ -554,14 +554,14 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
-        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART()
+        public async ValueTask<List<tbt_adj_sparepart>> GET_TBT_ADJ_SPAREPART(string adj_type)
         {
             List<tbt_adj_sparepart> dataObjects = new List<tbt_adj_sparepart>();
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
-                dataObjects = await repository.GET_TBT_ADJ_SPAREPART();
+                dataObjects = await repository.GET_TBT_ADJ_SPAREPART( adj_type);
             }
             catch (Exception ex)
             {

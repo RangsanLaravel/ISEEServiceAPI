@@ -41,6 +41,7 @@ namespace ISEEService.DataContract
         public string adj_part_value { get; set; }
         public string ref_group { get; set; }
         public string ref_other { get; set; }
+        public string Adj_StockINOUT_Date { get; set; }
 
     }
 }

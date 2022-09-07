@@ -389,13 +389,13 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GET_TBT_ADJ_SPAREPART")]
-        public async ValueTask<IActionResult> GET_TBT_ADJ_SPAREPART()
+        [HttpGet("GET_TBT_ADJ_SPAREPART/{adj_type}")]
+        public async ValueTask<IActionResult> GET_TBT_ADJ_SPAREPART(string adj_type)
         {
             List<tbt_adj_sparepart> dataObjects = null;
             try
             {
-                dataObjects = await this.service.GET_TBT_ADJ_SPAREPART();
+                dataObjects = await this.service.GET_TBT_ADJ_SPAREPART(adj_type);
                 return Ok(dataObjects);
             }
             catch (Exception ex)
