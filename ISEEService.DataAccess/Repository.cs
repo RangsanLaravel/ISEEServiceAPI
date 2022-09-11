@@ -402,7 +402,7 @@ namespace ISEEService.DataAccess
                 ON adj.part_id =sp.part_id
                 WHERE sp.[part_id] =@part_id "
                           };*/
-                CommandText =$"[{DBENV}].[dbo].[get_tbt_adj_sparepart_detail]"
+                CommandText =$"[{DBENV}].[dbo].[sp_get_tbt_adj_sparepart_detail]"
             };
             command.Parameters.AddWithValue("@part_id", part_id);
 
@@ -422,7 +422,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = $@"[{DBENV}].[dbo].GET_TBT_ADJ_SPAREPART"
+                CommandText = $@"[{DBENV}].[dbo].SP_GET_TBT_ADJ_SPAREPART"
             };
             command.Parameters.AddWithValue("@P_adj_type", adj_type);
 
@@ -633,7 +633,7 @@ SELECT [ijob_id]
             }
             return dataObjects;
         }
-        public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid, bool isAdmin)
+      /*  public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid, bool isAdmin)
         {
             List<job_detail_list> dataObjects = null;
             SqlCommand command = new SqlCommand
@@ -678,7 +678,7 @@ SELECT [ijob_id]
                 }
             }
             return dataObjects;
-        }
+        }*/
         public async ValueTask<bool> CheckPermissionAdmin(string userid)
         {
             SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].[CheckPermissionAdmin]", this.sqlConnection);
@@ -2936,7 +2936,7 @@ WHERE 1=1  "
             {
                 CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = $@"[{DBENV}].[dbo].[get_tbm_sparepart]"
+                CommandText = $@"[{DBENV}].[dbo].[sp_get_tbm_sparepart]"
             };
             command.Parameters.AddWithValue("@P_part_no", data.part_no ?? (object)DBNull.Value);
             command.Parameters.AddWithValue("@P_location_id", data.location_id ?? (object)DBNull.Value);
@@ -3024,6 +3024,26 @@ WHERE 1=1  "
                 if (dt.Rows.Count > 0)
                 {
                     dataObjects = dt.AsEnumerable<tbm_sparepart>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+
+        public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid)
+        {
+            List<job_detail_list> dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[sp_get_tbm_job_data]"
+            };
+            command.Parameters.AddWithValue("@owner_id", userid ?? (object)DBNull.Value);
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<job_detail_list>().ToList();
                 }
             }
             return dataObjects;

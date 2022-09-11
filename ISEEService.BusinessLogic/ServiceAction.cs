@@ -609,13 +609,13 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid)
         {
             List<job_detail_list> dataObjects = null;
-            bool isAdmin = true;
+           // bool isAdmin = true;
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
             {
-                isAdmin = await repository.CheckPermissionAdmin(userid);
-                dataObjects = await repository.GET_JOB_DETAIL_LISTAsync(userid, isAdmin);
+                //isAdmin = await repository.CheckPermissionAdmin(userid);
+                dataObjects = await repository.GET_JOB_DETAIL_LISTAsync(userid);
             }
             catch (Exception ex)
             {
