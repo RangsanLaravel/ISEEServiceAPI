@@ -513,7 +513,7 @@ namespace ISEEServiceAPI.Controllers
                 {
                     DataFile filerpt = new DataFile(rpt.img_path);
                     var jbdt = await service.GET_JOB_DETAIL(Jobid);
-                    await this.service.sendemail(filerpt, jbdt.email_customer);
+                    await this.service.sendemail(filerpt, jbdt.email_customer, Jobid);
                 }
               
             }

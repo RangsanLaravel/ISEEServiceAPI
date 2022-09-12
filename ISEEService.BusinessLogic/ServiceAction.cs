@@ -1792,7 +1792,7 @@ namespace ISEEService.BusinessLogic
                 var chklist = await checklistreport(chkheader);
                 var allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist });
                 pdf = new DataFile { FileData = allpdf, FileName = "job.pdf", ContentType = "application/pdf" };
-                await sendemail(pdf, listdata.email_customer);
+                await sendemail(pdf, listdata.email_customer, listdata.job_id);
             }
             catch (Exception ex)
             {
@@ -1804,7 +1804,7 @@ namespace ISEEService.BusinessLogic
             }
             return pdf;
         }
-        public async ValueTask sendemail(DataFile pdf, string email)
+        public async ValueTask sendemail(DataFile pdf, string email,string JOB_ID)
         {
             var config =await GET_CONFIG();
             List<string> Cc = new List<string>();
@@ -1818,7 +1818,7 @@ namespace ISEEService.BusinessLogic
             {
                 Attachments = Attachments,
                 Body = "<span>รายละเอียดการซ่อมบำรุง</span>",
-                Subject = "รายละเอียดการซ่อมบำรุง",
+                Subject = $"รายละเอียดการซ่อมบำรุง:{JOB_ID}",
                 //ToEmail = "Dethman_light@hotmail.com"
                 ToEmail = email,
                 Cc =Cc
