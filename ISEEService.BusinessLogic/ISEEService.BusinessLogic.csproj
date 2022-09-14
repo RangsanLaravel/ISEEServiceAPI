@@ -28,6 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataAccessUtility\DataAccessUtility.csproj" />
     <ProjectReference Include="..\ISEEService.DataAccess\ISEEService.DataAccess.csproj" />
     <ProjectReference Include="..\ISEEService.DataContract\ISEEService.DataContract.csproj" />
   </ItemGroup>

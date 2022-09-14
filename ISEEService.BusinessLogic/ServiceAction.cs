@@ -18,6 +18,7 @@ using MimeKit;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
 using ISEEService.BusinessLogic.report;
+using DataAccessUtility;
 
 
 namespace ISEEService.BusinessLogic
@@ -582,18 +583,34 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-                dataObjects = await repository.GET_TBT_JOB_HEADERAsync(job_id);
-                if (dataObjects is not null)
+                var ds = await repository.sp_get_tbm_job_data_detail(job_id);
+                if(ds.Tables.Count > 0)
                 {
-                    dataObjects.job_detail = new tbt_job_detail();
-                    dataObjects.job_detail = await repository.GET_TBT_JOB_DETAILAsync(job_id);
-                    dataObjects.job_checklists = new List<tbt_job_checklist>();
-                    dataObjects.job_checklists = await repository.GET_TBT_JOB_CHECKLISTAsync(job_id);
-                    dataObjects.job_parts = new List<tbt_job_part>();
-                    dataObjects.job_parts = await repository.GET_TBT_JOB_PARTAsync(job_id);
-                    dataObjects.image_detail = new List<tbt_job_image>();
-                    dataObjects.image_detail = await repository.GET_TBT_JOB_IMAGEAsync(job_id);
+                    dataObjects = ds.Tables[0].AsEnumerable<close_job>().FirstOrDefault();
+                    if (dataObjects is not null)
+                    {
+                        dataObjects.job_detail = new tbt_job_detail();
+                        dataObjects.job_detail = ds.Tables[1].AsEnumerable<tbt_job_detail>().FirstOrDefault();
+                        dataObjects.job_checklists = new List<tbt_job_checklist>();
+                        dataObjects.job_checklists = ds.Tables[2].AsEnumerable<tbt_job_checklist>().ToList();
+                        dataObjects.job_parts = new List<tbt_job_part>();
+                        dataObjects.job_parts = ds.Tables[3].AsEnumerable<tbt_job_part>().ToList();
+                        dataObjects.image_detail = new List<tbt_job_image>();
+                        dataObjects.image_detail = ds.Tables[4].AsEnumerable<tbt_job_image>().ToList();
+                    }
                 }
+                //dataObjects = await repository.GET_TBT_JOB_HEADERAsync(job_id);
+                //if (dataObjects is not null)
+                //{
+                //    dataObjects.job_detail = new tbt_job_detail();
+                //    dataObjects.job_detail = await repository.GET_TBT_JOB_DETAILAsync(job_id);
+                //    dataObjects.job_checklists = new List<tbt_job_checklist>();
+                //    dataObjects.job_checklists = await repository.GET_TBT_JOB_CHECKLISTAsync(job_id);
+                //    dataObjects.job_parts = new List<tbt_job_part>();
+                //    dataObjects.job_parts = await repository.GET_TBT_JOB_PARTAsync(job_id);
+                //    dataObjects.image_detail = new List<tbt_job_image>();
+                //    dataObjects.image_detail = await repository.GET_TBT_JOB_IMAGEAsync(job_id);
+                //}
             }
             catch (Exception ex)
             {

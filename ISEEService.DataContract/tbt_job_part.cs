@@ -28,5 +28,6 @@ namespace ISEEService.DataContract
         public string create_date{get;set;}
       public string create_by{get;set;}
       public string status{get;set;}
+      public string location_name{get;set; }
     }
 }

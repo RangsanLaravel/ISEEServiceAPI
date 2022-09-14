@@ -81,7 +81,6 @@ namespace ISEEService.BusinessLogic.report {
 
             // Data Sources
             this.objectDataSource1 = reportInitializer.GetDataSource<DevExpress.DataAccess.ObjectBinding.ObjectDataSource>("objectDataSource1");
-            this.objectDataSource1.DataSource = typeof(ISEEService.DataContract.summary_job_list_condition);
         }
         private DevExpress.XtraReports.UI.TopMarginBand topMarginBand1;
         private DevExpress.XtraReports.UI.DetailBand detailBand1;
