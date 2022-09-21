@@ -37,5 +37,6 @@ namespace ISEEService.DataContract
         public string jobid { get; set; }
         public string ref_group { get; set; }
         public string ref_other { get; set; }
+        public string path_image { get; set; }
     }
 }

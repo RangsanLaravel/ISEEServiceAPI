@@ -2931,16 +2931,16 @@ ORDER BY seq DESC
                 Connection = this.sqlConnection,
                 CommandText = $@"[{DBENV}].[dbo].[sp_getReportJob]"
             };
-            sql.Parameters.AddWithValue("@createfrm", jobfrom);
-            sql.Parameters.AddWithValue("@createto", jobto);
-            sql.Parameters.AddWithValue("@fix_datefrm", fixfrom);
-            sql.Parameters.AddWithValue("@fix_dateto", fixto);
-            sql.Parameters.AddWithValue("@closefrom", closefrom);
-            sql.Parameters.AddWithValue("@closeto", closeto);
-            sql.Parameters.AddWithValue("@license_no", condition.license_no);
-            sql.Parameters.AddWithValue("@type_job", condition.type_job.ToUpper());
-            sql.Parameters.AddWithValue("@Teachnicial", condition.Teachnicial);
-            sql.Parameters.AddWithValue("@customer_name", condition.customer_name);
+            sql.Parameters.AddWithValue("@createfrm", jobfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@createto", jobto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fix_datefrm", fixfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fix_dateto", fixto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@closefrom", closefrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@closeto", closeto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@license_no", condition?.license_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@type_job", condition?.type_job?.ToUpper() ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Teachnicial", condition?.Teachnicial ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@customer_name", condition?.customer_name ?? (object)DBNull.Value);
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
             {
                 if (dt.Rows.Count > 0)
@@ -3101,7 +3101,29 @@ ORDER BY seq DESC
 
         }
 
+        public async ValueTask<List<summary_stock_list>> sp_get_movement_sparepart(summary_stock_list_condition condition)
+        {
+            List<summary_stock_list> dataObjects = null;
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Connection = this.sqlConnection;
+                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_get_movement_sparepart]";
+                //cmd.Parameters.AddWithValue("@P_part_no", condition.Partno ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@P_create_from", partcrtfrom ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@P_create_to", partcrtto ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@p_location_id", condition.locationid ?? (object)DBNull.Value);
+                using (DataTable dt = await Utility.FillDataTableAsync(cmd))
+                {
+                    if (dt.Rows.Count > 0)
+                    {
+                        dataObjects = dt.AsEnumerable<summary_stock_list>().ToList();
+                    }
+                }
+                return dataObjects;
+            }
 
+        }
         #endregion " CALL STORE "
 
     }

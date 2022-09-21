@@ -23,7 +23,7 @@ using DataAccessUtility;
 
 namespace ISEEService.BusinessLogic
 {
-    public class ServiceAction
+    public partial class ServiceAction
     {
         private readonly string _connectionstring = string.Empty;
         private readonly CultureInfo culture = new CultureInfo("th-TH");
@@ -466,7 +466,27 @@ namespace ISEEService.BusinessLogic
             try
             {
                 dataObjects = await repository.sp_tbm_sparepart_detail(part_id);
+                if(dataObjects is not null)
+                {
+                    if(string.IsNullOrWhiteSpace(dataObjects[0].path_image))
+                    {
+                        dataObjects[0].path_image = imgnotfound;
+                    }
+                    else
+                    {
+                        if (System.IO.File.Exists(dataObjects[0].path_image))
+                        {
+                           var pic = System.IO.File.ReadAllBytes(dataObjects[0].path_image);
+                            dataObjects[0].path_image = $"data:image/png;base64,{Convert.ToBase64String(pic)}";
+                        }
+                        else
+                        {
+                            dataObjects[0].path_image = imgnotfound;
+                        }
+                    }
 
+                    
+                }
             }
             catch (Exception ex)
             {
@@ -1733,7 +1753,7 @@ namespace ISEEService.BusinessLogic
                     await rpt.ExportToXlsxAsync(stream);
                     file.FileData = stream.ToArray();
                     file.FileName = "summaryStock.xls";
-                    file.ContentType = "	application/vnd.ms-excel";
+                    file.ContentType = "application/vnd.ms-excel";
 
                 }
             }
@@ -1933,6 +1953,37 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
             return dataObjects;
+        }
+
+        public async ValueTask<summary_stock_list_condition> sp_get_movement_sparepart(summary_stock_list_condition condition)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                DateTime? partcrtfrom = null;
+                DateTime? partcrtto = null;
+                if (condition is not null)
+                {
+                    convertDate(ref partcrtfrom, ref partcrtto, condition.Part_create_from, condition.Part_create_to);
+                }
+
+                var dataObjects = await repository.sp_get_movement_sparepart(condition);
+                if (dataObjects is not null)
+                {
+                    condition.summary_stock_list = new List<DataContract.summary_stock_list>();
+                    condition.summary_stock_list = dataObjects;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return condition;
         }
         #endregion " REPORT "
 
