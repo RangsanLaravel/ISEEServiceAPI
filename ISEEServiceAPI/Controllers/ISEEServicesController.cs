@@ -35,7 +35,7 @@ namespace ISEEServiceAPI.Controllers
         {
             this._hostingEnvironment = hostingEnvironment;
             this.Configuration = Configuration;
-            this.pathfile =$@"{_hostingEnvironment.ContentRootPath}\Files";
+            this.pathfile = $@"{_hostingEnvironment.ContentRootPath}\Files";
             MailSettings mailSettings = new MailSettings
             {
                 DisplayName = Configuration["MailSettings:DisplayName"],
@@ -346,6 +346,21 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("SPAREPART_ONHAND/{partid}/{jobid}")]
+
+        public async ValueTask<IActionResult> SPAREPART_ONHAND(string partid, string jobid)
+        {
+            try
+            {
+                var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                var dataObjects = await this.service.sp_check_onhand(partid, jobid);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("SPARE_PART_DETAIL/{part_id}")]
 
         public async ValueTask<IActionResult> SPARE_PART_DETAIL(string part_id)
@@ -506,7 +521,7 @@ namespace ISEEServiceAPI.Controllers
             //กรณีส่งซ้ำไปดึงไฟล์มาส่งแทน
             string filename = "job.pdf";
             string image_type = "rpt";
-           
+
             string userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
             var rpt = await service.CHECK_RESEND_EMAIL(Jobid);
             if (rpt is not null)

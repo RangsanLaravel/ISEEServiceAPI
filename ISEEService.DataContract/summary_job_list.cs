@@ -22,6 +22,8 @@ namespace ISEEService.DataContract
         public string owner_id { get; set; }
         public string type_job { get; set; }
         public string seq { get; set; }
+        public string downtime_day { get; set; }
+        public string downtime_hour { get; set; }
 
     }
 }

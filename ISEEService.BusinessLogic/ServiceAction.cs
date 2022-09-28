@@ -19,7 +19,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.text;
 using ISEEService.BusinessLogic.report;
 using DataAccessUtility;
-
+using System.Data;
 
 namespace ISEEService.BusinessLogic
 {
@@ -433,11 +433,22 @@ namespace ISEEService.BusinessLogic
                     {
                         //var store = await repository.GET_LocalAsync(userid);
                         data.location_id = emp.location_id;
-                        dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                        dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);                       
                     }
                     else
                     {
                         dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
+                    }
+                    if(dataObjects is not null)
+                    {
+                        foreach (var item in dataObjects)
+                        {
+                            var onhand = await repository.sp_check_onhand(item.part_id,data.jobid);
+                            if(onhand is not null)
+                            {
+                                item.part_value = onhand.part_value;
+                            }
+                        }
                     }
                 }
                 else
@@ -516,6 +527,24 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
             return dataObjects;
+        }
+
+        public async ValueTask<sp_check_onhand> sp_check_onhand(string partid, string Jobid)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+               return  await repository.sp_check_onhand(partid,Jobid);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
         }
 
         public async ValueTask<tbt_job_image> CHECK_RESEND_EMAIL(string Jobid)

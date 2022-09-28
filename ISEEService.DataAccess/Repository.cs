@@ -3124,6 +3124,29 @@ ORDER BY seq DESC
             }
 
         }
+
+        public async ValueTask<sp_check_onhand> sp_check_onhand(string partid,string Jobid)
+        {
+            sp_check_onhand dataObjects = null;
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Connection = this.sqlConnection;
+                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_check_onhand]";
+                cmd.Parameters.AddWithValue("@part_id", partid ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@job_id", Jobid ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@P_create_to", partcrtto ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@p_location_id", condition.locationid ?? (object)DBNull.Value);
+                using (DataTable dt = await Utility.FillDataTableAsync(cmd))
+                {
+                    if (dt.Rows.Count > 0)
+                    {
+                        dataObjects = dt.AsEnumerable<sp_check_onhand>().First();
+                    }
+                }
+            }
+            return dataObjects;
+        }
         #endregion " CALL STORE "
 
     }
