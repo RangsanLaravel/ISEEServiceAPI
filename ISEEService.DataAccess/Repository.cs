@@ -3130,9 +3130,9 @@ ORDER BY seq DESC
             sp_check_onhand dataObjects = null;
             using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
             {
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.CommandType = System.Data.CommandType.Text;
                 cmd.Connection = this.sqlConnection;
-                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_check_onhand]";
+                cmd.CommandText = $@"select [{DBENV}].[dbo].fn_get_onhand(@part_id,@job_id) AS PART_VALUE";
                 cmd.Parameters.AddWithValue("@part_id", partid ?? (object)DBNull.Value);
                 cmd.Parameters.AddWithValue("@job_id", Jobid ?? (object)DBNull.Value);
                 //cmd.Parameters.AddWithValue("@P_create_to", partcrtto ?? (object)DBNull.Value);

@@ -352,7 +352,7 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
-                var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+               // var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
                 var dataObjects = await this.service.sp_check_onhand(partid, jobid);
                 return Ok(dataObjects);
             }

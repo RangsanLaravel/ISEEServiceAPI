@@ -439,17 +439,17 @@ namespace ISEEService.BusinessLogic
                     {
                         dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                     }
-                    if(dataObjects is not null)
-                    {
-                        foreach (var item in dataObjects)
-                        {
-                            var onhand = await repository.sp_check_onhand(item.part_id,data.jobid);
-                            if(onhand is not null)
-                            {
-                                item.part_value = onhand.part_value;
-                            }
-                        }
-                    }
+                    //if(dataObjects is not null)
+                    //{
+                    //    foreach (var item in dataObjects)
+                    //    {
+                    //        var onhand = await repository.sp_check_onhand(item.part_id,data.jobid);
+                    //        if(onhand is not null)
+                    //        {
+                    //            item.part_value = onhand.part_value;
+                    //        }
+                    //    }
+                    //}
                 }
                 else
                 {
