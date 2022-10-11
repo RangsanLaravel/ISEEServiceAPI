@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="21.2.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v21.2, Version=21.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="report_movement_sparepart" Margins="0, 0, 0, 0" PageWidth="850" PageHeight="1100" Version="21.2" DataSource="#Ref-0" Font="Arial, 9.75pt">
+  <Extensions>
+    <Item1 Ref="2" Key="VSReportExtInfo" Value=".vsrepx" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="TopMargin" HeightF="0" />
+    <Item2 Ref="4" ControlType="BottomMarginBand" Name="BottomMargin" HeightF="0" />
+    <Item3 Ref="5" ControlType="DetailBand" Name="Detail" HeightF="25">
+      <Controls>
+        <Item1 Ref="6" ControlType="XRTable" Name="table2" TextAlignment="MiddleCenter" SizeF="850,25" LocationFloat="0,0" Font="Cordia New2, 14pt" Padding="2,2,0,0,96">
+          <Rows>
+            <Item1 Ref="7" ControlType="XRTableRow" Name="tableRow2" Weight="1">
+              <Cells>
+                <Item1 Ref="8" ControlType="XRTableCell" Name="tableCell9" Weight="0.85432505839698136" Multiline="true" Text="PART_ID" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="9" EventName="BeforePrint" PropertyName="Text" Expression="[part_id]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="10" UseBorders="false" />
+                </Item1>
+                <Item2 Ref="11" ControlType="XRTableCell" Name="tableCell10" Weight="1.3518165529420485" Multiline="true" Text="PART_NO&#xD;&#xA;" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="12" EventName="BeforePrint" PropertyName="Text" Expression="[part_no]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="13" UseBorders="false" />
+                </Item2>
+                <Item3 Ref="14" ControlType="XRTableCell" Name="tableCell11" Weight="1.4322667629853614" Multiline="true" Text="STOCK_TYPE" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="15" EventName="BeforePrint" PropertyName="Text" Expression="[stock_type]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="16" UseBorders="false" />
+                </Item3>
+                <Item4 Ref="17" ControlType="XRTableCell" Name="tableCell12" Weight="1.6344289935418843" Multiline="true" Text="TOTAL" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="18" EventName="BeforePrint" PropertyName="Text" Expression="[total]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="19" UseBorders="false" />
+                </Item4>
+                <Item5 Ref="20" ControlType="XRTableCell" Name="tableCell13" Weight="1.379066393895152" Multiline="true" Text="USER_NAME" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="21" EventName="BeforePrint" PropertyName="Text" Expression="[user_name]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="22" UseBorders="false" />
+                </Item5>
+                <Item6 Ref="23" ControlType="XRTableCell" Name="tableCell14" Weight="1.3577850772985112" Multiline="true" Text="JOB_NUMBER" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="24" EventName="BeforePrint" PropertyName="Text" Expression="[job_number]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="25" UseBorders="false" />
+                </Item6>
+                <Item7 Ref="26" ControlType="XRTableCell" Name="tableCell15" Weight="1.2726643893407967" TextFormatString="{0:MM/dd/yyyy}" Multiline="true" Text="CREATE_DATE" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="27" EventName="BeforePrint" PropertyName="Text" Expression="[create_date]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="28" UseBorders="false" />
+                </Item7>
+                <Item8 Ref="29" ControlType="XRTableCell" Name="tableCell16" Weight="1.5705883071001838" Multiline="true" Text="LOCATION_ID" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="30" EventName="BeforePrint" PropertyName="Text" Expression="[location_id]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="31" UseBorders="false" />
+                </Item8>
+              </Cells>
+            </Item1>
+          </Rows>
+          <StylePriority Ref="32" UseFont="false" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+    </Item3>
+    <Item4 Ref="33" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="25">
+      <Controls>
+        <Item1 Ref="34" ControlType="XRTable" Name="table1" TextAlignment="MiddleCenter" SizeF="850,25" LocationFloat="0,0" Font="Cordia New2, 14pt" BackColor="LightGray" Padding="2,2,0,0,96" BorderColor="Black">
+          <Rows>
+            <Item1 Ref="35" ControlType="XRTableRow" Name="tableRow1" Weight="1">
+              <Cells>
+                <Item1 Ref="36" ControlType="XRTableCell" Name="tableCell1" Weight="0.85432491227691176" Multiline="true" Text="PART_ID" Borders="All">
+                  <StylePriority Ref="37" UseBorders="false" />
+                </Item1>
+                <Item2 Ref="38" ControlType="XRTableCell" Name="tableCell2" Weight="1.3518166503554283" Multiline="true" Text="PART_NO" Borders="All">
+                  <StylePriority Ref="39" UseBorders="false" />
+                </Item2>
+                <Item3 Ref="40" ControlType="XRTableCell" Name="tableCell3" Weight="1.4322667629853614" Multiline="true" Text="STOCK_TYPE" Borders="All">
+                  <StylePriority Ref="41" UseBorders="false" />
+                </Item3>
+                <Item4 Ref="42" ControlType="XRTableCell" Name="tableCell4" Weight="1.6344289448351943" Multiline="true" Text="TOTAL" Borders="All">
+                  <StylePriority Ref="43" UseBorders="false" />
+                </Item4>
+                <Item5 Ref="44" ControlType="XRTableCell" Name="tableCell5" Weight="1.379066393895152" Multiline="true" Text="USER_NAME" Borders="All">
+                  <StylePriority Ref="45" UseBorders="false" />
+                </Item5>
+                <Item6 Ref="46" ControlType="XRTableCell" Name="tableCell6" Weight="1.3577850772985114" Multiline="true" Text="JOB_NUMBER" Borders="All">
+                  <StylePriority Ref="47" UseBorders="false" />
+                </Item6>
+                <Item7 Ref="48" ControlType="XRTableCell" Name="tableCell7" Weight="1.2726644867541763" Multiline="true" Text="CREATE_DATE" Borders="All">
+                  <StylePriority Ref="49" UseBorders="false" />
+                </Item7>
+                <Item8 Ref="50" ControlType="XRTableCell" Name="tableCell8" Weight="1.5705883071001838" Multiline="true" Text="LOCATION_ID" Borders="All">
+                  <StylePriority Ref="51" UseBorders="false" />
+                </Item8>
+              </Cells>
+            </Item1>
+          </Rows>
+          <StylePriority Ref="52" UseFont="false" UseBackColor="false" UseBorderColor="false" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+    </Item4>
+  </Bands>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v21.2" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiIC8+" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

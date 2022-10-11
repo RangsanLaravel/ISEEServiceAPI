@@ -3101,9 +3101,9 @@ ORDER BY seq DESC
 
         }
 
-        public async ValueTask<List<summary_stock_list>> sp_get_movement_sparepart(summary_stock_list_condition condition)
+        public async ValueTask<List<movement_sparepart>> sp_get_movement_sparepart(summary_stock_list_condition condition)
         {
-            List<summary_stock_list> dataObjects = null;
+            List<movement_sparepart> dataObjects = null;
             using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
             {
                 cmd.CommandType = System.Data.CommandType.StoredProcedure;
@@ -3117,7 +3117,7 @@ ORDER BY seq DESC
                 {
                     if (dt.Rows.Count > 0)
                     {
-                        dataObjects = dt.AsEnumerable<summary_stock_list>().ToList();
+                        dataObjects = dt.AsEnumerable<movement_sparepart>().ToList();
                     }
                 }
                 return dataObjects;
@@ -3125,7 +3125,7 @@ ORDER BY seq DESC
 
         }
 
-        public async ValueTask<sp_check_onhand> sp_check_onhand(string partid,string Jobid)
+        public async ValueTask<sp_check_onhand> sp_check_onhand(string partid, string Jobid)
         {
             sp_check_onhand dataObjects = null;
             using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
@@ -3146,6 +3146,32 @@ ORDER BY seq DESC
                 }
             }
             return dataObjects;
+        }
+
+        public async ValueTask sp_update_receive_job(string Jobid)
+        {
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Connection = this.sqlConnection;
+                cmd.Transaction = this.transaction;
+                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_update_receive_job]";
+                cmd.Parameters.AddWithValue("@job_id", Jobid ?? (object)DBNull.Value);
+                await cmd.ExecuteNonQueryAsync();
+
+            }
+        }
+        public async ValueTask sp_update_start_job(string Jobid)
+        {
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Connection = this.sqlConnection;
+                cmd.Transaction = this.transaction;
+                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_update_start_job]";
+                cmd.Parameters.AddWithValue("@job_id", Jobid ?? (object)DBNull.Value);
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
         #endregion " CALL STORE "
 

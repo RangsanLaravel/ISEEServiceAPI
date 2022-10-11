@@ -33,5 +33,7 @@ namespace ISEEService.DataContract
         public string flg_close { get; set; }
         public string job_status { get; set; } 
         public string rptsig { get; set; }
+        public string receive_date { get; set; }
+        public string job_date { get; set; }
     }
 }

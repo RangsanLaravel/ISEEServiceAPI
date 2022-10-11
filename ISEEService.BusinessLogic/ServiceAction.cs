@@ -433,7 +433,7 @@ namespace ISEEService.BusinessLogic
                     {
                         //var store = await repository.GET_LocalAsync(userid);
                         data.location_id = emp.location_id;
-                        dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);                       
+                        dataObjects = await repository.GET_TBM_SPAREPARTAsync(data);
                     }
                     else
                     {
@@ -477,9 +477,9 @@ namespace ISEEService.BusinessLogic
             try
             {
                 dataObjects = await repository.sp_tbm_sparepart_detail(part_id);
-                if(dataObjects is not null)
+                if (dataObjects is not null)
                 {
-                    if(string.IsNullOrWhiteSpace(dataObjects[0].path_image))
+                    if (string.IsNullOrWhiteSpace(dataObjects[0].path_image))
                     {
                         dataObjects[0].path_image = imgnotfound;
                     }
@@ -487,7 +487,7 @@ namespace ISEEService.BusinessLogic
                     {
                         if (System.IO.File.Exists(dataObjects[0].path_image))
                         {
-                           var pic = System.IO.File.ReadAllBytes(dataObjects[0].path_image);
+                            var pic = System.IO.File.ReadAllBytes(dataObjects[0].path_image);
                             dataObjects[0].path_image = $"data:image/png;base64,{Convert.ToBase64String(pic)}";
                         }
                         else
@@ -496,7 +496,7 @@ namespace ISEEService.BusinessLogic
                         }
                     }
 
-                    
+
                 }
             }
             catch (Exception ex)
@@ -535,7 +535,7 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-               return  await repository.sp_check_onhand(partid,Jobid);
+                return await repository.sp_check_onhand(partid, Jobid);
             }
             catch (Exception ex)
             {
@@ -547,6 +547,49 @@ namespace ISEEService.BusinessLogic
             }
         }
 
+        public async ValueTask sp_update_receive_job(string Jobid)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.sp_update_receive_job(Jobid);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
+        public async ValueTask sp_update_start_job(string Jobid)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+
+            try
+            {
+                await repository.sp_update_start_job(Jobid);
+                await repository.CommitTransection();
+
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
         public async ValueTask<tbt_job_image> CHECK_RESEND_EMAIL(string Jobid)
         {
             tbt_job_image dataObjects = null;
@@ -611,7 +654,7 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-                dataObjects = await repository.GET_TBT_ADJ_SPAREPART( adj_type);
+                dataObjects = await repository.GET_TBT_ADJ_SPAREPART(adj_type);
             }
             catch (Exception ex)
             {
@@ -633,7 +676,7 @@ namespace ISEEService.BusinessLogic
             try
             {
                 var ds = await repository.sp_get_tbm_job_data_detail(job_id);
-                if(ds.Tables.Count > 0)
+                if (ds.Tables.Count > 0)
                 {
                     dataObjects = ds.Tables[0].AsEnumerable<close_job>().FirstOrDefault();
                     if (dataObjects is not null)
@@ -675,7 +718,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask<List<job_detail_list>> GET_JOB_DETAIL_LISTAsync(string userid)
         {
             List<job_detail_list> dataObjects = null;
-           // bool isAdmin = true;
+            // bool isAdmin = true;
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
@@ -781,7 +824,7 @@ namespace ISEEService.BusinessLogic
         {
             long dataObjects = 0;
             Repository repository = new Repository(_connectionstring, DBENV);
-            
+
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
@@ -1586,7 +1629,7 @@ namespace ISEEService.BusinessLogic
                 if (data.job_parts is not null && data.job_parts.Count > 0)
                 {
                     //var seq = await GET_TBT_JOB_PART_SEQ(data.job_id);
-                    var seq = await  repository.GET_TBT_JOB_PART_SEQ(data.job_id); 
+                    var seq = await repository.GET_TBT_JOB_PART_SEQ(data.job_id);
                     foreach (var item in data.job_parts)
                     {
                         seq = seq + 1;
@@ -1870,13 +1913,13 @@ namespace ISEEService.BusinessLogic
             }
             return pdf;
         }
-        public async ValueTask sendemail(DataFile pdf, string email,string JOB_ID)
+        public async ValueTask sendemail(DataFile pdf, string email, string JOB_ID)
         {
-            var config =await GET_CONFIG();
+            var config = await GET_CONFIG();
             List<string> Cc = new List<string>();
-            if(config !=null)
+            if (config != null)
             {
-                Cc = config.Where(a => a.config_key == "CC-Mail").Select(a=>a.config_value).FirstOrDefault().Split(',')?.ToList();
+                Cc = config.Where(a => a.config_key == "CC-Mail").Select(a => a.config_value).FirstOrDefault().Split(',')?.ToList();
             }
             List<DataFile> Attachments = new List<DataFile>();
             Attachments.Add(pdf);
@@ -1887,7 +1930,7 @@ namespace ISEEService.BusinessLogic
                 Subject = $"รายละเอียดการซ่อมบำรุง:{JOB_ID}",
                 //ToEmail = "Dethman_light@hotmail.com"
                 ToEmail = email,
-                Cc =Cc
+                Cc = Cc
 
             };
             await IMailService.SendEmailAsync(request);
@@ -1984,9 +2027,10 @@ namespace ISEEService.BusinessLogic
             return dataObjects;
         }
 
-        public async ValueTask<summary_stock_list_condition> sp_get_movement_sparepart(summary_stock_list_condition condition)
+        public async ValueTask<DataFile> sp_get_movement_sparepart(summary_stock_list_condition condition)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
+            DataFile excel = new DataFile();
             await repository.OpenConnectionAsync();
             try
             {
@@ -1998,11 +2042,12 @@ namespace ISEEService.BusinessLogic
                 }
 
                 var dataObjects = await repository.sp_get_movement_sparepart(condition);
-                if (dataObjects is not null)
-                {
-                    condition.summary_stock_list = new List<DataContract.summary_stock_list>();
-                    condition.summary_stock_list = dataObjects;
-                }
+                MemoryStream stream = new MemoryStream();
+                report_movement_sparepart rpt = new report_movement_sparepart(dataObjects);
+                await rpt.ExportToXlsxAsync(stream);
+                excel.FileData = stream.ToArray();
+                excel.FileName = "sparepart.xls";
+                excel.ContentType = "application/vnd.ms-excel";
             }
             catch (Exception ex)
             {
@@ -2012,7 +2057,7 @@ namespace ISEEService.BusinessLogic
             {
                 await repository.CloseConnectionAsync();
             }
-            return condition;
+            return excel;
         }
         #endregion " REPORT "
 

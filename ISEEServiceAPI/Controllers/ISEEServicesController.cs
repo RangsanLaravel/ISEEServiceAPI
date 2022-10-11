@@ -352,7 +352,7 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
-               // var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                // var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
                 var dataObjects = await this.service.sp_check_onhand(partid, jobid);
                 return Ok(dataObjects);
             }
@@ -754,6 +754,37 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("sp_update_start_job")]
+        public async ValueTask<IActionResult> sp_update_start_job(close_job data)
+        {
+            try
+            {
+
+                await this.service.sp_update_start_job(data.job_id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("sp_update_receive_job")]
+        public async ValueTask<IActionResult> sp_update_receive_job(close_job data)
+        {
+            try
+            {
+
+                await this.service.sp_update_receive_job(data.job_id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         #endregion " INESERT && UPDATE "
 
         #region " TERMINATE "
@@ -1133,9 +1164,9 @@ namespace ISEEServiceAPI.Controllers
                     };
                 }
 
-                dataObjects = await this.service.sp_get_movement_sparepart(dataObjects);
-                var xlsx = await this.service.GET_REPORT_Summary_stock_list(dataObjects);
-                return Ok(xlsx);
+                var result = await this.service.sp_get_movement_sparepart(dataObjects);
+                //var xlsx = await this.service.GET_REPORT_Summary_stock_list(dataObjects);
+                return Ok(result);
 
             }
             catch (Exception ex)
