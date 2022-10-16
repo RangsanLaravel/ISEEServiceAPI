@@ -24,6 +24,13 @@ namespace ISEEService.DataContract
         public string seq { get; set; }
         public string downtime_day { get; set; }
         public string downtime_hour { get; set; }
+        public string receive_date_time { get; set; }
+        public string start_travel_date_time { get; set; }
+        public string start_job_date_time { get; set; }
+        public string reponse_day { get; set; }
+        public string reponse_hour { get; set; }
+        public string travel_day { get; set; }
+        public string travel_hour { get; set; }
 
     }
 }

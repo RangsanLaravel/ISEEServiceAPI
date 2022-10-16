@@ -3173,6 +3173,55 @@ ORDER BY seq DESC
                 await cmd.ExecuteNonQueryAsync();
             }
         }
+
+        public async ValueTask sp_update_travel_job(string Jobid)
+        {
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Connection = this.sqlConnection;
+                cmd.Transaction = this.transaction;
+                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_update_travel_job]";
+                cmd.Parameters.AddWithValue("@job_id", Jobid ?? (object)DBNull.Value);
+                await cmd.ExecuteNonQueryAsync();
+            }
+        }
+
+        public async ValueTask<List<rpt_downtime>> sp_getReportDownTime(summary_job_list_condition condition,
+      DateTime? jobfrom,
+      DateTime? jobto,
+      DateTime? fixfrom,
+      DateTime? fixto,
+      DateTime? closefrom,
+      DateTime? closeto)
+        {
+            List<rpt_downtime> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[sp_getReportDownTime]"
+            };
+            sql.Parameters.AddWithValue("@createfrm", jobfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@createto", jobto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fix_datefrm", fixfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fix_dateto", fixto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@closefrom", closefrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@closeto", closeto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@license_no", condition?.license_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@type_job", condition?.type_job?.ToUpper() ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Teachnicial", condition?.Teachnicial ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@customer_name", condition?.customer_name ?? (object)DBNull.Value);
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<rpt_downtime>().ToList();
+                }
+            }
+            return dataObjects;
+           
+        }
         #endregion " CALL STORE "
 
     }

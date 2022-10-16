@@ -590,6 +590,28 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
+        public async ValueTask sp_update_travel_job(string Jobid)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+
+            try
+            {
+                await repository.sp_update_travel_job(Jobid);
+                await repository.CommitTransection();
+
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
         public async ValueTask<tbt_job_image> CHECK_RESEND_EMAIL(string Jobid)
         {
             tbt_job_image dataObjects = null;
@@ -1710,15 +1732,58 @@ namespace ISEEService.BusinessLogic
             }
             return condition;
         }
+
+        public async ValueTask<DataFile> sp_getReportDownTime(summary_job_list_condition condition)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            List<rpt_downtime> dataObjects = new List<rpt_downtime>();
+            DataFile file = new DataFile();
+            try
+            {
+                DateTime? jobfrom = null;
+                DateTime? jobto = null;
+                DateTime? fixfrom = null;
+                DateTime? fixto = null;
+                DateTime? closefrom = null;
+                DateTime? closeto = null;
+                if (condition is not null)
+                {
+                    convertDate(ref jobfrom, ref jobto, condition.job_date_from, condition.job_date_to);
+                    convertDate(ref fixfrom, ref fixto, condition.fix_date_from, condition.fix_date_to);
+                    convertDate(ref closefrom, ref closeto, condition.close_dt_from, condition.close_dt_to);
+                }
+                dataObjects = await repository.sp_getReportDownTime(condition, jobfrom, jobto, fixfrom, fixto, closefrom, closeto);
+
+                sp_getReportDownTime rpt = new sp_getReportDownTime(dataObjects);
+                MemoryStream stream = new MemoryStream();
+                await rpt.ExportToXlsxAsync(stream);
+                file.FileData = stream.ToArray();
+                file.FileName = "ReportDownTime.xls";
+                file.ContentType = "application/vnd.ms-excel";
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return file;
+        }
+
         public async ValueTask<DataFile> GET_REPORT_Summary_job_list(summary_job_list_condition condition)
         {
             DataFile file = new DataFile();
             try
             {
 
-                report.summary_job_list rpt = new report.summary_job_list(condition);
+
                 if (condition.report_type.ToUpper() == "PDF")
                 {
+                    report.summary_job_list rpt = new report.summary_job_list(condition);
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToPdfAsync(stream);
                     file.FileData = stream.ToArray();
@@ -1728,6 +1793,7 @@ namespace ISEEService.BusinessLogic
                 }
                 else
                 {
+                    report.summary_job_list_excel rpt = new report.summary_job_list_excel(condition);
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToXlsAsync(stream);
                     file.FileData = stream.ToArray();

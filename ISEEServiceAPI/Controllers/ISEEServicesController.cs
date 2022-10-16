@@ -783,7 +783,20 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("sp_update_travel_job")]
+        public async ValueTask<IActionResult> sp_update_travel_job(close_job data)
+        {
+            try
+            {
 
+                await this.service.sp_update_travel_job(data.job_id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
         #endregion " INESERT && UPDATE "
 
@@ -1140,6 +1153,42 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("sp_getReportDownTime")]
+        //[SecurityLevel(3)]
+        public async ValueTask<IActionResult> sp_getReportDownTime(summary_job condition)
+        {
+            summary_job_list_condition dataObjects = null;
+            try
+            {
+                if (condition is not null)
+                {
+                    dataObjects = new summary_job_list_condition
+                    {
+                        close_dt_from = condition.close_dt_from,
+                        close_dt_to = condition.close_dt_to,
+                        customer_name = condition.customer_name,
+                        fix_date_from = condition.fix_date_from,
+                        fix_date_to = condition.fix_date_to,
+                        job_date_from = condition.job_date_from,
+                        job_date_to = condition.job_date_to,
+                        license_no = condition.license_no,
+                        report_type = condition.report_type,
+                        Teachnicial = condition.Teachnicial,
+                        type_job = condition.type_job,
+                        user_id = condition.user_id,
+                        user_print = condition.user_print
+                    };
+                }
+               var excel = await this.service.sp_getReportDownTime(dataObjects);
+                return Ok(excel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost("sp_get_movement_sparepart")]
         //[SecurityLevel(3)]
         public async ValueTask<IActionResult> sp_get_movement_sparepart(summary_stock condition)
