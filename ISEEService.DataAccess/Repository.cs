@@ -74,7 +74,6 @@ namespace ISEEService.DataAccess
             return dataObjects;
         }
 
-
         public async ValueTask<List<tbm_province>> GET_PROVINCEAsync()
         {
             List<tbm_province> dataObjects = null;

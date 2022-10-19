@@ -1759,7 +1759,7 @@ namespace ISEEService.BusinessLogic
                 MemoryStream stream = new MemoryStream();
                 await rpt.ExportToXlsxAsync(stream);
                 file.FileData = stream.ToArray();
-                file.FileName = "ReportDownTime.xls";
+                file.FileName = $"report_downtime_{DateTime.Now.ToString("yyMMddHHmm")}.xls";
                 file.ContentType = "application/vnd.ms-excel";
 
             }
@@ -1793,11 +1793,12 @@ namespace ISEEService.BusinessLogic
                 }
                 else
                 {
+                    DateTime dt = DateTime.Now;
                     report.summary_job_list_excel rpt = new report.summary_job_list_excel(condition);
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToXlsAsync(stream);
                     file.FileData = stream.ToArray();
-                    file.FileName = "summaryJob.xls";
+                    file.FileName = $"report_job_{dt.ToString("yyMMddHHmm")}.xls";
                     file.ContentType = "application/vnd.ms-excel";
 
                 }
@@ -1887,10 +1888,11 @@ namespace ISEEService.BusinessLogic
                 }
                 else
                 {
+                    DateTime dt = DateTime.Now;
                     MemoryStream stream = new MemoryStream();
                     await rpt.ExportToXlsxAsync(stream);
                     file.FileData = stream.ToArray();
-                    file.FileName = "summaryStock.xls";
+                    file.FileName = $"report_stock_{dt.ToString("yyMMddHHmm")}.xls";
                     file.ContentType = "application/vnd.ms-excel";
 
                 }
@@ -2112,7 +2114,7 @@ namespace ISEEService.BusinessLogic
                 report_movement_sparepart rpt = new report_movement_sparepart(dataObjects);
                 await rpt.ExportToXlsxAsync(stream);
                 excel.FileData = stream.ToArray();
-                excel.FileName = "sparepart.xls";
+                excel.FileName = "report_part_movement.xls";
                 excel.ContentType = "application/vnd.ms-excel";
             }
             catch (Exception ex)
