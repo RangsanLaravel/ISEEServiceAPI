@@ -23,5 +23,8 @@ namespace ISEEService.DataContract
         public string contract_no { get; set; }
         public string customer_id { get; set; }
         public string customer_name { get; set; }
+        public string contract_type { get; set; }
+        public string std_pmp { get; set; }
+        public string employee_id { get; set; }
     }
 }

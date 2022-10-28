@@ -232,6 +232,44 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
+        public async ValueTask<List<tbm_contract_type>> GET_CONTRACTTYPEAsync()
+        {
+            List<tbm_contract_type> dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_CONTRACTTYPEAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
+        public async ValueTask<List<tbm_employee>> GET_EMPLOYEEAsync()
+        {
+            List<tbm_employee> dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.GET_EMPLOYEEAsync();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<tbt_job_header>> GET_JOBREFAsync(job_ref data)
         {
             List<tbt_job_header> dataObjects = null;
@@ -1760,6 +1798,47 @@ namespace ISEEService.BusinessLogic
                 await rpt.ExportToXlsxAsync(stream);
                 file.FileData = stream.ToArray();
                 file.FileName = $"report_downtime_{DateTime.Now.ToString("yyMMddHHmm")}.xls";
+                file.ContentType = "application/vnd.ms-excel";
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return file;
+        }
+
+        public async ValueTask<DataFile> sp_getReportRunningCost(summary_job_list_condition condition)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            List<DataContract.sp_getReportRunningCost> dataObjects = new List<DataContract.sp_getReportRunningCost>();
+            DataFile file = new DataFile();
+            try
+            {
+                DateTime? jobfrom = null;
+                DateTime? jobto = null;
+                DateTime? fixfrom = null;
+                DateTime? fixto = null;
+                DateTime? closefrom = null;
+                DateTime? closeto = null;
+                if (condition is not null)
+                {
+                    convertDate(ref jobfrom, ref jobto, condition.job_date_from, condition.job_date_to);
+                    convertDate(ref fixfrom, ref fixto, condition.fix_date_from, condition.fix_date_to);
+                    convertDate(ref closefrom, ref closeto, condition.close_dt_from, condition.close_dt_to);
+                }
+                dataObjects = await repository.sp_getReportRunningCost(condition, jobfrom, jobto, fixfrom, fixto, closefrom, closeto);
+
+                report.sp_getReportRunningCost rpt = new report.sp_getReportRunningCost(dataObjects);
+                MemoryStream stream = new MemoryStream();
+                await rpt.ExportToXlsxAsync(stream);
+                file.FileData = stream.ToArray();
+                file.FileName = $"RunningCost{DateTime.Now.ToString("yyMMdd")}.xls";
                 file.ContentType = "application/vnd.ms-excel";
 
             }

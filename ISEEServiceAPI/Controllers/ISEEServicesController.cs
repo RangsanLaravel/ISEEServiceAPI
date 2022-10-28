@@ -353,6 +353,10 @@ namespace ISEEServiceAPI.Controllers
             try
             {
                 // var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                if(jobid == "none")
+                {
+                    jobid = string.Empty;
+                }
                 var dataObjects = await this.service.sp_check_onhand(partid, jobid);
                 return Ok(dataObjects);
             }
@@ -384,6 +388,34 @@ namespace ISEEServiceAPI.Controllers
             try
             {
                 dataObjects = await this.service.GET_BRANDAsync();
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GET_CONTRACT_TYPE")]
+        public async ValueTask<IActionResult> GET_CONTRACTTYPEAsync()
+        {
+            List<tbm_contract_type> dataObjects = null;
+            try
+            {
+                dataObjects = await this.service.GET_CONTRACTTYPEAsync();
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpGet("GET_EMPLOYEE")]
+        public async ValueTask<IActionResult> GET_EMPLOYEEAsync()
+        {
+            List<tbm_employee> dataObjects = null;
+            try
+            {
+                dataObjects = await this.service.GET_EMPLOYEEAsync();
                 return Ok(dataObjects);
             }
             catch (Exception ex)
@@ -1188,7 +1220,41 @@ namespace ISEEServiceAPI.Controllers
             }
 
         }
+        [HttpPost("sp_getReportRunningCost")]
+        //[SecurityLevel(3)]
+        public async ValueTask<IActionResult> sp_getReportRunningCost(summary_job condition)
+        {
+            summary_job_list_condition dataObjects = null;
+            try
+            {
+                if (condition is not null)
+                {
+                    dataObjects = new summary_job_list_condition
+                    {
+                        close_dt_from = condition.close_dt_from,
+                        close_dt_to = condition.close_dt_to,
+                        customer_name = condition.customer_name,
+                        fix_date_from = condition.fix_date_from,
+                        fix_date_to = condition.fix_date_to,
+                        job_date_from = condition.job_date_from,
+                        job_date_to = condition.job_date_to,
+                        license_no = condition.license_no,
+                        report_type = condition.report_type,
+                        Teachnicial = condition.Teachnicial,
+                        type_job = condition.type_job,
+                        user_id = condition.user_id,
+                        user_print = condition.user_print
+                    };
+                }
+                var excel = await this.service.sp_getReportRunningCost(dataObjects);
+                return Ok(excel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
+        }
         [HttpPost("sp_get_movement_sparepart")]
         //[SecurityLevel(3)]
         public async ValueTask<IActionResult> sp_get_movement_sparepart(summary_stock condition)

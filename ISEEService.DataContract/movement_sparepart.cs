@@ -14,7 +14,7 @@ namespace ISEEService.DataContract
         public string total { get; set; }
         public string user_name { get; set; }
         public string job_number { get; set; }
-        public DateTime? create_date { get; set; }
+        public string create_date { get; set; }
         public string location_id { get; set; }
 
     }

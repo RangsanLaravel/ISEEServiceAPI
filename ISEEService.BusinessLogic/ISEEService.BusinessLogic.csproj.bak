@@ -7,54 +7,61 @@
   <ItemGroup>
     <None Remove="report\report_checklist.vsrepx" />
     <None Remove="report\report_close_job.repx" />
+    <None Remove="report\report_movement_sparepart.vsrepx" />
+    <None Remove="report\sp_getReportDownTime.vsrepx" />
+    <None Remove="report\sp_getReportRunningCost.vsrepx" />
     <None Remove="report\subreport\part_rpt.repx" />
     <None Remove="report\summary_job_list.repx" />
+    <None Remove="report\summary_job_list_excel.repx" />
     <None Remove="report\summary_stock_list.repx" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="report\report_checklist.vsrepx" />
     <EmbeddedResource Include="report\report_close_job.repx" />
+    <EmbeddedResource Include="report\report_movement_sparepart.vsrepx" />
+    <EmbeddedResource Include="report\sp_getReportDownTime.vsrepx" />
+    <EmbeddedResource Include="report\sp_getReportRunningCost.vsrepx" />
     <EmbeddedResource Include="report\subreport\part_rpt.repx" />
     <EmbeddedResource Include="report\summary_job_list.repx" />
+    <EmbeddedResource Include="report\summary_job_list_excel.repx" />
     <EmbeddedResource Include="report\summary_stock_list.repx" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
+    <PackageReference Include="DevExpress.Reporting.Core" Version="22.1.5" />
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.5" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataAccessUtility\DataAccessUtility.csproj" />
     <ProjectReference Include="..\ISEEService.DataAccess\ISEEService.DataAccess.csproj" />
     <ProjectReference Include="..\ISEEService.DataContract\ISEEService.DataContract.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DevExpress.Drawing.v22.1">
+    <Reference Include="DevExpress.Data.v21.2">
       
     </Reference>
-    <Reference Include="DevExpress.Data.v22.1">
+    <Reference Include="DevExpress.DataAccess.v21.2">
       
     </Reference>
-    <Reference Include="DevExpress.DataAccess.v22.1">
+    <Reference Include="DevExpress.Printing.v21.2.Core">
       
     </Reference>
-    <Reference Include="DevExpress.Printing.v22.1.Core">
+    <Reference Include="DevExpress.Xpo.v21.2">
       
     </Reference>
-    <Reference Include="DevExpress.Xpo.v22.1">
+    <Reference Include="DevExpress.Charts.v21.2.Core">
       
     </Reference>
-    <Reference Include="DevExpress.Charts.v22.1.Core">
+    <Reference Include="DevExpress.XtraCharts.v21.2">
       
     </Reference>
-    <Reference Include="DevExpress.XtraCharts.v22.1">
-      
-    </Reference>
-    <Reference Include="DevExpress.XtraReports.v22.1">
+    <Reference Include="DevExpress.XtraReports.v21.2">
       
     </Reference>
   </ItemGroup>
@@ -72,17 +79,48 @@
     <Compile Update="report\report_close_job.Designer.cs">
       <DependentUpon>report_close_job.repx</DependentUpon>
     </Compile>
+    <Compile Update="report\report_movement_sparepart.cs">
+      <DependentUpon>report_movement_sparepart.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\report_movement_sparepart.Designer.cs">
+      <DependentUpon>report_movement_sparepart.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\sp_getReportDownTime.cs">
+      <DependentUpon>sp_getReportDownTime.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\sp_getReportDownTime.Designer.cs">
+      <DependentUpon>sp_getReportDownTime.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\sp_getReportRunningCost.cs">
+      <DependentUpon>sp_getReportRunningCost.vsrepx</DependentUpon>
+    </Compile>
+    <Compile Update="report\sp_getReportRunningCost.Designer.cs">
+      <DependentUpon>sp_getReportRunningCost.vsrepx</DependentUpon>
+    </Compile>
     <Compile Update="report\subreport\part_rpt.cs">
       <DependentUpon>part_rpt.repx</DependentUpon>
     </Compile>
     <Compile Update="report\subreport\part_rpt.Designer.cs">
       <DependentUpon>part_rpt.repx</DependentUpon>
     </Compile>
+    <Compile Update="report\summary_job_list - Copy.cs">
+      <SubType>XtraReport</SubType>
+      <DependentUpon>summary_job_list.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_job_list - Copy.Designer.cs">
+      <DependentUpon>summary_job_list.repx</DependentUpon>
+    </Compile>
     <Compile Update="report\summary_job_list.cs">
       <DependentUpon>summary_job_list.repx</DependentUpon>
     </Compile>
     <Compile Update="report\summary_job_list.Designer.cs">
       <DependentUpon>summary_job_list.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_job_list_excel.cs">
+      <DependentUpon>summary_job_list_excel.repx</DependentUpon>
+    </Compile>
+    <Compile Update="report\summary_job_list_excel.Designer.cs">
+      <DependentUpon>summary_job_list_excel.repx</DependentUpon>
     </Compile>
     <Compile Update="report\summary_stock_list.cs">
       <DependentUpon>summary_stock_list.repx</DependentUpon>

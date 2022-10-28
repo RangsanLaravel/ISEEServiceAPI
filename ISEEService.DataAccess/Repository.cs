@@ -198,6 +198,42 @@ namespace ISEEService.DataAccess
             }
             return dataObjects;
         }
+        public async ValueTask<List<tbm_contract_type>> GET_CONTRACTTYPEAsync()
+        {
+            List<tbm_contract_type> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"SELECT * FROM [{DBENV}].[dbo].[tbm_contract_type]"
+            };
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_contract_type>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+        public async ValueTask<List<tbm_employee>> GET_EMPLOYEEAsync()
+        {
+            List<tbm_employee> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"SELECT user_id,user_name,fullname,lastname,position FROM [{DBENV}].[dbo].[tbm_employee] WHERE STATUS =1"
+            };
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_employee>().ToList();
+                }
+            }
+            return dataObjects;
+        }
         public async ValueTask<List<Customer>> GET_CUSTOMERAsync(string license_no)
         {
             List<Customer> dataObjects = null;
@@ -1607,7 +1643,10 @@ AND menu.status =1
            ,service_price
            ,service_no
            ,contract_no
-           ,customer_id)
+           ,customer_id
+           ,contract_type
+           ,std_pmp
+           ,employee_id)
      VALUES
            (@license_no
            ,@seq
@@ -1620,7 +1659,10 @@ AND menu.status =1
            ,@service_price
            ,@service_no
            ,@contract_no
-           ,@customer_id)"
+           ,@customer_id
+           ,@contract_type
+           ,@std_pmp
+           ,@employee_id)"
             };
 
             sql.Parameters.AddWithValue("@license_no", data.license_no);
@@ -1635,6 +1677,9 @@ AND menu.status =1
             sql.Parameters.AddWithValue("@service_no", data.service_no);
             sql.Parameters.AddWithValue("@contract_no", data.contract_no);
             sql.Parameters.AddWithValue("@customer_id", data.customer_id);
+            sql.Parameters.AddWithValue("@contract_type", data.contract_type);
+            sql.Parameters.AddWithValue("@std_pmp", data.std_pmp);
+            sql.Parameters.AddWithValue("@employee_id", data.employee_id);
 
             await sql.ExecuteNonQueryAsync();
         }
@@ -3220,6 +3265,43 @@ ORDER BY seq DESC
             }
             return dataObjects;
            
+        }
+
+
+        public async ValueTask<List<sp_getReportRunningCost>> sp_getReportRunningCost(summary_job_list_condition condition,
+      DateTime? jobfrom,
+      DateTime? jobto,
+      DateTime? fixfrom,
+      DateTime? fixto,
+      DateTime? closefrom,
+      DateTime? closeto)
+        {
+            List<sp_getReportRunningCost> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[sp_getReportRunningCost]"
+            };
+            sql.Parameters.AddWithValue("@createfrm", jobfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@createto", jobto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fix_datefrm", fixfrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@fix_dateto", fixto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@closefrom", closefrom ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@closeto", closeto ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@license_no", condition?.license_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@type_job", condition?.type_job?.ToUpper() ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@Teachnicial", condition?.Teachnicial ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@customer_name", condition?.customer_name ?? (object)DBNull.Value);
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<sp_getReportRunningCost>().ToList();
+                }
+            }
+            return dataObjects;
+
         }
         #endregion " CALL STORE "
 

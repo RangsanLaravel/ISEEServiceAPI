@@ -1,0 +1,209 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="22.1.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v22.1, Version=22.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="sp_getReportRunningCost" Margins="0, 0, 0, 0" PaperKind="A4Rotated" PageWidth="1169" PageHeight="827" Version="22.1" DataSource="#Ref-0" Borders="All">
+  <Extensions>
+    <Item1 Ref="2" Key="VSReportExtInfo" Value=".vsrepx" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="topMarginBand1" HeightF="0" Font="Angsana New, 14pt">
+      <StylePriority Ref="4" UseFont="false" />
+    </Item1>
+    <Item2 Ref="5" ControlType="DetailBand" Name="detailBand1" HeightF="25" Font="Angsana New, 14pt">
+      <Controls>
+        <Item1 Ref="6" ControlType="XRTable" Name="table2" TextAlignment="TopCenter" SizeF="1169,25" LocationFloat="0,0" Font="Angsana New, 14pt" Padding="2,2,0,0,96">
+          <Rows>
+            <Item1 Ref="7" ControlType="XRTableRow" Name="tableRow2" Weight="1" Font="Angsana New, 14pt">
+              <Cells>
+                <Item1 Ref="8" ControlType="XRTableCell" Name="tableCell19" Weight="1" Multiline="true" Text="CUST NAME" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="9" EventName="BeforePrint" PropertyName="Text" Expression="[CUST_NAME]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="10" UseFont="false" UseBorders="false" />
+                </Item1>
+                <Item2 Ref="11" ControlType="XRTableCell" Name="tableCell20" Weight="1" Multiline="true" Text="SERIAL NUMBER" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="12" EventName="BeforePrint" PropertyName="Text" Expression="[SERIAL_NUMBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="13" UseFont="false" UseBorders="false" />
+                </Item2>
+                <Item3 Ref="14" ControlType="XRTableCell" Name="tableCell21" Weight="1" Multiline="true" Text="MODEL CODE" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="15" EventName="BeforePrint" PropertyName="Text" Expression="[MODEL_CODE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="16" UseFont="false" UseBorders="false" />
+                </Item3>
+                <Item4 Ref="17" ControlType="XRTableCell" Name="tableCell22" Weight="1" Multiline="true" Text="SJC NUMBER" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="18" EventName="BeforePrint" PropertyName="Text" Expression="[SJC_NUMBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="19" UseFont="false" UseBorders="false" />
+                </Item4>
+                <Item5 Ref="20" ControlType="XRTableCell" Name="tableCell23" Weight="1" Multiline="true" Text="JOB DESC" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="21" EventName="BeforePrint" PropertyName="Text" Expression="[JOB_DESC]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="22" UseFont="false" UseBorders="false" />
+                </Item5>
+                <Item6 Ref="23" ControlType="XRTableCell" Name="tableCell24" Weight="1" Multiline="true" Text="SJC DATE" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="24" EventName="BeforePrint" PropertyName="Text" Expression="[SJC_DATE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="25" UseFont="false" UseBorders="false" />
+                </Item6>
+                <Item7 Ref="26" ControlType="XRTableCell" Name="tableCell25" Weight="1" Multiline="true" Text="FAIR WEAR" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="27" EventName="BeforePrint" PropertyName="Text" Expression="[FAIR_WEAR]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="28" UseFont="false" UseBorders="false" />
+                </Item7>
+                <Item8 Ref="29" ControlType="XRTableCell" Name="tableCell26" Weight="1" Multiline="true" Text="METER READING" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="30" EventName="BeforePrint" PropertyName="Text" Expression="[METER_READING]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="31" UseFont="false" UseBorders="false" />
+                </Item8>
+                <Item9 Ref="32" ControlType="XRTableCell" Name="tableCell27" Weight="1" Multiline="true" Text="ITEM NUMBER" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="33" EventName="BeforePrint" PropertyName="Text" Expression="[ITEM_NUMBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="34" UseFont="false" UseBorders="false" />
+                </Item9>
+                <Item10 Ref="35" ControlType="XRTableCell" Name="tableCell28" Weight="1" Multiline="true" Text="DESCRIPTION" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="36" EventName="BeforePrint" PropertyName="Text" Expression="[DESCRIPTION]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="37" UseFont="false" UseBorders="false" />
+                </Item10>
+                <Item11 Ref="38" ControlType="XRTableCell" Name="tableCell29" Weight="1" Multiline="true" Text="SELLING PRICE" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="39" EventName="BeforePrint" PropertyName="Text" Expression="[SELLING_PRICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="40" UseFont="false" UseBorders="false" />
+                </Item11>
+                <Item12 Ref="41" ControlType="XRTableCell" Name="tableCell30" Weight="1" Multiline="true" Text="QTY" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="42" EventName="BeforePrint" PropertyName="Text" Expression="[QTY]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="43" UseFont="false" UseBorders="false" />
+                </Item12>
+                <Item13 Ref="44" ControlType="XRTableCell" Name="tableCell31" Weight="1" Multiline="true" Text="TOTAL SELLING PRICE" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="45" EventName="BeforePrint" PropertyName="Text" Expression="[TOTAL_SELLING_PRICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="46" UseFont="false" UseBorders="false" />
+                </Item13>
+                <Item14 Ref="47" ControlType="XRTableCell" Name="tableCell32" Weight="1" Multiline="true" Text="BRANCH PRICE" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="48" EventName="BeforePrint" PropertyName="Text" Expression="[BRANCH_PRICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="49" UseFont="false" UseBorders="false" />
+                </Item14>
+                <Item15 Ref="50" ControlType="XRTableCell" Name="tableCell33" Weight="1" Multiline="true" Text="TOTAL BRANCH PRICE" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="51" EventName="BeforePrint" PropertyName="Text" Expression="[TOTAL_BRANCH_PRICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="52" UseFont="false" UseBorders="false" />
+                </Item15>
+                <Item16 Ref="53" ControlType="XRTableCell" Name="tableCell34" Weight="1" Multiline="true" Text="FLeet" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="54" EventName="BeforePrint" PropertyName="Text" Expression="[FLeet]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="55" UseFont="false" UseBorders="false" />
+                </Item16>
+                <Item17 Ref="56" ControlType="XRTableCell" Name="tableCell35" Weight="1" Multiline="true" Text="Job Location" Font="Angsana New, 14pt" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="57" EventName="BeforePrint" PropertyName="Text" Expression="[Job_Location]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="58" UseFont="false" UseBorders="false" />
+                </Item17>
+                <Item18 Ref="59" ControlType="XRTableCell" Name="tableCell36" Weight="1" Multiline="true" Text="SJC Free_Text Lines" Font="Angsana New, 14pt" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="60" EventName="BeforePrint" PropertyName="Text" Expression="[SJC_Free_Text_Lines]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="61" UseFont="false" UseBorders="false" />
+                </Item18>
+              </Cells>
+              <StylePriority Ref="62" UseFont="false" />
+            </Item1>
+          </Rows>
+          <StylePriority Ref="63" UseFont="false" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+      <StylePriority Ref="64" UseFont="false" />
+    </Item2>
+    <Item3 Ref="65" ControlType="BottomMarginBand" Name="bottomMarginBand1" HeightF="0" Font="Angsana New, 14pt">
+      <StylePriority Ref="66" UseFont="false" />
+    </Item3>
+    <Item4 Ref="67" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="25" Font="Angsana New, 14pt">
+      <Controls>
+        <Item1 Ref="68" ControlType="XRTable" Name="table1" TextAlignment="TopCenter" SizeF="1169,25" LocationFloat="0,0" Font="Angsana New, 14pt" BackColor="Silver" Padding="2,2,0,0,96">
+          <Rows>
+            <Item1 Ref="69" ControlType="XRTableRow" Name="tableRow1" Weight="1" Font="Angsana New, 14pt">
+              <Cells>
+                <Item1 Ref="70" ControlType="XRTableCell" Name="tableCell1" Weight="1" Multiline="true" Text="CUST NAME" Font="Angsana New, 14pt">
+                  <StylePriority Ref="71" UseFont="false" />
+                </Item1>
+                <Item2 Ref="72" ControlType="XRTableCell" Name="tableCell2" Weight="1" Multiline="true" Text="SERIAL NUMBER" Font="Angsana New, 14pt">
+                  <StylePriority Ref="73" UseFont="false" />
+                </Item2>
+                <Item3 Ref="74" ControlType="XRTableCell" Name="tableCell3" Weight="1" Multiline="true" Text="MODEL CODE" Font="Angsana New, 14pt">
+                  <StylePriority Ref="75" UseFont="false" />
+                </Item3>
+                <Item4 Ref="76" ControlType="XRTableCell" Name="tableCell4" Weight="1" Multiline="true" Text="SJC NUMBER" Font="Angsana New, 14pt">
+                  <StylePriority Ref="77" UseFont="false" />
+                </Item4>
+                <Item5 Ref="78" ControlType="XRTableCell" Name="tableCell5" Weight="1" Multiline="true" Text="JOB DESC" Font="Angsana New, 14pt">
+                  <StylePriority Ref="79" UseFont="false" />
+                </Item5>
+                <Item6 Ref="80" ControlType="XRTableCell" Name="tableCell6" Weight="1" Multiline="true" Text="SJC DATE" Font="Angsana New, 14pt">
+                  <StylePriority Ref="81" UseFont="false" />
+                </Item6>
+                <Item7 Ref="82" ControlType="XRTableCell" Name="tableCell16" Weight="1" Multiline="true" Text="FAIR WEAR" Font="Angsana New, 14pt">
+                  <StylePriority Ref="83" UseFont="false" />
+                </Item7>
+                <Item8 Ref="84" ControlType="XRTableCell" Name="tableCell15" Weight="1" Multiline="true" Text="METER READING" Font="Angsana New, 14pt">
+                  <StylePriority Ref="85" UseFont="false" />
+                </Item8>
+                <Item9 Ref="86" ControlType="XRTableCell" Name="tableCell7" Weight="1" Multiline="true" Text="ITEM NUMBER" Font="Angsana New, 14pt">
+                  <StylePriority Ref="87" UseFont="false" />
+                </Item9>
+                <Item10 Ref="88" ControlType="XRTableCell" Name="tableCell13" Weight="1" Multiline="true" Text="DESCRIPTION" Font="Angsana New, 14pt">
+                  <StylePriority Ref="89" UseFont="false" />
+                </Item10>
+                <Item11 Ref="90" ControlType="XRTableCell" Name="tableCell14" Weight="1" Multiline="true" Text="SELLING PRICE" Font="Angsana New, 14pt">
+                  <StylePriority Ref="91" UseFont="false" />
+                </Item11>
+                <Item12 Ref="92" ControlType="XRTableCell" Name="tableCell18" Weight="1" Multiline="true" Text="QTY" Font="Angsana New, 14pt">
+                  <StylePriority Ref="93" UseFont="false" />
+                </Item12>
+                <Item13 Ref="94" ControlType="XRTableCell" Name="tableCell17" Weight="1" Multiline="true" Text="TOTAL SELLING PRICE" Font="Angsana New, 14pt">
+                  <StylePriority Ref="95" UseFont="false" />
+                </Item13>
+                <Item14 Ref="96" ControlType="XRTableCell" Name="tableCell8" Weight="1" Multiline="true" Text="BRANCH PRICE" Font="Angsana New, 14pt">
+                  <StylePriority Ref="97" UseFont="false" />
+                </Item14>
+                <Item15 Ref="98" ControlType="XRTableCell" Name="tableCell12" Weight="1" Multiline="true" Text="TOTAL BRANCH PRICE" Font="Angsana New, 14pt">
+                  <StylePriority Ref="99" UseFont="false" />
+                </Item15>
+                <Item16 Ref="100" ControlType="XRTableCell" Name="tableCell9" Weight="1" Multiline="true" Text="FLeet" Font="Angsana New, 14pt">
+                  <StylePriority Ref="101" UseFont="false" />
+                </Item16>
+                <Item17 Ref="102" ControlType="XRTableCell" Name="tableCell11" Weight="1" Multiline="true" Text="Job Location" Font="Angsana New, 14pt">
+                  <StylePriority Ref="103" UseFont="false" />
+                </Item17>
+                <Item18 Ref="104" ControlType="XRTableCell" Name="tableCell10" Weight="1" Multiline="true" Text="SJC Free_Text Lines" Font="Angsana New, 14pt">
+                  <StylePriority Ref="105" UseFont="false" />
+                </Item18>
+              </Cells>
+              <StylePriority Ref="106" UseFont="false" />
+            </Item1>
+          </Rows>
+          <StylePriority Ref="107" UseFont="false" UseBackColor="false" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+      <StylePriority Ref="108" UseFont="false" />
+    </Item4>
+  </Bands>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v22.1" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiIC8+" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>
