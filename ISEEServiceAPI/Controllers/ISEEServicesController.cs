@@ -353,7 +353,7 @@ namespace ISEEServiceAPI.Controllers
             try
             {
                 // var user_id = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
-                if(jobid == "none")
+                if (jobid == "none")
                 {
                     jobid = string.Empty;
                 }
@@ -1211,7 +1211,7 @@ namespace ISEEServiceAPI.Controllers
                         user_print = condition.user_print
                     };
                 }
-               var excel = await this.service.sp_getReportDownTime(dataObjects);
+                var excel = await this.service.sp_getReportDownTime(dataObjects);
                 return Ok(excel);
             }
             catch (Exception ex)
@@ -1291,12 +1291,28 @@ namespace ISEEServiceAPI.Controllers
         }
 
         [HttpPost("sp_getReportPPM")]
-        public async ValueTask<IActionResult> sp_getReportPPM(ReportPPM condition)
+        public async ValueTask<IActionResult> sp_getReportPPM()
         {
             List<ReportPPM> dataObjects = null;
             try
             {
-                dataObjects = await this.service.sp_getReportPPM(condition.customerid, condition.date_from, condition.date_to);
+                dataObjects = await this.service.sp_getReportPPM();
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("reportPMP/{rpttype}")]
+        public async ValueTask<IActionResult> sp_getReportPPM(string rpttype)
+        {
+
+            try
+            {
+                var dataObjects = await this.service.sp_getReportPPMEXPORT(rpttype);
+
                 return Ok(dataObjects);
             }
             catch (Exception ex)

@@ -1,0 +1,319 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<XtraReportsLayoutSerializer SerializerVersion="22.1.5.0" Ref="1" ControlType="DevExpress.XtraReports.UI.XtraReport, DevExpress.XtraReports.v22.1, Version=22.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" Name="sp_getReportPMP" Margins="0, 0, 0, 0" PaperKind="A3Rotated" PageWidth="1654" PageHeight="1169" Version="22.1" DataSource="#Ref-0" Font="Arial, 9.75pt">
+  <Extensions>
+    <Item1 Ref="2" Key="VSReportExtInfo" Value=".vsrepx" />
+  </Extensions>
+  <Bands>
+    <Item1 Ref="3" ControlType="TopMarginBand" Name="TopMargin" HeightF="0" />
+    <Item2 Ref="4" ControlType="BottomMarginBand" Name="BottomMargin" HeightF="0" />
+    <Item3 Ref="5" ControlType="DetailBand" Name="Detail" HeightF="25">
+      <Controls>
+        <Item1 Ref="6" ControlType="XRTable" Name="table2" TextAlignment="TopCenter" SizeF="1654,25" LocationFloat="0,0" Font="Angsana New, 14pt" Padding="2,2,0,0,96" Borders="All">
+          <Rows>
+            <Item1 Ref="7" ControlType="XRTableRow" Name="tableRow2" Weight="1">
+              <Cells>
+                <Item1 Ref="8" ControlType="XRTableCell" Name="tableCell13" Weight="1" Multiline="true" Text="tableCell1" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="9" EventName="BeforePrint" PropertyName="Text" Expression="[Serial_Number]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="10" UseBorders="false" />
+                </Item1>
+                <Item2 Ref="11" ControlType="XRTableCell" Name="tableCell14" Weight="1" Multiline="true" Text="tableCell2" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="12" EventName="BeforePrint" PropertyName="Text" Expression="[Fleet_Number]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="13" UseBorders="false" />
+                </Item2>
+                <Item3 Ref="14" ControlType="XRTableCell" Name="tableCell15" Weight="1" Multiline="true" Text="tableCell3" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="15" EventName="BeforePrint" PropertyName="Text" Expression="[Model_code]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="16" UseBorders="false" />
+                </Item3>
+                <Item4 Ref="17" ControlType="XRTableCell" Name="tableCell16" Weight="1" Multiline="true" Text="tableCell4" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="18" EventName="BeforePrint" PropertyName="Text" Expression="[contract_type]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="19" UseBorders="false" />
+                </Item4>
+                <Item5 Ref="20" ControlType="XRTableCell" Name="tableCell17" Weight="1" Multiline="true" Text="tableCell5" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="21" EventName="BeforePrint" PropertyName="Text" Expression="[PMP]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="22" UseBorders="false" />
+                </Item5>
+                <Item6 Ref="23" ControlType="XRTableCell" Name="tableCell18" Weight="1" Multiline="true" Text="tableCell6" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="24" EventName="BeforePrint" PropertyName="Text" Expression="[STD_PMP_TIME]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="25" UseBorders="false" />
+                </Item6>
+                <Item7 Ref="26" ControlType="XRTableCell" Name="tableCell19" Weight="1" Multiline="true" Text="tableCell7" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="27" EventName="BeforePrint" PropertyName="Text" Expression="[Customer_Name]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="28" UseBorders="false" />
+                </Item7>
+                <Item8 Ref="29" ControlType="XRTableCell" Name="tableCell20" Weight="1" Multiline="true" Text="tableCell8" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="30" EventName="BeforePrint" PropertyName="Text" Expression="[Site_Address_Line1]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="31" UseBorders="false" />
+                </Item8>
+                <Item9 Ref="32" ControlType="XRTableCell" Name="tableCell21" Weight="1" Multiline="true" Text="tableCell9" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="33" EventName="BeforePrint" PropertyName="Text" Expression="[PREF_FSR1]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="34" UseBorders="false" />
+                </Item9>
+                <Item10 Ref="35" ControlType="XRTableCell" Name="tableCell22" Weight="1" Multiline="true" Text="tableCell10" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="36" EventName="BeforePrint" PropertyName="Text" Expression="[PREF_FSR1_NAME]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="37" UseBorders="false" />
+                </Item10>
+                <Item11 Ref="38" ControlType="XRTableCell" Name="tableCell23" Weight="1" Multiline="true" Text="tableCell11" Borders="Left, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="39" EventName="BeforePrint" PropertyName="Text" Expression="[LAST_CONTACT]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="40" UseBorders="false" />
+                </Item11>
+                <Item12 Ref="41" ControlType="XRTableCell" Name="tableCell24" Weight="1" Multiline="true" Text="tableCell12" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="42" EventName="BeforePrint" PropertyName="Text" Expression="[Contact_Phone_Number]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="43" UseBorders="false" />
+                </Item12>
+                <Item13 Ref="44" ControlType="XRTableCell" Name="tableCell53" Weight="1" Multiline="true" Text="tableCell53" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="45" EventName="BeforePrint" PropertyName="Text" Expression="[JANUARY]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="46" UseBorders="false" />
+                </Item13>
+                <Item14 Ref="47" ControlType="XRTableCell" Name="tableCell54" Weight="1" Multiline="true" Text="tableCell54" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="48" EventName="BeforePrint" PropertyName="Text" Expression="[FEBRUARY]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="49" UseBorders="false" />
+                </Item14>
+                <Item15 Ref="50" ControlType="XRTableCell" Name="tableCell55" Weight="1" Multiline="true" Text="tableCell55" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="51" EventName="BeforePrint" PropertyName="Text" Expression="[MARCH]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="52" UseBorders="false" />
+                </Item15>
+                <Item16 Ref="53" ControlType="XRTableCell" Name="tableCell56" Weight="1" Multiline="true" Text="tableCell56" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="54" EventName="BeforePrint" PropertyName="Text" Expression="[APRIL]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="55" UseBorders="false" />
+                </Item16>
+                <Item17 Ref="56" ControlType="XRTableCell" Name="tableCell57" Weight="1" Multiline="true" Text="tableCell57" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="57" EventName="BeforePrint" PropertyName="Text" Expression="[MAY]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="58" UseBorders="false" />
+                </Item17>
+                <Item18 Ref="59" ControlType="XRTableCell" Name="tableCell58" Weight="1" Multiline="true" Text="tableCell58" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="60" EventName="BeforePrint" PropertyName="Text" Expression="[JUNE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="61" UseBorders="false" />
+                </Item18>
+                <Item19 Ref="62" ControlType="XRTableCell" Name="tableCell59" Weight="1" Multiline="true" Text="tableCell59" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="63" EventName="BeforePrint" PropertyName="Text" Expression="[JULY]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="64" UseBorders="false" />
+                </Item19>
+                <Item20 Ref="65" ControlType="XRTableCell" Name="tableCell60" Weight="1" Multiline="true" Text="tableCell60" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="66" EventName="BeforePrint" PropertyName="Text" Expression="[AUGUST]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="67" UseBorders="false" />
+                </Item20>
+                <Item21 Ref="68" ControlType="XRTableCell" Name="tableCell61" Weight="1" Multiline="true" Text="tableCell61" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="69" EventName="BeforePrint" PropertyName="Text" Expression="[SEPTEMBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="70" UseBorders="false" />
+                </Item21>
+                <Item22 Ref="71" ControlType="XRTableCell" Name="tableCell62" Weight="1" Multiline="true" Text="tableCell62" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="72" EventName="BeforePrint" PropertyName="Text" Expression="[OCTOBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="73" UseBorders="false" />
+                </Item22>
+                <Item23 Ref="74" ControlType="XRTableCell" Name="tableCell63" Weight="1" Multiline="true" Text="tableCell63" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="75" EventName="BeforePrint" PropertyName="Text" Expression="[NOVEMBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="76" UseBorders="false" />
+                </Item23>
+                <Item24 Ref="77" ControlType="XRTableCell" Name="tableCell64" Weight="1" Multiline="true" Text="tableCell64" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="78" EventName="BeforePrint" PropertyName="Text" Expression="[DECEMBER]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="79" UseBorders="false" />
+                </Item24>
+                <Item25 Ref="80" ControlType="XRTableCell" Name="tableCell65" Weight="1" Multiline="true" Text="tableCell65" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="81" EventName="BeforePrint" PropertyName="Text" Expression="[MONTH_TOTAL]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="82" UseBorders="false" />
+                </Item25>
+                <Item26 Ref="83" ControlType="XRTableCell" Name="tableCell66" Weight="1" Multiline="true" Text="tableCell66" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="84" EventName="BeforePrint" PropertyName="Text" Expression="[JANUARY_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="85" UseBorders="false" />
+                </Item26>
+                <Item27 Ref="86" ControlType="XRTableCell" Name="tableCell67" Weight="1" Multiline="true" Text="tableCell67" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="87" EventName="BeforePrint" PropertyName="Text" Expression="[FEBRUARY_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="88" UseBorders="false" />
+                </Item27>
+                <Item28 Ref="89" ControlType="XRTableCell" Name="tableCell68" Weight="1" Multiline="true" Text="tableCell68" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="90" EventName="BeforePrint" PropertyName="Text" Expression="[MARCH_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="91" UseBorders="false" />
+                </Item28>
+                <Item29 Ref="92" ControlType="XRTableCell" Name="tableCell69" Weight="1" Multiline="true" Text="tableCell69" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="93" EventName="BeforePrint" PropertyName="Text" Expression="[APRIL_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="94" UseBorders="false" />
+                </Item29>
+                <Item30 Ref="95" ControlType="XRTableCell" Name="tableCell70" Weight="1" Multiline="true" Text="tableCell70" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="96" EventName="BeforePrint" PropertyName="Text" Expression="[MAY_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="97" UseBorders="false" />
+                </Item30>
+                <Item31 Ref="98" ControlType="XRTableCell" Name="tableCell71" Weight="1" Multiline="true" Text="tableCell71" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="99" EventName="BeforePrint" PropertyName="Text" Expression="[JUNE_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="100" UseBorders="false" />
+                </Item31>
+                <Item32 Ref="101" ControlType="XRTableCell" Name="tableCell72" Weight="1" Multiline="true" Text="tableCell72" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="102" EventName="BeforePrint" PropertyName="Text" Expression="[JULY_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="103" UseBorders="false" />
+                </Item32>
+                <Item33 Ref="104" ControlType="XRTableCell" Name="tableCell73" Weight="1" Multiline="true" Text="tableCell73" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="105" EventName="BeforePrint" PropertyName="Text" Expression="[AUGUST_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="106" UseBorders="false" />
+                </Item33>
+                <Item34 Ref="107" ControlType="XRTableCell" Name="tableCell74" Weight="1" Multiline="true" Text="tableCell74" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="108" EventName="BeforePrint" PropertyName="Text" Expression="[SEPTEMBER_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="109" UseBorders="false" />
+                </Item34>
+                <Item35 Ref="110" ControlType="XRTableCell" Name="tableCell75" Weight="1" Multiline="true" Text="tableCell75" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="111" EventName="BeforePrint" PropertyName="Text" Expression="[OCTOBER_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="112" UseBorders="false" />
+                </Item35>
+                <Item36 Ref="113" ControlType="XRTableCell" Name="tableCell76" Weight="1" Multiline="true" Text="tableCell76" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="114" EventName="BeforePrint" PropertyName="Text" Expression="[NOVEMBER_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="115" UseBorders="false" />
+                </Item36>
+                <Item37 Ref="116" ControlType="XRTableCell" Name="tableCell77" Weight="1" Multiline="true" Text="tableCell77" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="117" EventName="BeforePrint" PropertyName="Text" Expression="[DECEMBER_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="118" UseBorders="false" />
+                </Item37>
+                <Item38 Ref="119" ControlType="XRTableCell" Name="tableCell78" Weight="1" Multiline="true" Text="tableCell78" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="120" EventName="BeforePrint" PropertyName="Text" Expression="[MONTH_TOTAL_INVOICE]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="121" UseBorders="false" />
+                </Item38>
+                <Item39 Ref="122" ControlType="XRTableCell" Name="tableCell79" Weight="1" Multiline="true" Text="tableCell79" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="123" EventName="BeforePrint" PropertyName="Text" Expression="[Agree_Start_Date]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="124" UseBorders="false" />
+                </Item39>
+                <Item40 Ref="125" ControlType="XRTableCell" Name="tableCell80" Weight="1" Multiline="true" Text="tableCell80" Borders="Left, Right, Bottom">
+                  <ExpressionBindings>
+                    <Item1 Ref="126" EventName="BeforePrint" PropertyName="Text" Expression="[Expiry_Date]" />
+                  </ExpressionBindings>
+                  <StylePriority Ref="127" UseBorders="false" />
+                </Item40>
+              </Cells>
+            </Item1>
+          </Rows>
+          <StylePriority Ref="128" UseFont="false" UseBorders="false" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+    </Item3>
+    <Item4 Ref="129" ControlType="ReportHeaderBand" Name="ReportHeader" HeightF="25">
+      <Controls>
+        <Item1 Ref="130" ControlType="XRTable" Name="table1" TextAlignment="TopCenter" SizeF="1654,25" LocationFloat="0,0" Font="Angsana New, 14pt" BackColor="LightGray" Padding="2,2,0,0,96" Borders="All">
+          <Rows>
+            <Item1 Ref="131" ControlType="XRTableRow" Name="tableRow1" Weight="1">
+              <Cells>
+                <Item1 Ref="132" ControlType="XRTableCell" Name="tableCell1" Weight="1" Multiline="true" Text="Serial Number" />
+                <Item2 Ref="133" ControlType="XRTableCell" Name="tableCell2" Weight="1" Multiline="true" Text="Fleet Number" />
+                <Item3 Ref="134" ControlType="XRTableCell" Name="tableCell3" Weight="1" Multiline="true" Text="Model code" />
+                <Item4 Ref="135" ControlType="XRTableCell" Name="tableCell4" Weight="1" Multiline="true" Text="contract type" />
+                <Item5 Ref="136" ControlType="XRTableCell" Name="tableCell5" Weight="1" Multiline="true" Text="PMP" />
+                <Item6 Ref="137" ControlType="XRTableCell" Name="tableCell6" Weight="1" Multiline="true" Text="STD PMP TIME" />
+                <Item7 Ref="138" ControlType="XRTableCell" Name="tableCell7" Weight="1" Multiline="true" Text="Customer Name" />
+                <Item8 Ref="139" ControlType="XRTableCell" Name="tableCell8" Weight="1" Multiline="true" Text="Site Address Line1" />
+                <Item9 Ref="140" ControlType="XRTableCell" Name="tableCell9" Weight="1" Multiline="true" Text="PREF.FSR1#" />
+                <Item10 Ref="141" ControlType="XRTableCell" Name="tableCell10" Weight="1" Multiline="true" Text="PREF.FSR1 NAME" />
+                <Item11 Ref="142" ControlType="XRTableCell" Name="tableCell11" Weight="1" Multiline="true" Text="LAST CONTACT" />
+                <Item12 Ref="143" ControlType="XRTableCell" Name="tableCell12" Weight="1" Multiline="true" Text="Contact Phone Number" />
+                <Item13 Ref="144" ControlType="XRTableCell" Name="tableCell25" Weight="1" Multiline="true" Text="JANUARY" />
+                <Item14 Ref="145" ControlType="XRTableCell" Name="tableCell26" Weight="1" Multiline="true" Text="FEBRUARY" />
+                <Item15 Ref="146" ControlType="XRTableCell" Name="tableCell27" Weight="1" Multiline="true" Text="MARCH" />
+                <Item16 Ref="147" ControlType="XRTableCell" Name="tableCell28" Weight="1" Multiline="true" Text="APRIL" />
+                <Item17 Ref="148" ControlType="XRTableCell" Name="tableCell29" Weight="1" Multiline="true" Text="MAY" />
+                <Item18 Ref="149" ControlType="XRTableCell" Name="tableCell30" Weight="1" Multiline="true" Text="JUNE" />
+                <Item19 Ref="150" ControlType="XRTableCell" Name="tableCell31" Weight="1" Multiline="true" Text="JULY" />
+                <Item20 Ref="151" ControlType="XRTableCell" Name="tableCell32" Weight="1" Multiline="true" Text="AUGUST" />
+                <Item21 Ref="152" ControlType="XRTableCell" Name="tableCell33" Weight="1" Multiline="true" Text="SEPTEMBER" />
+                <Item22 Ref="153" ControlType="XRTableCell" Name="tableCell34" Weight="1" Multiline="true" Text="OCTOBER" />
+                <Item23 Ref="154" ControlType="XRTableCell" Name="tableCell35" Weight="1" Multiline="true" Text="NOVEMBER" />
+                <Item24 Ref="155" ControlType="XRTableCell" Name="tableCell36" Weight="1" Multiline="true" Text="DECEMBER" />
+                <Item25 Ref="156" ControlType="XRTableCell" Name="tableCell37" Weight="1" Multiline="true" Text="MONTH_TOTAL" />
+                <Item26 Ref="157" ControlType="XRTableCell" Name="tableCell38" Weight="1" Multiline="true" Text="JANUARY_INVOICE" />
+                <Item27 Ref="158" ControlType="XRTableCell" Name="tableCell39" Weight="1" Multiline="true" Text="FEBRUARY_INVOICE" />
+                <Item28 Ref="159" ControlType="XRTableCell" Name="tableCell40" Weight="1" Multiline="true" Text="MARCH_INVOICE" />
+                <Item29 Ref="160" ControlType="XRTableCell" Name="tableCell41" Weight="1" Multiline="true" Text="APRIL_INVOICE" />
+                <Item30 Ref="161" ControlType="XRTableCell" Name="tableCell42" Weight="1" Multiline="true" Text="MAY_INVOICE" />
+                <Item31 Ref="162" ControlType="XRTableCell" Name="tableCell43" Weight="1" Multiline="true" Text="JUNE_INVOICE" />
+                <Item32 Ref="163" ControlType="XRTableCell" Name="tableCell44" Weight="1" Multiline="true" Text="JULY_INVOICE" />
+                <Item33 Ref="164" ControlType="XRTableCell" Name="tableCell45" Weight="1" Multiline="true" Text="AUGUST_INVOICE" />
+                <Item34 Ref="165" ControlType="XRTableCell" Name="tableCell46" Weight="1" Multiline="true" Text="SEPTEMBER_INVOICE" />
+                <Item35 Ref="166" ControlType="XRTableCell" Name="tableCell47" Weight="1" Multiline="true" Text="OCTOBER_INVOICE" />
+                <Item36 Ref="167" ControlType="XRTableCell" Name="tableCell48" Weight="1" Multiline="true" Text="NOVEMBER_INVOICE" />
+                <Item37 Ref="168" ControlType="XRTableCell" Name="tableCell49" Weight="1" Multiline="true" Text="DECEMBER_INVOICE" />
+                <Item38 Ref="169" ControlType="XRTableCell" Name="tableCell50" Weight="1" Multiline="true" Text="MONTH_TOTAL_INVOICE" />
+                <Item39 Ref="170" ControlType="XRTableCell" Name="tableCell51" Weight="1" Multiline="true" Text="AGREE_START_DATE" />
+                <Item40 Ref="171" ControlType="XRTableCell" Name="tableCell52" Weight="1" Multiline="true" Text="EXPIRY_DATE" />
+              </Cells>
+            </Item1>
+          </Rows>
+          <StylePriority Ref="172" UseFont="false" UseBackColor="false" UseBorders="false" UseTextAlignment="false" />
+        </Item1>
+      </Controls>
+    </Item4>
+  </Bands>
+  <ComponentStorage>
+    <Item1 Ref="0" ObjectType="DevExpress.DataAccess.ObjectBinding.ObjectDataSource,DevExpress.DataAccess.v22.1" Name="objectDataSource1" Base64="PE9iamVjdERhdGFTb3VyY2UgTmFtZT0ib2JqZWN0RGF0YVNvdXJjZTEiIC8+" />
+  </ComponentStorage>
+</XtraReportsLayoutSerializer>

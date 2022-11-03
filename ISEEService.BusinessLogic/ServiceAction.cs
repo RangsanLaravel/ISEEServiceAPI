@@ -2149,19 +2149,18 @@ namespace ISEEService.BusinessLogic
             return mainreport;
 
         }
-        public async ValueTask<List<ReportPPM>> sp_getReportPPM(string customerid,
-            string date_from,
-            string date_to)
+        public async ValueTask<List<ReportPPM>> sp_getReportPPM()
         {
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             List<ReportPPM> dataObjects = new List<ReportPPM>();
             try
             {
-                DateTime? date_fromdt = null;
-                DateTime? date_todt = null;
-                convertDate(ref date_fromdt, ref date_todt, date_from, date_to);
-                dataObjects = await repository.sp_getReportPPM(customerid, date_fromdt, date_todt);
+                //DateTime? date_fromdt = null;
+                //DateTime? date_todt = null;
+                //convertDate(ref date_fromdt, ref date_todt, date_from, date_to);
+                //dataObjects = await repository.sp_getReportPPM(customerid, date_fromdt, date_todt);
+                dataObjects = await repository.sp_getReportPPM();
             }
             catch (Exception ex)
             {
@@ -2172,6 +2171,46 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
             return dataObjects;
+        }
+        public async ValueTask<DataFile> sp_getReportPPMEXPORT(string rptType)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            List<ReportPPM> dataObjects = new List<ReportPPM>();
+            DataFile file = new DataFile();
+            try
+            {
+                dataObjects = await repository.sp_getReportPPM();
+                if (dataObjects is not null)
+                {
+                    sp_getReportPMP rpt = new sp_getReportPMP(dataObjects);
+                    Stream steam = new MemoryStream();
+                    if (rptType == "PDF")
+                    {
+                        await rpt.ExportToPdfAsync(steam);
+                        file.FileData = steam.ToByteArray();
+                        file.FileName = $"serviceplan_{DateTime.Now.ToString("yyMMdd")}.pdf";
+                        file.ContentType = "application/pdf";
+                    }
+                    else
+                    {
+                        await rpt.ExportToXlsAsync(steam);
+                        file.FileData = steam.ToByteArray();
+                        file.FileName = $"serviceplan_{DateTime.Now.ToString("yyMMdd")}.xls";
+                        file.ContentType = "application/vnd.ms-excel";
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return file;
         }
 
         public async ValueTask<DataFile> sp_get_movement_sparepart(summary_stock_list_condition condition)

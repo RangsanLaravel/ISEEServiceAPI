@@ -968,6 +968,9 @@ WHERE cu.status =1 "
       ,contract_no
       ,cus.customer_id
 	  ,CONCAT(cus.fname,' ',cus.lname) customer_name
+      ,v.contract_type
+	  ,v.std_pmp
+	  ,v.employee_id
   FROM [{DBENV}].[dbo].[tbm_vehicle] v
   INNER JOIN [{DBENV}].[dbo].[tbm_services] s on s.services_no =v.service_no
   INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
@@ -2365,6 +2368,9 @@ INSERT INTO  [{DBENV}].[dbo].[tbt_adj_sparepart]
                     ,service_no=@service_no
                     ,contract_no=@contract_no
                     ,customer_id=@customer_id
+                    ,contract_type=@contract_type
+                    ,std_pmp=@std_pmp
+                    ,employee_id=@employee_id
                 where license_no = @license_no"
             };
 
@@ -2381,6 +2387,9 @@ INSERT INTO  [{DBENV}].[dbo].[tbt_adj_sparepart]
             sql.Parameters.AddWithValue("@contract_no", data.contract_no);
             sql.Parameters.AddWithValue("@customer_id", data.customer_id);
             sql.Parameters.AddWithValue("@license_no", data.license_no);
+            sql.Parameters.AddWithValue("@contract_type", data.contract_type);
+            sql.Parameters.AddWithValue("@std_pmp", data.std_pmp);
+            sql.Parameters.AddWithValue("@employee_id", data.employee_id);
 
             await sql.ExecuteNonQueryAsync();
         }
@@ -2940,16 +2949,14 @@ ORDER BY seq DESC
            }*/
 
 
-        public async ValueTask<List<ReportPPM>> sp_getReportPPM(string customerid,
-            DateTime? date_from,
-            DateTime? date_to)
+        public async ValueTask<List<ReportPPM>> sp_getReportPPM()
         {
             List<ReportPPM> dataObjects = null;
-            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].[sp_getReportPPM]", this.sqlConnection);
+            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].[sp_getReportPMP]", this.sqlConnection);
             command.CommandType = CommandType.StoredProcedure;
-            command.Parameters.AddWithValue("@date_from", date_from);
-            command.Parameters.AddWithValue("@date_to", date_to);
-            command.Parameters.AddWithValue("@customer_id", customerid);
+            //command.Parameters.AddWithValue("@date_from", date_from);
+            //command.Parameters.AddWithValue("@date_to", date_to);
+            //command.Parameters.AddWithValue("@customer_id", customerid);
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
