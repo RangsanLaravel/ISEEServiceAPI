@@ -2762,9 +2762,9 @@ WHERE  ijob_id =@ijob_id AND seq =@seq"
 
         #region " REPORT "
 
-        public async ValueTask<tbt_job_image> GET_IMAGE_SIG(string condition)
+        public async ValueTask<List<tbt_job_image>> GET_IMAGE_SIG(string condition)
         {
-            tbt_job_image dataObjects = null;
+            List<tbt_job_image> dataObjects = null;
             SqlCommand sql = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
@@ -2790,7 +2790,7 @@ ORDER BY seq DESC
             {
                 if (dt.Rows.Count > 0)
                 {
-                    dataObjects = dt.AsEnumerable<tbt_job_image>().FirstOrDefault();
+                    dataObjects = dt.AsEnumerable<tbt_job_image>().ToList();
                 }
             }
             return dataObjects;

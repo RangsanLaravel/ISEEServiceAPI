@@ -522,15 +522,20 @@ namespace ISEEServiceAPI.Controllers
                     }
                     foreach (var item in data.job_images)
                     {
-                        var image_id = await this.service.GET_IMAGE_ID();
-                        var img_path = await manageimage(item, pathfile, image_id);
-                        job_image.Add(new tbt_job_image
+                        var filebyte = Convert.FromBase64String(item.FileData);
+                        if (filebyte.Length != 3416)
                         {
-                            ijob_id = data.job_id,
-                            img_path = img_path,
-                            image_type = item.image_type,
-                            img_name = item.FileName
-                        });
+                            var image_id = await this.service.GET_IMAGE_ID();
+                            var img_path = await manageimage(item, pathfile, image_id);
+                            job_image.Add(new tbt_job_image
+                            {
+                                ijob_id = data.job_id,
+                                img_path = img_path,
+                                image_type = item.image_type,
+                                img_name = item.FileName
+                            });
+                        }
+
                     }
                 }
 

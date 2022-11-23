@@ -1719,11 +1719,11 @@ namespace ISEEService.BusinessLogic
         }
 
         #region " REPORT "
-        public async ValueTask<tbt_job_image> GET_IMAGE_SIG(string condition)
+        public async ValueTask<List<tbt_job_image>> GET_IMAGE_SIG(string condition)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
-            tbt_job_image dataObjects = new tbt_job_image();
+            List<tbt_job_image> dataObjects = new List<tbt_job_image>();
             try
             {
                 dataObjects = await repository.GET_IMAGE_SIG(condition);
@@ -2043,11 +2043,18 @@ namespace ISEEService.BusinessLogic
                 var img = await GET_IMAGE_SIG(listdata.job_id);
                 if (img is not null)
                 {
-                    if (System.IO.File.Exists(img.img_path))
+                    foreach (var item in img)
                     {
-                        var imageData = System.IO.File.ReadAllBytes(img.img_path);
-                        listdata.rptsig = Convert.ToBase64String(imageData);
-                    }
+                        if (System.IO.File.Exists(item.img_path))
+                        {
+                            var imageData = System.IO.File.ReadAllBytes(item.img_path);
+                            if(imageData.Length != 3416)
+                            {
+                                listdata.rptsig = Convert.ToBase64String(imageData);
+                                break;
+                            }
+                        }
+                    }                   
                 }
                 var rpt = await mainreport(listdata);
                 chkheader.checklist = new List<check_list_rpt>();
