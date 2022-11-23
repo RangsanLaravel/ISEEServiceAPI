@@ -1692,6 +1692,13 @@ namespace ISEEService.BusinessLogic
                     var seq = await repository.GET_TBT_JOB_PART_SEQ(data.job_id);
                     foreach (var item in data.job_parts)
                     {
+                        if (string.IsNullOrWhiteSpace(item.total) || item.total == "0.00" || item.total == "0")
+                            continue;
+                        var maxval = await  repository.sp_check_onhandOpenTran(item.part_id, data.job_id);                      
+                        if (Convert.ToDecimal(maxval.part_value) < Convert.ToDecimal(item.total))
+                        {
+                            throw new Exception($"{item.part_no} : มีในสต๊อค {maxval.part_value}");
+                        }
                         seq = seq + 1;
                         item.seq = seq.ToString();
                         await repository.INSERT_TBT_JOB_PART(item, data.userid, data.job_id);

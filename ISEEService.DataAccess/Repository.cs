@@ -3198,7 +3198,29 @@ ORDER BY seq DESC
             }
             return dataObjects;
         }
-
+        public async ValueTask<sp_check_onhand> sp_check_onhandOpenTran(string partid, string Jobid)
+        {
+            sp_check_onhand dataObjects = null;
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.Connection = this.sqlConnection;
+                cmd.Transaction = this.transaction;
+                cmd.CommandText = $@"select [{DBENV}].[dbo].fn_get_onhand(@part_id,@job_id) AS PART_VALUE";
+                cmd.Parameters.AddWithValue("@part_id", partid ?? (object)DBNull.Value);
+                cmd.Parameters.AddWithValue("@job_id", Jobid ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@P_create_to", partcrtto ?? (object)DBNull.Value);
+                //cmd.Parameters.AddWithValue("@p_location_id", condition.locationid ?? (object)DBNull.Value);
+                using (DataTable dt = await Utility.FillDataTableAsync(cmd))
+                {
+                    if (dt.Rows.Count > 0)
+                    {
+                        dataObjects = dt.AsEnumerable<sp_check_onhand>().First();
+                    }
+                }
+            }
+            return dataObjects;
+        }
         public async ValueTask sp_update_receive_job(string Jobid)
         {
             using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
