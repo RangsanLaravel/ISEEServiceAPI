@@ -499,7 +499,7 @@ namespace ISEEServiceAPI.Controllers
                     }
                     else if (job is not null && job.job_status == "C" && data.flg_close == "Y")
                     {
-                        await SendEmailRpt(data.job_id);
+                        await SendEmailRpt(data);
                         return Ok();
                     }
                 }
@@ -512,7 +512,6 @@ namespace ISEEServiceAPI.Controllers
                 {
                     return Ok("ยืนยัน Close Job");
                 }
-
 
                 if (data.job_images is not null && data.job_images.Count > 0)
                 {
@@ -538,11 +537,10 @@ namespace ISEEServiceAPI.Controllers
 
                     }
                 }
-
                 await this.service.Close_jobAsync(data, job_image);
                 if (data.job_status == "C" && data.flg_close == "Y")
                 {
-                    await SendEmailRpt(data.job_id);
+                    await SendEmailRpt(data);
                 }
                 return Ok();
             }
@@ -552,7 +550,8 @@ namespace ISEEServiceAPI.Controllers
             }
 
         }
-        private async ValueTask SendEmailRpt(string Jobid)
+        
+        private async ValueTask SendEmailRpt(close_job data)
         {
 
             //กรณีส่งซ้ำไปดึงไฟล์มาส่งแทน
@@ -560,20 +559,54 @@ namespace ISEEServiceAPI.Controllers
             string image_type = "rpt";
 
             string userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
-            var rpt = await service.CHECK_RESEND_EMAIL(Jobid);
+            var rpt = await service.CHECK_RESEND_EMAIL(data.job_id);
+            bool isRPT = true;
             if (rpt is not null)
             {
                 if (System.IO.File.Exists(rpt.img_path))
                 {
                     DataFile filerpt = new DataFile(rpt.img_path);
-                    var jbdt = await service.GET_JOB_DETAIL(Jobid);
-                    await this.service.sendemail(filerpt, jbdt.email_customer, Jobid);
+                    var jbdt = await service.GET_JOB_DETAIL(data.job_id);
+                    await this.service.sendemail(filerpt, jbdt.email_customer, data.job_id);
+                    isRPT = false;
                 }
-
             }
-            else
+            if(isRPT)
             {
-                var file = await service.GET_REPORT_CLOSE_JOB(Jobid);
+                job_file sign = null;
+                if(data.job_images is  not null)
+                {
+                  var fileallsign =  data.job_images.Where(a => a.image_type.Equals("sig"))?.ToList();
+                    if(fileallsign is not null)
+                    {
+                        foreach (var item in fileallsign)
+                        {
+                            var sig = Convert.FromBase64String(item.FileData);
+                            if (sig.Length != 3416)
+                            {
+                                sign = new job_file { 
+                                 FileData =item.FileData,
+                                 ContentType =item.ContentType,
+                                 FileName =item.FileName,
+                                 image_type =item.image_type
+                                };
+                                var _image_id = await this.service.GET_IMAGE_ID();
+                                var ipath = await manageimage(sign, pathfile, _image_id);
+                                tbt_job_image job_image = new tbt_job_image
+                                {
+                                    ijob_id = data.job_id,
+                                    image_type = item.image_type,
+                                    img_name = item.FileName,
+                                    img_path = ipath
+                                };
+                                await service.INSERT_TBT_JOB_IMAGE(job_image, userid, data.job_id);
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                var file = await service.GET_REPORT_CLOSE_JOB(data.job_id, sign);
                 var image_id = await this.service.GET_IMAGE_ID();
                 job_file jbfile = new job_file
                 {
@@ -585,12 +618,12 @@ namespace ISEEServiceAPI.Controllers
                 var img_path = await manageimage(jbfile, pathfile, image_id);
                 tbt_job_image tbt_job_image = new tbt_job_image
                 {
-                    ijob_id = Jobid,
+                    ijob_id = data.job_id,
                     image_type = image_type,
                     img_name = filename,
                     img_path = img_path
                 };
-                await service.INSERT_TBT_JOB_IMAGE(tbt_job_image, userid, Jobid);
+                await service.INSERT_TBT_JOB_IMAGE(tbt_job_image, userid, data.job_id);
             }
         }
 
@@ -1091,7 +1124,7 @@ namespace ISEEServiceAPI.Controllers
         [HttpGet("GET_REPORT_CLOSE_JOB/{jobid}")]
         public async ValueTask<IActionResult> GET_REPORT_CLOSE_JOB(string jobid)
         {
-            await SendEmailRpt(jobid);
+            await SendEmailRpt(new close_job { job_id = jobid });
             return Ok();
         }
         [HttpPost("GET_Summary_job_list")]

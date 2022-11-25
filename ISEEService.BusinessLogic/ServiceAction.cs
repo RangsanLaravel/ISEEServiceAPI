@@ -1991,7 +1991,7 @@ namespace ISEEService.BusinessLogic
             return file;
         }
 
-        public async ValueTask<DataFile> GET_REPORT_CLOSE_JOB(string job_id)
+        public async ValueTask<DataFile> GET_REPORT_CLOSE_JOB(string job_id,job_file sign )
         {
             // Repository repository = new Repository(_connectionstring,DBENV);
             //  await repository.OpenConnectionAsync();
@@ -2039,23 +2039,30 @@ namespace ISEEService.BusinessLogic
                     }
 
                 }
-
-                var img = await GET_IMAGE_SIG(listdata.job_id);
-                if (img is not null)
+                if(sign is not null)
                 {
-                    foreach (var item in img)
+                    listdata.rptsig =sign.FileData;
+                }
+                else
+                {
+                    var img = await GET_IMAGE_SIG(listdata.job_id);
+                    if (img is not null)
                     {
-                        if (System.IO.File.Exists(item.img_path))
+                        foreach (var item in img)
                         {
-                            var imageData = System.IO.File.ReadAllBytes(item.img_path);
-                            if(imageData.Length != 3416)
+                            if (System.IO.File.Exists(item.img_path))
                             {
-                                listdata.rptsig = Convert.ToBase64String(imageData);
-                                break;
+                                var imageData = System.IO.File.ReadAllBytes(item.img_path);
+                                if (imageData.Length != 3416)
+                                {
+                                    listdata.rptsig = Convert.ToBase64String(imageData);
+                                    break;
+                                }
                             }
                         }
-                    }                   
+                    }
                 }
+               
                 var rpt = await mainreport(listdata);
                 chkheader.checklist = new List<check_list_rpt>();
                 chkheader.checklist = chkpt;
