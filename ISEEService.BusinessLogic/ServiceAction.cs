@@ -2053,7 +2053,7 @@ namespace ISEEService.BusinessLogic
                             if (System.IO.File.Exists(item.img_path))
                             {
                                 var imageData = System.IO.File.ReadAllBytes(item.img_path);
-                                if (imageData.Length != 3416)
+                                if (imageData.Length > 5000)
                                 {
                                     listdata.rptsig = Convert.ToBase64String(imageData);
                                     break;

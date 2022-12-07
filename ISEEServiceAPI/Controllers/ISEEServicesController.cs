@@ -522,7 +522,7 @@ namespace ISEEServiceAPI.Controllers
                     foreach (var item in data.job_images)
                     {
                         var filebyte = Convert.FromBase64String(item.FileData);
-                        if (filebyte.Length != 3416)
+                        if (filebyte.Length > 5000)
                         {
                             var image_id = await this.service.GET_IMAGE_ID();
                             var img_path = await manageimage(item, pathfile, image_id);
@@ -582,7 +582,7 @@ namespace ISEEServiceAPI.Controllers
                         foreach (var item in fileallsign)
                         {
                             var sig = Convert.FromBase64String(item.FileData);
-                            if (sig.Length != 3416)
+                            if (sig.Length > 5000)
                             {
                                 sign = new job_file { 
                                  FileData =item.FileData,
