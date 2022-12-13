@@ -796,6 +796,26 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
+        public async ValueTask<List<job_detail_list>> sp_get_tbm_job_data_close(string userid)
+        {
+            List<job_detail_list> dataObjects = null;
+            // bool isAdmin = true;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {               
+                dataObjects = await repository.GET_JOB_DETAIL_LISTAsync(userid);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
         public async ValueTask<tbt_job_header> GET_TBT_JOB(string job_id)
         {
             tbt_job_header dataObjects = null;

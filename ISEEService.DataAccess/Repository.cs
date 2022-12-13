@@ -3135,6 +3135,25 @@ ORDER BY seq DESC
             return dataObjects;
         }
 
+        public async ValueTask<List<job_detail_list>> sp_get_tbm_job_data_close(string userid)
+        {
+            List<job_detail_list> dataObjects = null;
+            SqlCommand command = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                CommandText = $@"[{DBENV}].[dbo].[sp_get_tbm_job_data_close]"
+            };
+            command.Parameters.AddWithValue("@owner_id", userid ?? (object)DBNull.Value);
+            using (DataTable dt = await Utility.FillDataTableAsync(command))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<job_detail_list>().ToList();
+                }
+            }
+            return dataObjects;
+        }
         public async ValueTask<DataSet> sp_get_tbm_job_data_detail(string job_id)
         {
 

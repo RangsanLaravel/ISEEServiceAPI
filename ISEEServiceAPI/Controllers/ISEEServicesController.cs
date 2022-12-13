@@ -204,7 +204,22 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("Job_Close")]
 
+        public async ValueTask<IActionResult> Job_Close()
+        {
+            List<job_detail_list> dataObjects = null;
+            try
+            {
+                string userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                dataObjects = await this.service.sp_get_tbm_job_data_close(userid);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         [HttpGet("GET_FILE/{ijob_id}/{seq}")]
         public async ValueTask<IActionResult> GET_FILE(string ijob_id, string seq)
         {
@@ -550,7 +565,7 @@ namespace ISEEServiceAPI.Controllers
             }
 
         }
-        
+
         private async ValueTask SendEmailRpt(close_job data)
         {
 
@@ -571,24 +586,25 @@ namespace ISEEServiceAPI.Controllers
                     isRPT = false;
                 }
             }
-            if(isRPT)
+            if (isRPT)
             {
                 job_file sign = null;
-                if(data.job_images is  not null)
+                if (data.job_images is not null)
                 {
-                  var fileallsign =  data.job_images.Where(a => a.image_type.Equals("sig"))?.ToList();
-                    if(fileallsign is not null)
+                    var fileallsign = data.job_images.Where(a => a.image_type.Equals("sig"))?.ToList();
+                    if (fileallsign is not null)
                     {
                         foreach (var item in fileallsign)
                         {
                             var sig = Convert.FromBase64String(item.FileData);
                             if (sig.Length > 5000)
                             {
-                                sign = new job_file { 
-                                 FileData =item.FileData,
-                                 ContentType =item.ContentType,
-                                 FileName =item.FileName,
-                                 image_type =item.image_type
+                                sign = new job_file
+                                {
+                                    FileData = item.FileData,
+                                    ContentType = item.ContentType,
+                                    FileName = item.FileName,
+                                    image_type = item.image_type
                                 };
                                 var _image_id = await this.service.GET_IMAGE_ID();
                                 var ipath = await manageimage(sign, pathfile, _image_id);
