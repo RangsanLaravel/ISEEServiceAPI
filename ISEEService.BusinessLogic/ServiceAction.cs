@@ -804,7 +804,7 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {               
-                dataObjects = await repository.GET_JOB_DETAIL_LISTAsync(userid);
+                dataObjects = await repository.sp_get_tbm_job_data_close(userid);
             }
             catch (Exception ex)
             {
@@ -879,7 +879,31 @@ namespace ISEEService.BusinessLogic
 
         #endregion " GET JOB DETAIL "
 
-
+        public async ValueTask<DataFile> sp_getReportProductive_time()
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            DataFile excel = new DataFile();
+            await repository.OpenConnectionAsync();
+            try
+            {
+                var dataObjects = await repository.sp_getReportProductive_time();
+                MemoryStream stream = new MemoryStream();
+                rpt_sp_getReportProductive_time rpt = new rpt_sp_getReportProductive_time(dataObjects);
+                await rpt.ExportToXlsxAsync(stream);
+                excel.FileData = stream.ToArray();
+                excel.FileName = "sp_getReportProductive_time.xls";
+                excel.ContentType = "application/vnd.ms-excel";
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return excel;
+        }
         public async ValueTask<string> GET_SP_GET_RUNNING_NOAsync(string running_type)
         {
             string dataObjects = string.Empty;

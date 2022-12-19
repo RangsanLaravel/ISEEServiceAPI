@@ -576,12 +576,12 @@ namespace ISEEServiceAPI.Controllers
             string userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
             var rpt = await service.CHECK_RESEND_EMAIL(data.job_id);
             bool isRPT = true;
+            var jbdt = await service.GET_JOB_DETAIL(data.job_id);
             if (rpt is not null)
             {
                 if (System.IO.File.Exists(rpt.img_path))
                 {
-                    DataFile filerpt = new DataFile(rpt.img_path);
-                    var jbdt = await service.GET_JOB_DETAIL(data.job_id);
+                    DataFile filerpt = new DataFile(rpt.img_path);                   
                     await this.service.sendemail(filerpt, jbdt.email_customer, data.job_id);
                     isRPT = false;
                 }
@@ -640,6 +640,7 @@ namespace ISEEServiceAPI.Controllers
                     img_path = img_path
                 };
                 await service.INSERT_TBT_JOB_IMAGE(tbt_job_image, userid, data.job_id);
+                await this.service.sendemail(file, jbdt.email_customer, data.job_id);
             }
         }
 
@@ -1274,6 +1275,21 @@ namespace ISEEServiceAPI.Controllers
             }
 
         }
+        [HttpPost("sp_getReportProductive_time")]
+        public async ValueTask<IActionResult> sp_getReportProductive_time()
+        {         
+            try
+            {             
+                var excel = await this.service.sp_getReportProductive_time();
+                return Ok(excel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost("sp_getReportRunningCost")]
         //[SecurityLevel(3)]
         public async ValueTask<IActionResult> sp_getReportRunningCost(summary_job condition)

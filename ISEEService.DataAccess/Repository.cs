@@ -3279,6 +3279,29 @@ ORDER BY seq DESC
             }
         }
 
+
+        public async ValueTask<List<sp_getReportProductive_time>> sp_getReportProductive_time()
+        {
+            List<sp_getReportProductive_time> dataObjects = null;
+            using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Connection = this.sqlConnection;
+                cmd.Transaction = this.transaction;
+                cmd.CommandText = $@"[{DBENV}].[dbo].[sp_getReportProductive_time]";
+                cmd.Parameters.AddWithValue("@flag_year", 1);
+                cmd.Parameters.AddWithValue("@current_date", (object)DBNull.Value);
+                using (DataTable dt = await Utility.FillDataTableAsync(cmd))
+                {
+                    if (dt.Rows.Count > 0)
+                    {
+                        dataObjects = dt.AsEnumerable<sp_getReportProductive_time>().ToList();
+                    }
+                }
+            }
+            return dataObjects;
+        }
+
         public async ValueTask<List<rpt_downtime>> sp_getReportDownTime(summary_job_list_condition condition,
       DateTime? jobfrom,
       DateTime? jobto,
@@ -3312,7 +3335,7 @@ ORDER BY seq DESC
                 }
             }
             return dataObjects;
-           
+
         }
 
 
