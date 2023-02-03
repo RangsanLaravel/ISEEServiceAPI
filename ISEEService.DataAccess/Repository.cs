@@ -1511,6 +1511,7 @@ AND menu.status =1
                 command.Parameters.AddWithValue("@owner_id", condition.owner_id);
             }
 
+            command.CommandText += " ORDER BY sto.location_name ASC";
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
