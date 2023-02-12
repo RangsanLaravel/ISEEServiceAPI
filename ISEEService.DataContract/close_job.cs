@@ -36,5 +36,6 @@ namespace ISEEService.DataContract
         public string receive_date { get; set; }
         public string travel_date { get; set; }
         public string job_date { get; set; }
+        public string model_no { get; set; }
     }
 }

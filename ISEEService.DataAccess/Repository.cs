@@ -969,9 +969,11 @@ WHERE cu.status =1 "
       ,cus.customer_id
 	  ,CONCAT(cus.fname,' ',cus.lname) customer_name
       ,v.contract_type
+	  ,ct.contract_type_name
 	  ,v.std_pmp
 	  ,v.employee_id
   FROM [{DBENV}].[dbo].[tbm_vehicle] v
+  INNER JOIN [{DBENV}].[dbo].[tbm_contract_type] ct on ct.contract_type_id =v.contract_type
   INNER JOIN [{DBENV}].[dbo].[tbm_services] s on s.services_no =v.service_no
   INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
   LEFT JOIN [{DBENV}].[dbo].[tbm_brand] br on br.brand_code =v.brand_no 

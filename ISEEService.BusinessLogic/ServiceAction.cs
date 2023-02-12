@@ -20,6 +20,7 @@ using iTextSharp.text;
 using ISEEService.BusinessLogic.report;
 using DataAccessUtility;
 using System.Data;
+using DevExpress.CodeParser;
 
 namespace ISEEService.BusinessLogic
 {
@@ -803,7 +804,7 @@ namespace ISEEService.BusinessLogic
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             try
-            {               
+            {
                 dataObjects = await repository.sp_get_tbm_job_data_close(userid);
             }
             catch (Exception ex)
@@ -1333,14 +1334,14 @@ namespace ISEEService.BusinessLogic
                 olddata = olddata.Where(a => a.location_id != data.location_id).ToList();
                 if (olddata is not null && olddata.Count > 0)
                 {
-                    throw new Exception($"{olddata.FirstOrDefault().owner_name } ประจำที่ {olddata.FirstOrDefault().location_name}");
+                    throw new Exception($"{olddata.FirstOrDefault().owner_name} ประจำที่ {olddata.FirstOrDefault().location_name}");
                 }
             }
             else
             {
                 if (olddata is not null)
                 {
-                    throw new Exception($"{olddata.FirstOrDefault().owner_name } ประจำที่ {olddata.FirstOrDefault().location_name}");
+                    throw new Exception($"{olddata.FirstOrDefault().owner_name} ประจำที่ {olddata.FirstOrDefault().location_name}");
                 }
             }
 
@@ -1738,7 +1739,7 @@ namespace ISEEService.BusinessLogic
                     {
                         if (string.IsNullOrWhiteSpace(item.total) || item.total == "0.00" || item.total == "0")
                             continue;
-                        var maxval = await  repository.sp_check_onhandOpenTran(item.part_id, data.job_id);                      
+                        var maxval = await repository.sp_check_onhandOpenTran(item.part_id, data.job_id);
                         if (Convert.ToDecimal(maxval.part_value) < Convert.ToDecimal(item.total))
                         {
                             throw new Exception($"{item.part_no} : มีในสต๊อค {maxval.part_value}");
@@ -2035,7 +2036,7 @@ namespace ISEEService.BusinessLogic
             return file;
         }
 
-        public async ValueTask<DataFile> GET_REPORT_CLOSE_JOB(string job_id,job_file sign )
+        public async ValueTask<DataFile> GET_REPORT_CLOSE_JOB(string job_id, job_file sign)
         {
             // Repository repository = new Repository(_connectionstring,DBENV);
             //  await repository.OpenConnectionAsync();
@@ -2083,9 +2084,9 @@ namespace ISEEService.BusinessLogic
                     }
 
                 }
-                if(sign is not null)
+                if (sign is not null)
                 {
-                    listdata.rptsig =sign.FileData;
+                    listdata.rptsig = sign.FileData;
                 }
                 else
                 {
@@ -2106,7 +2107,7 @@ namespace ISEEService.BusinessLogic
                         }
                     }
                 }
-               
+
                 var rpt = await mainreport(listdata);
                 chkheader.checklist = new List<check_list_rpt>();
                 chkheader.checklist = chkpt;
@@ -2310,6 +2311,120 @@ namespace ISEEService.BusinessLogic
             }
             return excel;
         }
+
+
+        public async ValueTask<DataFile> RPT_TBM_EMPLOYEEAsync(tbm_employee data)
+        {
+            DataFile excel = new DataFile();
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                var dataObjects = await repository.GET_TBM_EMPLOYEEAsync(data);
+                if (dataObjects is not null)
+                {
+                    MemoryStream stream = new MemoryStream();
+                    rpt_tbm_employee rpt = new rpt_tbm_employee(dataObjects);
+                    await rpt.ExportToXlsxAsync(stream);
+                    excel.FileData = stream.ToArray();
+                    excel.FileName = "report_employee.xls";
+                    excel.ContentType = "application/vnd.ms-excel";
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return excel;
+        }
+        public async ValueTask<DataFile> RPT_TBM_VEHICLEAsync(tbm_vehicle data)
+        {
+            DataFile excel = new DataFile();
+            DateTime? sExpire_date = null;
+            DateTime? eExpire_date = null;
+            DateTime? sEffective_date = null;
+            DateTime? eEffective_date = null;
+            TimeSpan timestart = new TimeSpan(0, 0, 0);
+            TimeSpan timelast = new TimeSpan(23, 59, 59);
+
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                if (data is not null)
+                {
+                    if (!string.IsNullOrWhiteSpace(data.expire_date))
+                    {
+                        sExpire_date = DateTime.ParseExact(data.expire_date, "dd/MM/yyyy", culture);
+                        sExpire_date = sExpire_date.Value.Add(timestart);
+                        eExpire_date = sExpire_date.Value.Add(timelast);
+                    }
+                    if (!string.IsNullOrWhiteSpace(data.effective_date))
+                    {
+                        sEffective_date = DateTime.ParseExact(data.effective_date, "dd/MM/yyyy", culture);
+                        sEffective_date = sEffective_date.Value.Add(timestart);
+                        eEffective_date = sEffective_date.Value.Add(timelast);
+                    }
+
+                }
+                var dataObjects = await repository.GET_TBM_VEHICLEAsync(data, sExpire_date, eExpire_date, sEffective_date, eEffective_date);
+                if (dataObjects is not null)
+                {
+
+                    MemoryStream stream = new MemoryStream();
+                    rpt_tmb_vehicle rpt = new rpt_tmb_vehicle(dataObjects);
+                    await rpt.ExportToXlsxAsync(stream);
+                    excel.FileData = stream.ToArray();
+                    excel.FileName = "report_vehicle.xls";
+                    excel.ContentType = "application/vnd.ms-excel";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return excel;
+        }
+
+        public async ValueTask<DataFile> RPT_TBM_CUSTOMERAsync(tbm_customer data)
+        {
+            DataFile excel = new DataFile();
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+               var dataObjects = await repository.GET_TBM_CUSTOMERAsync(data);
+                if (dataObjects is not null)
+                {
+                    MemoryStream stream = new MemoryStream();
+                    rpt_tbm_customer rpt = new rpt_tbm_customer(dataObjects);
+                    await rpt.ExportToXlsxAsync(stream);
+                    excel.FileData = stream.ToArray();
+                    excel.FileName = "report_customer.xls";
+                    excel.ContentType = "application/vnd.ms-excel";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return excel;
+        }
+
         #endregion " REPORT "
 
     }

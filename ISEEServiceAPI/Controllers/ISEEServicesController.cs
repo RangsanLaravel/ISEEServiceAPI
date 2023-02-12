@@ -286,6 +286,21 @@ namespace ISEEServiceAPI.Controllers
             }
 
         }
+        [HttpPost("RPT_TBM_CUSTOMER")]
+        public async ValueTask<IActionResult> RPT_TBM_CUSTOMERAsync(tbm_customer data)
+        {
+            //List<tbm_customer> dataObjects = null;
+            try
+            {
+               var dataObjects = await this.service.RPT_TBM_CUSTOMERAsync(data);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
         [HttpPost("GET_TBM_EMPLOYEE")]
         public async ValueTask<IActionResult> GET_TBM_EMPLOYEE(tbm_employee data)
         {
@@ -301,7 +316,21 @@ namespace ISEEServiceAPI.Controllers
             }
 
         }
+        [HttpPost("RPT_TBM_EMPLOYEE")]
+        public async ValueTask<IActionResult> RPT_TBM_EMPLOYEE(tbm_employee data)
+        {
+           // List<tbm_employee> dataObjects = null;
+            try
+            {
+               var dataObjects = await this.service.RPT_TBM_EMPLOYEEAsync(data);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
+        }
         [HttpPost("GET_TBM_VEHICLE")]
         public async ValueTask<IActionResult> GET_TBM_VEHICLEAsync(tbm_vehicle data)
         {
@@ -309,6 +338,21 @@ namespace ISEEServiceAPI.Controllers
             try
             {
                 dataObjects = await this.service.GET_TBM_VEHICLEAsync(data);
+                return Ok(dataObjects);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+        [HttpPost("RPT_TBM_VEHICLE")]
+        public async ValueTask<IActionResult> RPT_TBM_VEHICLEAsync(tbm_vehicle data)
+        {
+           // List<tbm_vehicle> dataObjects = null;
+            try
+            {
+              var  dataObjects = await this.service.RPT_TBM_VEHICLEAsync(data);
                 return Ok(dataObjects);
             }
             catch (Exception ex)
