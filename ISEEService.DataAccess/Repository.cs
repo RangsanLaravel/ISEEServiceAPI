@@ -946,101 +946,136 @@ WHERE cu.status =1 "
             return dataObjects;
         }
 
+        /*  public async ValueTask<List<tbm_vehicle>> GET_TBM_VEHICLEAsync(tbm_vehicle data, DateTime? sExpire_date, DateTime? eExpire_date, DateTime? sEffective_date, DateTime? eEffective_date)
+          {
+              List<tbm_vehicle> dataObjects = null;
+              SqlCommand command = new SqlCommand
+              {
+                  CommandType = System.Data.CommandType.Text,
+                  Connection = this.sqlConnection,
+                  CommandText = $@"SELECT  license_no
+        ,seq
+        ,brand_no
+        ,br.brand_name_tha
+        ,model_no
+        ,chassis_no
+        ,Color
+        ,concat( convert(varchar(2), FORMAT(effective_date,'dd')),'/',convert(varchar(2), FORMAT(effective_date,'MM') ),'/',convert(varchar, year(effective_date) +543)) effective_date
+        ,concat( convert(varchar(2), FORMAT(expire_date,'dd')),'/',convert(varchar(2), FORMAT(expire_date,'MM') ),'/',convert(varchar, year(expire_date) +543)) expire_date
+        ,service_price
+        ,v.service_no
+        ,s.services_name
+        ,contract_no
+        ,cus.customer_id
+        ,CONCAT(cus.fname,' ',cus.lname) customer_name
+        ,v.contract_type
+        ,ct.contract_type_name
+        ,v.std_pmp
+        ,v.employee_id
+    FROM [{DBENV}].[dbo].[tbm_vehicle] v
+    INNER JOIN [{DBENV}].[dbo].[tbm_contract_type] ct on ct.contract_type_id =v.contract_type
+    INNER JOIN [{DBENV}].[dbo].[tbm_services] s on s.services_no =v.service_no
+    INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
+    LEFT JOIN [{DBENV}].[dbo].[tbm_brand] br on br.brand_code =v.brand_no 
+    WHERE s.status =1 "
+              };
+              if (data is not null && !string.IsNullOrWhiteSpace(data.license_no))
+              {
+                  command.CommandText += " AND license_no =@license_no";
+                  command.Parameters.AddWithValue("@license_no", data.license_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.seq))
+              {
+                  command.CommandText += " AND seq =@seq";
+                  command.Parameters.AddWithValue("@seq", data.seq);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.brand_no))
+              {
+                  command.CommandText += " AND brand_no =@brand_no";
+                  command.Parameters.AddWithValue("@brand_no", data.brand_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.model_no))
+              {
+                  command.CommandText += " AND model_no =@model_no";
+                  command.Parameters.AddWithValue("@model_no", data.model_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.chassis_no))
+              {
+                  command.CommandText += " AND chassis_no =@chassis_no";
+                  command.Parameters.AddWithValue("@chassis_no", data.chassis_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.chassis_no))
+              {
+                  command.CommandText += " AND Color =@Color";
+                  command.Parameters.AddWithValue("@Color", data.Color);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.effective_date))
+              {
+                  command.CommandText += " AND effective_date between @seffective_date and @eeffective_date";
+                  command.Parameters.AddWithValue("@seffective_date", sEffective_date);
+                  command.Parameters.AddWithValue("@eeffective_date", eEffective_date);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.expire_date))
+              {
+                  command.CommandText += " AND expire_date between @sexpire_date and @eexpire_date";
+                  command.Parameters.AddWithValue("@sexpire_date", sExpire_date);
+                  command.Parameters.AddWithValue("@eexpire_date", eExpire_date);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.service_price))
+              {
+                  command.CommandText += " AND service_price =@service_price";
+                  command.Parameters.AddWithValue("@service_price", data.service_price);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.service_no))
+              {
+                  command.CommandText += " AND v.service_no =@service_no";
+                  command.Parameters.AddWithValue("@service_no", data.service_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.contract_no))
+              {
+                  command.CommandText += " AND contract_no =@contract_no";
+                  command.Parameters.AddWithValue("@contract_no", data.contract_no);
+              }
+              if (data is not null && !string.IsNullOrWhiteSpace(data.customer_id))
+              {
+                  command.CommandText += " AND v.customer_id =@customer_id";
+                  command.Parameters.AddWithValue("@customer_id", data.customer_id);
+              }
+              using (DataTable dt = await Utility.FillDataTableAsync(command))
+              {
+                  if (dt.Rows.Count > 0)
+                  {
+                      dataObjects = dt.AsEnumerable<tbm_vehicle>().ToList();
+                  }
+              }
+              return dataObjects;
+          }*/
         public async ValueTask<List<tbm_vehicle>> GET_TBM_VEHICLEAsync(tbm_vehicle data, DateTime? sExpire_date, DateTime? eExpire_date, DateTime? sEffective_date, DateTime? eEffective_date)
         {
             List<tbm_vehicle> dataObjects = null;
             SqlCommand command = new SqlCommand
             {
-                CommandType = System.Data.CommandType.Text,
+                CommandType = System.Data.CommandType.StoredProcedure,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT  license_no
-      ,seq
-      ,brand_no
-      ,br.brand_name_tha
-      ,model_no
-      ,chassis_no
-      ,Color
-	  ,concat( convert(varchar(2), FORMAT(effective_date,'dd')),'/',convert(varchar(2), FORMAT(effective_date,'MM') ),'/',convert(varchar, year(effective_date) +543)) effective_date
-      ,concat( convert(varchar(2), FORMAT(expire_date,'dd')),'/',convert(varchar(2), FORMAT(expire_date,'MM') ),'/',convert(varchar, year(expire_date) +543)) expire_date
-      ,service_price
-      ,v.service_no
-	  ,s.services_name
-      ,contract_no
-      ,cus.customer_id
-	  ,CONCAT(cus.fname,' ',cus.lname) customer_name
-      ,v.contract_type
-	  ,ct.contract_type_name
-	  ,v.std_pmp
-	  ,v.employee_id
-  FROM [{DBENV}].[dbo].[tbm_vehicle] v
-  INNER JOIN [{DBENV}].[dbo].[tbm_contract_type] ct on ct.contract_type_id =v.contract_type
-  INNER JOIN [{DBENV}].[dbo].[tbm_services] s on s.services_no =v.service_no
-  INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus on cus.customer_id =v.customer_id
-  LEFT JOIN [{DBENV}].[dbo].[tbm_brand] br on br.brand_code =v.brand_no 
-  WHERE s.status =1 "
+                CommandText = $@"[{DBENV}].[dbo].sp_get_tbm_vehicle"
             };
-            if (data is not null && !string.IsNullOrWhiteSpace(data.license_no))
-            {
-                command.CommandText += " AND license_no =@license_no";
-                command.Parameters.AddWithValue("@license_no", data.license_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.seq))
-            {
-                command.CommandText += " AND seq =@seq";
-                command.Parameters.AddWithValue("@seq", data.seq);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.brand_no))
-            {
-                command.CommandText += " AND brand_no =@brand_no";
-                command.Parameters.AddWithValue("@brand_no", data.brand_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.model_no))
-            {
-                command.CommandText += " AND model_no =@model_no";
-                command.Parameters.AddWithValue("@model_no", data.model_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.chassis_no))
-            {
-                command.CommandText += " AND chassis_no =@chassis_no";
-                command.Parameters.AddWithValue("@chassis_no", data.chassis_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.chassis_no))
-            {
-                command.CommandText += " AND Color =@Color";
-                command.Parameters.AddWithValue("@Color", data.Color);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.effective_date))
-            {
-                command.CommandText += " AND effective_date between @seffective_date and @eeffective_date";
-                command.Parameters.AddWithValue("@seffective_date", sEffective_date);
-                command.Parameters.AddWithValue("@eeffective_date", eEffective_date);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.expire_date))
-            {
-                command.CommandText += " AND expire_date between @sexpire_date and @eexpire_date";
-                command.Parameters.AddWithValue("@sexpire_date", sExpire_date);
-                command.Parameters.AddWithValue("@eexpire_date", eExpire_date);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.service_price))
-            {
-                command.CommandText += " AND service_price =@service_price";
-                command.Parameters.AddWithValue("@service_price", data.service_price);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.service_no))
-            {
-                command.CommandText += " AND v.service_no =@service_no";
-                command.Parameters.AddWithValue("@service_no", data.service_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.contract_no))
-            {
-                command.CommandText += " AND contract_no =@contract_no";
-                command.Parameters.AddWithValue("@contract_no", data.contract_no);
-            }
-            if (data is not null && !string.IsNullOrWhiteSpace(data.customer_id))
-            {
-                command.CommandText += " AND v.customer_id =@customer_id";
-                command.Parameters.AddWithValue("@customer_id", data.customer_id);
-            }
+            command.Parameters.AddWithValue("@license_no", data.license_no);
+            command.Parameters.AddWithValue("@seq", data.seq);
+            command.Parameters.AddWithValue("@brand_no", data.brand_no);
+            command.Parameters.AddWithValue("@model_no", data.model_no);
+            command.Parameters.AddWithValue("@chassis_no", data.chassis_no);
+            command.Parameters.AddWithValue("@Color", data.Color);           
+            command.Parameters.AddWithValue("@seffective_date", sEffective_date);
+            command.Parameters.AddWithValue("@eeffective_date", eEffective_date);
+            command.Parameters.AddWithValue("@sexpire_date", sExpire_date);
+            command.Parameters.AddWithValue("@eexpire_date", eExpire_date);
+            command.Parameters.AddWithValue("@service_price", data.service_price);
+            command.Parameters.AddWithValue("@service_no", data.service_no);
+            command.Parameters.AddWithValue("@contract_no", data.contract_no);
+            command.Parameters.AddWithValue("@customer_name", data.customer_name);
+            command.Parameters.AddWithValue("@customer_id", data.customer_id);
+
+
             using (DataTable dt = await Utility.FillDataTableAsync(command))
             {
                 if (dt.Rows.Count > 0)
@@ -1150,7 +1185,7 @@ WHERE cu.status =1 "
                     CommandType = System.Data.CommandType.Text,
                     Connection = this.sqlConnection,
                     CommandText = $@"
-    SELECT 
+        SELECT 
         part_id
           ,part_no
           ,part_name
@@ -1177,10 +1212,10 @@ WHERE cu.status =1 "
           ,part.cancel_reason
           ,part.update_date
           ,part.update_by
-      FROM [{DBENV}].[dbo].[tbm_sparepart] part 
-      INNER JOIN [{DBENV}].[dbo].[tbm_unit] un ON un.unit_code =part.unit_code
-      INNER JOIN [{DBENV}].[dbo].[tbm_location_store] loca on loca.location_id =part.location_id
-      WHERE 1=1 "
+        FROM [{DBENV}].[dbo].[tbm_sparepart] part 
+        INNER JOIN [{DBENV}].[dbo].[tbm_unit] un ON un.unit_code =part.unit_code
+        INNER JOIN [{DBENV}].[dbo].[tbm_location_store] loca on loca.location_id =part.location_id
+        WHERE 1=1 "
                 };
 
                 command.Parameters.AddWithValue("@jobid", data.jobid ?? (object)DBNull.Value);
@@ -2158,7 +2193,7 @@ AND menu.status =1
 
         public async ValueTask INSERT_TBT_ADJ_SPAREPARTAsync(tbt_adj_sparepart data)
         {
-            SqlCommand sql = new SqlCommand
+            /*SqlCommand sql = new SqlCommand
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
@@ -2190,7 +2225,23 @@ INSERT INTO  [{DBENV}].[dbo].[tbt_adj_sparepart]
             sql.Parameters.AddWithValue("@remark", data.remark ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
             sql.Parameters.AddWithValue("@adj_type", data.adj_type ?? (object)DBNull.Value);
+            await sql.ExecuteNonQueryAsync();*/
+
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.StoredProcedure,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"[{DBENV}].[dbo].[sp_update_Stockin_out]"
+            };
+            sql.Parameters.AddWithValue("@part_id", data.part_id ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@part_no", data.part_no ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_part_value", data.adj_part_value?.Replace(",", "") ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@remark", data.remark ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@create_by", data.create_by ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@adj_type", data.adj_type ?? (object)DBNull.Value);
             await sql.ExecuteNonQueryAsync();
+
         }
 
         #endregion " INSERT DATA "
@@ -2581,7 +2632,7 @@ WHERE   services_no=@services_no"
       ,update_date =GETDATE()
       ,update_by =@update_by
      {(string.IsNullOrEmpty(data.cancel_by) ? "" :
-     $@",cancel_by=@cancel_by
+        $@",cancel_by=@cancel_by
       ,cancel_reason =@cancel_reason")}   
       WHERE  adj_id =@adj_id"
             };
@@ -2601,7 +2652,23 @@ WHERE   services_no=@services_no"
         #endregion " UPDATE "
 
         #region " TERMINATE "
+        public async ValueTask TMN_TBT_JOB_IMAGE(string image_type,string job_id)
+        {
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_image]
+                        SET
+                            STATUS =0
+                     WHERE IJOB_ID =@job_id AND IMAGE_TYPE =@image_type"
+            };
+            sql.Parameters.AddWithValue("@job_id", job_id);
+            sql.Parameters.AddWithValue("@image_type", image_type);
 
+            await sql.ExecuteNonQueryAsync();
+        }
         public async ValueTask TERMINATE_TBM_CUSTOMERAsync(string customer_id)
         {
             SqlCommand sql = new SqlCommand
@@ -2765,6 +2832,41 @@ WHERE  ijob_id =@ijob_id AND seq =@seq"
 
         #region " REPORT "
 
+        public async ValueTask<List<tbt_job_image>> GET_IMAGEAsync(string job_id,string image_type)
+        {
+            List<tbt_job_image> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"
+SELECT  [ijob_id]
+      ,[seq]
+      ,[img_name]
+      ,[img_path]
+      ,[create_date]
+      ,[create_by]
+      ,[status]
+      ,[image_type]
+  FROM [{DBENV}].[dbo].[tbt_job_image]
+  WHERE ijob_id =@job_id 
+  AND status =1
+  AND image_type=@image_type
+ORDER BY seq DESC
+"
+            };
+            sql.Parameters.AddWithValue("@job_id", job_id);
+            sql.Parameters.AddWithValue("@image_type", image_type);
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbt_job_image>().ToList();
+                }
+            }
+            return dataObjects;
+        }
+
         public async ValueTask<List<tbt_job_image>> GET_IMAGE_SIG(string condition)
         {
             List<tbt_job_image> dataObjects = null;
@@ -2826,12 +2928,12 @@ ORDER BY seq DESC
         ,JH.type_job
         , (select top 1 seq from [{DBENV}].[dbo].[tbt_job_image] where status =1 and image_type ='rpt'
         )seq
-    FROM [{DBENV}].[dbo].[tbt_job_header] JH
-    INNER JOIN [{DBENV}].[dbo].[tbm_employee] emp ON emp.user_id = COALESCE(JH.transfer_to,JH.[owner_id])
-    INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus ON CUS.customer_id =JH.customer_id
-    INNER JOIN [{DBENV}].[dbo].[tbm_jobtype] Jt ON JT.jobcode =jh.type_job 
-   -- INNER JOIN [{DBENV}].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id 
-  WHERE 1=1  "
+        FROM [{DBENV}].[dbo].[tbt_job_header] JH
+        INNER JOIN [{DBENV}].[dbo].[tbm_employee] emp ON emp.user_id = COALESCE(JH.transfer_to,JH.[owner_id])
+        INNER JOIN [{DBENV}].[dbo].[tbm_customer] cus ON CUS.customer_id =JH.customer_id
+        INNER JOIN [{DBENV}].[dbo].[tbm_jobtype] Jt ON JT.jobcode =jh.type_job 
+        -- INNER JOIN [{DBENV}].[dbo].[tbt_job_image] img ON img.ijob_id =JH.job_id 
+        WHERE 1=1  "
               };
               if (jobfrom is not null)
               {
@@ -2890,7 +2992,7 @@ ORDER BY seq DESC
                    CommandType = System.Data.CommandType.Text,
                    Connection = this.sqlConnection,
                    CommandText = $@"
-   SELECT  sp.[part_id]
+        SELECT  sp.[part_id]
          ,sp.[part_no]
          ,[part_name]
          ,[part_desc]
@@ -2913,12 +3015,12 @@ ORDER BY seq DESC
          ,(select CONCAT(fullname,' ',lastname) from [{DBENV}].[dbo].[tbm_employee] where user_id = sp.[update_by]) as [update_by]
          ,adj.adj_part_value
          ,adj.remark
-     FROM [{DBENV}].[dbo].[tbm_sparepart] sp
-   left join [{DBENV}].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
-   left join [{DBENV}].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
-   left JOIN [{DBENV}].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
-   WHERE 1=1 
-   "
+        FROM [{DBENV}].[dbo].[tbm_sparepart] sp
+        left join [{DBENV}].[dbo].[tbt_adj_sparepart] adj on adj.part_id =sp.part_id
+        left join [{DBENV}].[dbo].[tbm_location_store] lo on lo.location_id =sp.location_id
+        left JOIN [{DBENV}].[dbo].[tbm_unit] un on un.unit_code =sp.unit_code
+        WHERE 1=1 
+        "
                };
                if (partcrtfrom is not null)
                {
@@ -2971,12 +3073,12 @@ ORDER BY seq DESC
         }
 
         public async ValueTask<List<summary_job_list>> GET_Summary_job_list(summary_job_list_condition condition,
-      DateTime? jobfrom,
-      DateTime? jobto,
-      DateTime? fixfrom,
-      DateTime? fixto,
-      DateTime? closefrom,
-      DateTime? closeto)
+        DateTime? jobfrom,
+        DateTime? jobto,
+        DateTime? fixfrom,
+        DateTime? fixto,
+        DateTime? closefrom,
+        DateTime? closeto)
         {
             List<summary_job_list> dataObjects = null;
             SqlCommand sql = new SqlCommand
@@ -3306,12 +3408,12 @@ ORDER BY seq DESC
         }
 
         public async ValueTask<List<rpt_downtime>> sp_getReportDownTime(summary_job_list_condition condition,
-      DateTime? jobfrom,
-      DateTime? jobto,
-      DateTime? fixfrom,
-      DateTime? fixto,
-      DateTime? closefrom,
-      DateTime? closeto)
+        DateTime? jobfrom,
+        DateTime? jobto,
+        DateTime? fixfrom,
+        DateTime? fixto,
+        DateTime? closefrom,
+        DateTime? closeto)
         {
             List<rpt_downtime> dataObjects = null;
             SqlCommand sql = new SqlCommand
@@ -3343,12 +3445,12 @@ ORDER BY seq DESC
 
 
         public async ValueTask<List<sp_getReportRunningCost>> sp_getReportRunningCost(summary_job_list_condition condition,
-      DateTime? jobfrom,
-      DateTime? jobto,
-      DateTime? fixfrom,
-      DateTime? fixto,
-      DateTime? closefrom,
-      DateTime? closeto)
+        DateTime? jobfrom,
+        DateTime? jobto,
+        DateTime? fixfrom,
+        DateTime? fixto,
+        DateTime? closefrom,
+        DateTime? closeto)
         {
             List<sp_getReportRunningCost> dataObjects = null;
             SqlCommand sql = new SqlCommand

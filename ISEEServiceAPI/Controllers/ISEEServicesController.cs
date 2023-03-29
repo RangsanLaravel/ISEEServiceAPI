@@ -48,8 +48,10 @@ namespace ISEEServiceAPI.Controllers
             //this.mailService = mailService;
         }
         [HttpGet("HealthCheck")]
-        public IActionResult HealthCheck()
+        [AllowAnonymous]
+        public async ValueTask<IActionResult> HealthCheck()
         {
+            //await this.service.testimage();
             return Ok("Running...");
         }
         [HttpGet("CheckConnectDB")]
@@ -683,6 +685,7 @@ namespace ISEEServiceAPI.Controllers
                     img_name = filename,
                     img_path = img_path
                 };
+                await service.TMN_TBT_JOB_IMAGE(data.job_id, image_type);
                 await service.INSERT_TBT_JOB_IMAGE(tbt_job_image, userid, data.job_id);
                 await this.service.sendemail(file, jbdt.email_customer, data.job_id);
             }

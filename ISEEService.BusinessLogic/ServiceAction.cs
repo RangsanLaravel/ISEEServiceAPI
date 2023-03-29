@@ -54,6 +54,30 @@ namespace ISEEService.BusinessLogic
                 throw;
             }
         }
+        public async ValueTask testimage()
+        {
+
+            try
+            {
+                List<rpt_image> ims = new List<rpt_image>();
+                ims.Add(new rpt_image { Files = new DataFile(@"D:\TempFile\Test\2021-04-21_16-30-24.jpg") });
+                ims.Add(new rpt_image { Files = new DataFile(@"D:\TempFile\Test\003724.jpg") });
+                ims.Add(new rpt_image { Files = new DataFile(@"D:\TempFile\Test\003726.jpg") });
+                ims.Add(new rpt_image { Files = new DataFile(@"D:\TempFile\Test\003752.jpg") });
+                ims.Add(new rpt_image { Files = new DataFile(@"D:\TempFile\Test\246730950_1217367888775593_3048194761121595235_n.jpg") });
+                ims.Add(new rpt_image { Files = new DataFile(@"D:\TempFile\Test\247274990_222476536617179_1266110091364157522_n.jpg") });
+                MemoryStream mem = new MemoryStream();
+                report_close_images img = new report_close_images(ims);
+                await img.ExportToPdfAsync(mem);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         public async ValueTask<long?> CHECK_STOCK(string part_id, string location_id)
         {
             long? dataObjects = null;
@@ -1008,7 +1032,36 @@ namespace ISEEService.BusinessLogic
             }
             return dataObjects;
         }
+        public async ValueTask<List<rpt_image>> GET_IMAGEAsync(string job_id, string image_type)
+        {
 
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            List<rpt_image> rpt = new List<rpt_image>();
+            try
+            {
+                var dataObjects = await repository.GET_IMAGEAsync(job_id, image_type);
+                if (dataObjects is not null)
+                {
+                    foreach (var item in dataObjects)
+                    {
+                        rpt.Add(new rpt_image { Files = new DataFile(item.img_path) });
+                    }
+                    return rpt;
+                }
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            // return dataObjects;
+        }
 
         public async ValueTask<List<tbm_checklist_group>> CHECK_LIST()
         {
@@ -1476,6 +1529,26 @@ namespace ISEEService.BusinessLogic
                 data.seq = seq.ToString();
                 await repository.INSERT_TBT_JOB_IMAGE(data, userid);
 
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
+        public async ValueTask TMN_TBT_JOB_IMAGE(string image_type, string job_id)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.TMN_TBT_JOB_IMAGE(image_type, job_id);
                 await repository.CommitTransection();
             }
             catch (Exception ex)
@@ -2109,10 +2182,24 @@ namespace ISEEService.BusinessLogic
                 }
 
                 var rpt = await mainreport(listdata);
+                var rptimage = await GET_IMAGEAsync(listdata.job_id, "pic");
+                byte[] reportimages = null;
+                byte[] allpdf = null;
+                if (rptimage is not null)
+                {
+                    reportimages = await imagereport(rptimage);
+                }
                 chkheader.checklist = new List<check_list_rpt>();
                 chkheader.checklist = chkpt;
                 var chklist = await checklistreport(chkheader);
-                var allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist });
+                if (reportimages is not null)
+                {
+                    allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist, reportimages });
+                }
+                else
+                {
+                    allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist });
+                }
                 pdf = new DataFile { FileData = allpdf, FileName = "job.pdf", ContentType = "application/pdf" };
                 await sendemail(pdf, listdata.email_customer, listdata.job_id);
             }
@@ -2202,7 +2289,15 @@ namespace ISEEService.BusinessLogic
         {
             report_close_job rpt = new report_close_job(listdata);
             MemoryStream stream = new MemoryStream();
-            rpt.ExportToPdf(stream);
+            await rpt.ExportToPdfAsync(stream);
+            var mainreport = stream.ToArray();
+            return mainreport;
+        }
+        private async ValueTask<byte[]> imagereport(List<rpt_image> listdata)
+        {
+            report_close_images rpt = new report_close_images(listdata);
+            MemoryStream stream = new MemoryStream();
+            await rpt.ExportToPdfAsync(stream);
             var mainreport = stream.ToArray();
             return mainreport;
         }
@@ -2210,7 +2305,7 @@ namespace ISEEService.BusinessLogic
         {
             report_checklist rpt = new report_checklist(header);
             MemoryStream stream = new MemoryStream();
-            rpt.ExportToPdf(stream);
+            await rpt.ExportToPdfAsync(stream);
             var mainreport = stream.ToArray();
             return mainreport;
 
@@ -2402,7 +2497,7 @@ namespace ISEEService.BusinessLogic
             await repository.OpenConnectionAsync();
             try
             {
-               var dataObjects = await repository.GET_TBM_CUSTOMERAsync(data);
+                var dataObjects = await repository.GET_TBM_CUSTOMERAsync(data);
                 if (dataObjects is not null)
                 {
                     MemoryStream stream = new MemoryStream();
