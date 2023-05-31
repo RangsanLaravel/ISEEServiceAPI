@@ -561,6 +561,7 @@ namespace ISEEServiceAPI.Controllers
                     else if (job is not null && job.job_status == "C" && data.flg_close == "Y")
                     {
                         await SendEmailRpt(data);
+                        await this.service.sp_update_cut_stock_job(data.job_id);
                         return Ok();
                     }
                 }
@@ -602,6 +603,7 @@ namespace ISEEServiceAPI.Controllers
                 if (data.job_status == "C" && data.flg_close == "Y")
                 {
                     await SendEmailRpt(data);
+                    await this.service.sp_update_cut_stock_job(data.job_id);
                 }
                 return Ok();
             }

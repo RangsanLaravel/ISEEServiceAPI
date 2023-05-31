@@ -27,7 +27,7 @@ namespace ISEEService.BusinessLogic.report
             return img;
         }
 
-        private void Detail1_BeforePrint(object sender, CancelEventArgs e)
+        private void Detail1_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
         {
             //var currRow = (rpt_image)GetCurrentRow();
             //if (CurrentRowIndex % 2 == 0)

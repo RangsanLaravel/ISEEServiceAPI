@@ -3479,6 +3479,18 @@ ORDER BY seq DESC
             return dataObjects;
 
         }
+
+
+        public async ValueTask sp_update_cut_stock_job(string jobid)
+        {
+            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].sp_update_cut_stock_job", this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Connection = this.sqlConnection;
+            command.Transaction = this.transaction;
+            command.Parameters.AddWithValue("@job_id", jobid);
+            command.ExecuteNonQuery();
+        }
+
         #endregion " CALL STORE "
 
     }

@@ -12,7 +12,7 @@ namespace ISEEService.BusinessLogic.report
             this.objectDataSource2.DataSource = condition;
         }
 
-        private void summary_stock_list_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        private void summary_stock_list_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
         {
             if (((summary_stock_list_condition)this.objectDataSource2.DataSource).report_type == "EXCEL")
             {

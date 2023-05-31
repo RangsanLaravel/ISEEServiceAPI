@@ -100,7 +100,7 @@
             // xrTable1
             // 
             this.xrTable1.BackColor = System.Drawing.Color.LightGray;
-            this.xrTable1.Font = new System.Drawing.Font("Cordia New", 16F, System.Drawing.FontStyle.Bold);
+            this.xrTable1.Font = new DevExpress.Drawing.DXFont("Cordia New", 16F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrTable1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrTable1.Name = "xrTable1";
             this.xrTable1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
@@ -216,7 +216,7 @@
             // 
             // xrTable2
             // 
-            this.xrTable2.Font = new System.Drawing.Font("Cordia New", 16F);
+            this.xrTable2.Font = new DevExpress.Drawing.DXFont("Cordia New", 16F);
             this.xrTable2.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.xrTable2.Name = "xrTable2";
             this.xrTable2.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
@@ -371,7 +371,7 @@
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
             this.objectDataSource1});
             this.DataSource = this.objectDataSource1;
-            this.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
+            this.Margins = new DevExpress.Drawing.DXMargins(0, 0, 0, 0);
             this.Version = "22.1";
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).EndInit();

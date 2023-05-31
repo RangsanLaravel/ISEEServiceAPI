@@ -23,7 +23,7 @@ namespace ISEEService.BusinessLogic.report
             return returnImage;
         }
 
-        private void report_close_job_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        private void report_close_job_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
         {
             var data = (close_job)this.objectDataSource1.DataSource;
             part_rpt prt = new part_rpt(data.job_parts);

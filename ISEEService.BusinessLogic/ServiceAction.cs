@@ -1836,6 +1836,29 @@ namespace ISEEService.BusinessLogic
             }
         }
 
+
+        public async ValueTask sp_update_cut_stock_job(string jobid)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.sp_update_cut_stock_job(jobid);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
+
+
         #region " REPORT "
         public async ValueTask<List<tbt_job_image>> GET_IMAGE_SIG(string condition)
         {
