@@ -16,6 +16,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using ISEEServiceAPI.CustomPolicyProvider;
 using Microsoft.Extensions.Options;
+using DevExpress.Data.Filtering.Helpers;
 
 namespace ISEEServiceAPI.Controllers
 {
@@ -62,6 +63,22 @@ namespace ISEEServiceAPI.Controllers
         }
 
         #region " STATICDATA "
+
+        [HttpGet("TBM_SUBSTATUS")]
+        [AllowAnonymous]
+        public async ValueTask<IActionResult> TBM_SUBSTATUS()
+        {
+            try
+            {
+                var result = await this.service.TBM_SUBSTATUSAsync();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
         [HttpGet("GET_PROVINCE")]
         //[SecurityLevel(2)]
         public async ValueTask<IActionResult> GET_PROVINCE()
@@ -515,7 +532,6 @@ namespace ISEEServiceAPI.Controllers
 
         #endregion " GET "
 
-
         #region " MANAGE JOBE "
         [HttpPost("CREATEJOB")]
         //[SecurityLevel(3)]
@@ -631,6 +647,17 @@ namespace ISEEServiceAPI.Controllers
                 {
                     DataFile filerpt = new DataFile(rpt.img_path);                   
                     await this.service.sendemail(filerpt, jbdt.email_customer, data.job_id);
+                    tbt_email_history hemail = new tbt_email_history
+                    {
+                        email_address = jbdt.email_customer,
+                        job_id = jbdt.job_id,
+                        customer_id = jbdt.customer_id,
+                        license_no = jbdt.license_no,
+                        send_by = jbdt.userid,
+                        email_code = "NT",
+
+                    };
+                    await this.service.INSERT_TBT_EMAIL_HISTORYAsync(hemail);
                     isRPT = false;
                 }
             }
@@ -690,6 +717,17 @@ namespace ISEEServiceAPI.Controllers
                 await service.TMN_TBT_JOB_IMAGE(data.job_id, image_type);
                 await service.INSERT_TBT_JOB_IMAGE(tbt_job_image, userid, data.job_id);
                 await this.service.sendemail(file, jbdt.email_customer, data.job_id);
+                tbt_email_history hemail = new tbt_email_history
+                {
+                    email_address = data.email_customer,
+                    job_id = data.job_id,
+                    customer_id = data.customer_id,
+                    license_no = data.license_no,
+                    send_by = data.userid,
+                    email_code = "NT",
+
+                };
+                await this.service.INSERT_TBT_EMAIL_HISTORYAsync(hemail);
             }
         }
 
@@ -1440,9 +1478,6 @@ namespace ISEEServiceAPI.Controllers
             }
         }
         #endregion " REPORT "
-
-
-
 
 
     }

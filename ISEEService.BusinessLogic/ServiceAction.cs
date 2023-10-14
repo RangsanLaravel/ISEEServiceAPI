@@ -21,6 +21,7 @@ using ISEEService.BusinessLogic.report;
 using DataAccessUtility;
 using System.Data;
 using DevExpress.CodeParser;
+using DevExpress.PivotGrid.Criteria;
 
 namespace ISEEService.BusinessLogic
 {
@@ -1357,6 +1358,7 @@ namespace ISEEService.BusinessLogic
                     string running_no = await GET_SP_GET_RUNNING_NOAsync(running_type);
                     data.job_id = running_no;
                     await repository.INSERT_TBT_JOB_HEADERAsync(data);
+                    await repository.INSERT_TBM_SUBSTATUSAsync(running_no,"I","","INV", data.user_id);
                 }
                 else
                 {
@@ -1762,6 +1764,14 @@ namespace ISEEService.BusinessLogic
                 var job = await GET_TBT_JOB(data.job_id);
 
                 await repository.Close_jobAsync(data, job);
+                if(data.job_status == "C")
+                {
+                    await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, "END", "", data.userid);
+                }
+                else
+                {
+                    await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, data.substatus, data.substatus_remark, data.userid);
+                }
                 if (data.job_checklists is not null && data.job_checklists.Count > 0)
                 {
                     await repository.TERMINATE_TBT_JOB_CHECKLISTAsync(data.job_id);
@@ -2224,6 +2234,16 @@ namespace ISEEService.BusinessLogic
                     allpdf = await CombineMultiplePDFs(new List<byte[]> { rpt, chklist });
                 }
                 pdf = new DataFile { FileData = allpdf, FileName = "job.pdf", ContentType = "application/pdf" };
+                tbt_email_history hemail = new tbt_email_history { 
+                     email_address= listdata.email_customer,
+                    job_id=listdata.job_id,
+                    customer_id = listdata.customer_id,
+                    license_no =listdata.license_no,
+                    send_by =listdata.userid,
+                    email_code ="NT",
+                    
+                };
+                await INSERT_TBT_EMAIL_HISTORYAsync(hemail);
                 await sendemail(pdf, listdata.email_customer, listdata.job_id);
             }
             catch (Exception ex)
@@ -2256,7 +2276,9 @@ namespace ISEEService.BusinessLogic
                 Cc = Cc
 
             };
+
             await IMailService.SendEmailAsync(request);
+         
 
         }
 
