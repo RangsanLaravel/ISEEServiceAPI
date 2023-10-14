@@ -21,7 +21,7 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"select  [{DBENV}].dbo.tbm_substatus WHERE ACTIVE_FLG='1' ORDER BY STATUS_SEQ ASC"
+                CommandText = $@"select  * from [{DBENV}].dbo.tbm_substatus WHERE ACTIVE_FLG='1' ORDER BY STATUS_SEQ ASC"
             };
 
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
