@@ -11,14 +11,14 @@ using DataAccessUtility;
 
 namespace ISEEService.DataAccess
 {
-    public class Repository
+    public partial class Repository
     {
         #region " STATIC "
 
-        private readonly SqlConnection sqlConnection = null;
-        private SqlTransaction transaction;
+        protected readonly SqlConnection sqlConnection = null;
+        protected SqlTransaction transaction;
 
-        private readonly string DBENV = string.Empty;
+        protected readonly string DBENV = string.Empty;
         public Repository(string connectionstring, string DBENV) : this(new SqlConnection(connectionstring), DBENV)
         {
 
