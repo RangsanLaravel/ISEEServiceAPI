@@ -107,5 +107,26 @@ GETDATE(),
             await sql.ExecuteNonQueryAsync();
         }
 
+        public async ValueTask<List<tbt_job_substatus>> TBT_JOB_SUBSTATUSAsync()
+        {
+            List<tbm_substatus> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"select  [{DBENV}].dbo.tbm_substatus tb
+
+                                WHERE ACTIVE_FLG='1' ORDER BY STATUS_SEQ ASC"
+            };
+
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbm_substatus>().ToList();
+                }
+            }
+            return dataObjects;
+        }
     }
 }
