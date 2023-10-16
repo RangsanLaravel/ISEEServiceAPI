@@ -620,7 +620,7 @@ namespace ISEEService.BusinessLogic
             try
             {
              
-                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "", "INR", userid);
+                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INR", "", userid);
                 await repository.sp_update_receive_job(Jobid);
                 await repository.CommitTransection();
             }
@@ -643,7 +643,7 @@ namespace ISEEService.BusinessLogic
 
             try
             {
-                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "", "INS", userid);
+                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INS", "", userid);
                 await repository.sp_update_start_job(Jobid);
                 await repository.CommitTransection();
 
@@ -666,7 +666,7 @@ namespace ISEEService.BusinessLogic
 
             try
             {
-                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "", "INT", userid);
+                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INT", "", userid);
                 await repository.sp_update_travel_job(Jobid);
                 await repository.CommitTransection();
 
@@ -1363,7 +1363,7 @@ namespace ISEEService.BusinessLogic
                     string running_no = await GET_SP_GET_RUNNING_NOAsync(running_type);
                     data.job_id = running_no;
                     await repository.INSERT_TBT_JOB_HEADERAsync(data);
-                    await repository.INSERT_TBM_SUBSTATUSAsync(running_no,"I","","INV", data.user_id);
+                    await repository.INSERT_TBM_SUBSTATUSAsync(running_no,"I", "INV", "", data.user_id);
                 }
                 else
                 {
@@ -1772,6 +1772,10 @@ namespace ISEEService.BusinessLogic
                 if(data.job_status == "C")
                 {
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, "END", "", data.userid);
+                }
+                else if (data.job_status == "F")
+                {
+                    await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status,"INC", data.substatus_remark, data.userid);
                 }
                 else
                 {
