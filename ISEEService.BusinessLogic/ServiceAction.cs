@@ -22,6 +22,7 @@ using DataAccessUtility;
 using System.Data;
 using DevExpress.CodeParser;
 using DevExpress.PivotGrid.Criteria;
+using DevExpress.ClipboardSource.SpreadsheetML;
 
 namespace ISEEService.BusinessLogic
 {
@@ -611,13 +612,15 @@ namespace ISEEService.BusinessLogic
             }
         }
 
-        public async ValueTask sp_update_receive_job(string Jobid)
+        public async ValueTask sp_update_receive_job(string Jobid,string userid)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
             {
+             
+                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "", "INR", userid);
                 await repository.sp_update_receive_job(Jobid);
                 await repository.CommitTransection();
             }
@@ -632,7 +635,7 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
-        public async ValueTask sp_update_start_job(string Jobid)
+        public async ValueTask sp_update_start_job(string Jobid, string userid)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
@@ -640,6 +643,7 @@ namespace ISEEService.BusinessLogic
 
             try
             {
+                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "", "INS", userid);
                 await repository.sp_update_start_job(Jobid);
                 await repository.CommitTransection();
 
@@ -654,7 +658,7 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
-        public async ValueTask sp_update_travel_job(string Jobid)
+        public async ValueTask sp_update_travel_job(string Jobid,string userid)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
             await repository.OpenConnectionAsync();
@@ -662,6 +666,7 @@ namespace ISEEService.BusinessLogic
 
             try
             {
+                await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "", "INT", userid);
                 await repository.sp_update_travel_job(Jobid);
                 await repository.CommitTransection();
 
