@@ -934,8 +934,8 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
-                var user_id = User.Claims.Where(a => a.Type == "id")?.Select(a => a.Value)?.FirstOrDefault();
-                await this.service.sp_update_start_job(data.job_id, user_id);
+
+                await this.service.sp_update_start_job(data.job_id);
                 return Ok();
             }
             catch (Exception ex)
@@ -948,8 +948,8 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
-                var user_id =   User.Claims.Where(a => a.Type == "id")?.Select(a => a.Value)?.FirstOrDefault();
-                await this.service.sp_update_receive_job(data.job_id, user_id);
+
+                await this.service.sp_update_receive_job(data.job_id);
                 return Ok();
             }
             catch (Exception ex)
@@ -962,8 +962,8 @@ namespace ISEEServiceAPI.Controllers
         {
             try
             {
-                var user_id = User.Claims.Where(a => a.Type == "id")?.Select(a => a.Value)?.FirstOrDefault();
-                await this.service.sp_update_travel_job(data.job_id, user_id);
+
+                await this.service.sp_update_travel_job(data.job_id);
                 return Ok();
             }
             catch (Exception ex)

@@ -1,6 +1,5 @@
 ﻿using ISEEService.BusinessLogic;
 using ISEEService.DataContract;
-using ITUtility;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,20 +33,6 @@ namespace ISEEServiceAPI.Controllers
             this.service = new ServiceAction(this.Configuration.GetConnectionString("ConnectionSQLServer"), mailSettings, Configuration["ConfigSetting:DBENV"]);
             //this.mailService = mailService;
         }
-        [HttpGet("get_substatus/{job_id}")]
-        public async ValueTask<IActionResult> get_substatus(string job_id)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(job_id)) return BadRequest("Require job_id");
-                var result = await this.service.TBT_JOB_SUBSTATUSAsync(job_id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
+        
     }
 }
