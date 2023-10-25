@@ -615,7 +615,7 @@ namespace ISEEService.BusinessLogic
         public async ValueTask sp_update_receive_job(string Jobid,string userid)
         {
             Repository repository = new Repository(_connectionstring, DBENV);
-            await repository.OpenConnectionAsync();1
+            await repository.OpenConnectionAsync();
             await repository.beginTransection();
             try
             {

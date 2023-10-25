@@ -32,7 +32,7 @@
 
   <ItemGroup>
     <PackageReference Include="CryptoHelper" Version="3.0.2" />
-    <PackageReference Include="DevExpress.Reporting.Core" Version="22.2.6" />
+    <PackageReference Include="DevExpress.Reporting.Core" Version="23.1.6" />
     <PackageReference Include="iTextSharp.LGPLv2.Core" Version="1.7.5" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
@@ -45,25 +45,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="DevExpress.Data.v22.2">
+    <Reference Include="DevExpress.Data.v23.1">
       
     </Reference>
-    <Reference Include="DevExpress.DataAccess.v22.2">
+    <Reference Include="DevExpress.DataAccess.v23.1">
       
     </Reference>
-    <Reference Include="DevExpress.Printing.v22.2.Core">
+    <Reference Include="DevExpress.Printing.v23.1.Core">
       
     </Reference>
-    <Reference Include="DevExpress.Xpo.v22.2">
+    <Reference Include="DevExpress.Xpo.v23.1">
       
     </Reference>
-    <Reference Include="DevExpress.Charts.v22.2.Core">
+    <Reference Include="DevExpress.Charts.v23.1.Core">
       
     </Reference>
-    <Reference Include="DevExpress.XtraCharts.v22.2">
+    <Reference Include="DevExpress.XtraCharts.v23.1">
       
     </Reference>
-    <Reference Include="DevExpress.XtraReports.v22.2">
+    <Reference Include="DevExpress.XtraReports.v23.1">
       
     </Reference>
   </ItemGroup>
