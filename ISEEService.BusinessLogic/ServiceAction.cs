@@ -619,6 +619,7 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
+                await sendemailStatus(userid, Jobid);
                 await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INR", "", userid);
                 await repository.sp_update_receive_job(Jobid);
                 await repository.CommitTransection();
@@ -642,6 +643,7 @@ namespace ISEEService.BusinessLogic
 
             try
             {
+                await sendemailStatus(userid, Jobid);
                 await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INS", "", userid);
                 await repository.sp_update_start_job(Jobid);
                 await repository.CommitTransection();
@@ -665,6 +667,7 @@ namespace ISEEService.BusinessLogic
 
             try
             {
+                await sendemailStatus(userid, Jobid);
                 await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INT", "", userid);
                 await repository.sp_update_travel_job(Jobid);
                 await repository.CommitTransection();
@@ -1363,6 +1366,7 @@ namespace ISEEService.BusinessLogic
                     data.job_id = running_no;
                     await repository.INSERT_TBT_JOB_HEADERAsync(data);
                     await repository.INSERT_TBM_SUBSTATUSAsync(running_no,"I", "INV", "", data.user_id);
+                    await sendemailStatus(data.user_id, data.job_id);
                 }
                 else
                 {
@@ -1770,14 +1774,17 @@ namespace ISEEService.BusinessLogic
                 await repository.Close_jobAsync(data, job);
                 if(data.job_status == "C")
                 {
+                    await sendemailStatus(data.userid, data.job_id);
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, "END", "", data.userid);
                 }
                 else if (data.job_status == "F")
                 {
+                    await sendemailStatus(data.userid, data.job_id);
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status,"INC", data.substatus_remark, data.userid);
                 }
                 else
                 {
+                    await sendemailStatus(data.userid, data.job_id);
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, data.substatus, data.substatus_remark, data.userid);
                 }
                 if (data.job_checklists is not null && data.job_checklists.Count > 0)

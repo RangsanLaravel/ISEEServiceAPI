@@ -47,6 +47,7 @@ namespace ISEEService.BusinessLogic
                     license_no = job.license_no,
                     send_by = userid,
                     email_code = "NT",
+                    
                 };
                 await INSERT_TBT_EMAIL_HISTORYAsync(hemail);
 
