@@ -72,5 +72,25 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
+
+        public async ValueTask<List<tbt_job_substatus>> TBT_JOB_SUBSTATUSAsync(string JOBID)
+        {
+            List<tbt_job_substatus> dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+                dataObjects = await repository.TBT_JOB_SUBSTATUSAsync(JOBID);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return dataObjects;
+        }
     }
 }

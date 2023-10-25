@@ -107,5 +107,40 @@ GETDATE(),
             await sql.ExecuteNonQueryAsync();
         }
 
+        public async ValueTask<List<tbt_job_substatus>> TBT_JOB_SUBSTATUSAsync(string JOBID)
+        {
+            List<tbt_job_substatus> dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                CommandText = $@"
+                           SELECT 
+	tbt.status_remark,
+	tb.STATUS_DESCRIPTION as substatus,
+	tbt.status_dt,
+	(SELECT fullname+' '+lastname FROM [{DBENV}].[dbo].tbm_employee
+where status=1
+and user_id =tbt.create_id) AS create_id
+  FROM [{DBENV}].[dbo].[tbm_substatus] tb
+  INNER JOIN [{DBENV}].[dbo].tbt_job_substatus tbt
+  ON tb.STATUS_CODE =tbt.substatus
+  WHERE tbt.active_flg ='1'
+  AND tb.ACTIVE_FLG ='1'
+  AND tb.STATUS_TYPE ='JOB'
+  AND UPPER(tbt.job_id)= UPPER(@jobid)
+ORDER BY tbt.status_dt ASC"
+            };
+            sql.Parameters.AddWithValue("@jobid", JOBID ?? (object)DBNull.Value);
+
+            using (DataTable dt = await Utility.FillDataTableAsync(sql))
+            {
+                if (dt.Rows.Count > 0)
+                {
+                    dataObjects = dt.AsEnumerable<tbt_job_substatus>().ToList();
+                }
+            }
+            return dataObjects;
+        }
     }
 }
