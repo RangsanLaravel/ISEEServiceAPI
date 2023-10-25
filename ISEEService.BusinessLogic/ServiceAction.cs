@@ -619,7 +619,6 @@ namespace ISEEService.BusinessLogic
             await repository.beginTransection();
             try
             {
-             
                 await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INR", "", userid);
                 await repository.sp_update_receive_job(Jobid);
                 await repository.CommitTransection();
