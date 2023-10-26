@@ -1181,6 +1181,38 @@ namespace ISEEServiceAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("UserInfo")]
+        public async ValueTask<IActionResult> UserInfo()
+        {
+            employee_info employee_Info = null;
+            try
+            {
+                var username = User.Claims.Where(a => a.Type == "username").Select(a => a.Value).FirstOrDefault();
+                if (username is null)
+                {
+                    return NotFound("ไม่พบข้อมูลผู้ใช้งาน");
+                }
+
+                employee_Info = await this.service.UserInfo(new UserLogin { UserName = username });
+                if (employee_Info is null)
+                {
+                    return BadRequest("UserName invalid ");
+                }
+                else
+                {
+                    var token = await BuildToken(employee_Info);
+                    var menu = await this.service.GET_MENU(employee_Info.user_id);
+                    employee_Info.token = token;
+                    employee_Info.menu = new List<tbm_menu>();
+                    employee_Info.menu = menu;
+                    return Ok(employee_Info);
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
         private async ValueTask<string> BuildToken(employee_info employee)
         {
             // key is case-sensitive

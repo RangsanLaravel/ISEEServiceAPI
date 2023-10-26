@@ -1128,7 +1128,30 @@ namespace ISEEService.BusinessLogic
             return employee_Info;
 
         }
+        public async ValueTask<employee_info> UserInfo(UserLogin user)
+        {
 
+            employee_info employee_Info = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            try
+            {
+
+                employee_Info = await repository.UserLogin(user);
+                if (employee_Info is null)
+                    return employee_Info;               
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+            return employee_Info;
+
+        }
         public async ValueTask<List<tbm_menu>> GET_MENU(string user_id)
         {
 
@@ -1365,8 +1388,7 @@ namespace ISEEService.BusinessLogic
                     string running_no = await GET_SP_GET_RUNNING_NOAsync(running_type);
                     data.job_id = running_no;
                     await repository.INSERT_TBT_JOB_HEADERAsync(data);
-                    await repository.INSERT_TBM_SUBSTATUSAsync(running_no,"I", "INV", "", data.user_id);
-                    await sendemailStatus(data.user_id, data.job_id);
+                    await repository.INSERT_TBM_SUBSTATUSAsync(running_no,"I", "INV", "", data.user_id);                    
                 }
                 else
                 {
@@ -1384,6 +1406,7 @@ namespace ISEEService.BusinessLogic
             finally
             {
                 await repository.CloseConnectionAsync();
+                await sendemailStatus(data.user_id, data.job_id);
             }
 
         }
@@ -1774,17 +1797,17 @@ namespace ISEEService.BusinessLogic
                 await repository.Close_jobAsync(data, job);
                 if(data.job_status == "C")
                 {
-                    await sendemailStatus(data.userid, data.job_id);
+                    
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, "END", "", data.userid);
                 }
                 else if (data.job_status == "F")
                 {
-                    await sendemailStatus(data.userid, data.job_id);
+                    
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status,"INC", data.substatus_remark, data.userid);
                 }
                 else
                 {
-                    await sendemailStatus(data.userid, data.job_id);
+                    
                     await repository.INSERT_TBM_SUBSTATUSAsync(data.job_id, data.job_status, data.substatus, data.substatus_remark, data.userid);
                 }
                 if (data.job_checklists is not null && data.job_checklists.Count > 0)
@@ -1858,6 +1881,7 @@ namespace ISEEService.BusinessLogic
             finally
             {
                 await repository.CloseConnectionAsync();
+                await sendemailStatus(data.userid, data.job_id);
             }
         }
 

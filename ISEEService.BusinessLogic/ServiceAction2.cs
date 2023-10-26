@@ -58,8 +58,8 @@ namespace ISEEService.BusinessLogic
                 }
                 MailRequest request = new MailRequest
                 {
-                    Body = @$"<span>แจ้งถานะการซ่อมบำรุง</span>
-                          <span>http://203.151.136.81/timelinejob?jobid={JOB_ID}</span>",
+                    Body = @$"<span>แจ้งถานะการซ่อมบำรุง :{JOB_ID}</span>
+                          <a href='http://203.151.136.81/timelinejob?jobid={JOB_ID}'>แสดงสถานะการทำงาน</a>",
                     Subject = "แจ้งถานะการซ่อมบำรุง",
                     //ToEmail = "Dethman_light@hotmail.com"
                     ToEmail = job.email_customer,

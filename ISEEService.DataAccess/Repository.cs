@@ -1438,7 +1438,7 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
             }
             return employee_Info;
         }
-
+        
         public async ValueTask<List<tbm_menu>> GET_MENU(string user_id)
         {
             List<tbm_menu> menu = null;
