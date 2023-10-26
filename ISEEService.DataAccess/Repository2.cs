@@ -20,9 +20,9 @@ namespace ISEEService.DataAccess
             {
                 CommandType = System.Data.CommandType.Text,
                 Connection = this.sqlConnection,
-                CommandText = $@"SELECT email_customer FROM [{DBENV}].[dbo].[tbt_job_header] WHERE job_id =@job_id AND status =1 "
+                CommandText = $@"SELECT * FROM [{DBENV}].[dbo].[tbt_job_header] WHERE job_id =@job_id AND status =1 "
             };
-            sql.Parameters.AddWithValue("@jobid", JOBID ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@job_id", JOBID ?? (object)DBNull.Value);
 
             using (DataTable dt = await Utility.FillDataTableAsync(sql))
             {
