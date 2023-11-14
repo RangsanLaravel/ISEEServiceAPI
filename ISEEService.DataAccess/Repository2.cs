@@ -33,5 +33,25 @@ namespace ISEEService.DataAccess
             }
             return dataObjects;
         }
+
+        public async ValueTask UPDATE_OWNERID(string ownerid,string jobid,string userid)
+        {
+            tbt_job_header dataObjects = null;
+            SqlCommand sql = new SqlCommand
+            {
+                CommandType = System.Data.CommandType.Text,
+                Connection = this.sqlConnection,
+                Transaction = this.transaction,
+                CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_header]
+                                SET owner_id =@ownerid
+                                    update_date=GETDATE(),
+                                    update_by=@userid
+                               WHERE job_id =@job_id AND status =1 "
+            };
+            sql.Parameters.AddWithValue("@ownerid", ownerid ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@userid", userid ?? (object)DBNull.Value);
+            sql.Parameters.AddWithValue("@job_id", jobid ?? (object)DBNull.Value);
+            await  sql.ExecuteNonQueryAsync();          
+        }
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ISEEServiceAPI.Controllers
@@ -49,5 +50,19 @@ namespace ISEEServiceAPI.Controllers
             }
         }
 
+        [HttpPost("UpdateStatus")]
+        public async ValueTask<IActionResult> UpdateStatus(update_status data)
+        {
+            try
+            {
+                var userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                await this.service.INSERT_TBM_SUBSTATUSAsync(data, userid);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

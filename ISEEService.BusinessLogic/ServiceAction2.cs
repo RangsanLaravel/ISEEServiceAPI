@@ -66,9 +66,38 @@ namespace ISEEService.BusinessLogic
                     Cc = Cc
 
                 };
-                await IMailService.SendEmailAsync(request);
+               // await IMailService.SendEmailAsync(request);รอใช้งานจริง
             }
             
+        }
+
+        public async ValueTask INSERT_TBM_SUBSTATUSAsync(update_status data,string userid)
+        {
+            tbt_job_header dataObjects = null;
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                //await repository.INSERT_TBM_SUBSTATUSAsync(Jobid, "I", "INR", "", userid);
+                await repository.INSERT_TBM_SUBSTATUSAsync(data.jobid,"I",data.statusid,data.remark,userid);
+                if(data.userid != null)
+                {
+                    await repository.UPDATE_OWNERID(data.userid,data.jobid, userid);
+                }
+                await repository.CommitTransection();
+
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+           
         }
     }
 }
