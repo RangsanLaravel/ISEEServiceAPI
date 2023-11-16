@@ -43,7 +43,7 @@ namespace ISEEService.DataAccess
                 Connection = this.sqlConnection,
                 Transaction = this.transaction,
                 CommandText = $@"UPDATE [{DBENV}].[dbo].[tbt_job_header]
-                                SET owner_id =@ownerid
+                                SET owner_id =@ownerid,
                                     update_date=GETDATE(),
                                     update_by=@userid
                                WHERE job_id =@job_id AND status =1 "
