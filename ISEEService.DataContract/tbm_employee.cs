@@ -19,6 +19,7 @@ namespace ISEEService.DataContract
         public string showstock { get; set; }
         public string location_name { get; set; }
         public string location_id { get; set; }
+        public string email { get; set; }
 
     }
 }
