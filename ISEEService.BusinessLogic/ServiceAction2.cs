@@ -95,7 +95,7 @@ namespace ISEEService.BusinessLogic
             var config = await GET_CONFIG();
             var employee = await GET_EMAILEmployeeAsync(userid_assign);
 
-            if (employee is not null)
+            if (employee?.email is not null)
             {
                 tbt_email_history hemail = new tbt_email_history
                 {
