@@ -1421,6 +1421,7 @@ WHERE [status] =1 AND ijob_id = @ijob_id AND seq =@seq"
                                         ,em.position
                                         ,po.position_description   
                                         ,po.security_level
+                                        ,em.email
                                 FROM [{DBENV}].[dbo].[tbm_employee] em 
                                 INNER JOIN [{DBENV}].[dbo].[tbm_employee_position] po on em.position =po.position_code
                                 WHERE UPPER(em.user_name) =@username                               

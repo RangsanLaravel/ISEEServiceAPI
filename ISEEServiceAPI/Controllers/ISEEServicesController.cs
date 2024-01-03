@@ -785,8 +785,6 @@ namespace ISEEServiceAPI.Controllers
             }
         }
 
-        [HttpGet()]
-
         #endregion " MANAGE JOBE "
 
         #region " INESERT && UPDATE "
@@ -1511,6 +1509,29 @@ namespace ISEEServiceAPI.Controllers
         }
         #endregion " REPORT "
 
+        #region " EMAIL "
+        [HttpPost("SendEmail")]
+        public async ValueTask<IActionResult> SendEmail(email_service condition)
+        {
+            employee_info employee_Info = null;
+            try
+            {
+                var username = User.Claims.Where(a => a.Type == "username").Select(a => a.Value).FirstOrDefault();
+                if (username is null)
+                {
+                    return NotFound("ไม่พบข้อมูลผู้ใช้งาน");
+                }
+                condition.userid = username;
+                await service.SendEmail(condition);
+                return Ok();
+               
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion " EMAIL "
 
     }
 }

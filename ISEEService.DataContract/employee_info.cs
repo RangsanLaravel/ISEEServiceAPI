@@ -17,6 +17,7 @@ namespace ISEEService.DataContract
         public string position { get; set; }
         public string position_description { get; set; }
         public string security_level { get; set; }
+        public string email { get; set; }
         public List<tbm_menu> menu { get; set; }
     }
 }

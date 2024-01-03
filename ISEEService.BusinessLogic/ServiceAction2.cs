@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace ISEEService.BusinessLogic
 {
@@ -155,6 +156,31 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
            
+        }
+
+        public async ValueTask SendEmail(email_service email)
+        {
+            tbt_email_history hemail = new tbt_email_history
+            {
+                email_address = email.email,
+                job_id = null,
+                send_by = email.userid,
+                email_code = "SV",
+
+            };
+            await INSERT_TBT_EMAIL_HISTORYAsync(hemail);
+
+            List<string> Cc = new List<string>();
+            MailRequest request = new MailRequest
+            {
+                Body = email.body,
+                Subject = email.subject,
+                //ToEmail = "Dethman_light@hotmail.com"
+                ToEmail = email.email,
+                Cc = email.cc
+
+            };
+            await IMailService.SendEmailAsync(request);
         }
     }
 }
