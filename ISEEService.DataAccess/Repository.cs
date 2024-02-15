@@ -3491,7 +3491,15 @@ ORDER BY seq DESC
             command.Parameters.AddWithValue("@job_id", jobid);
             command.ExecuteNonQuery();
         }
-
+        public async ValueTask sp_get_company_for_import(string userid)
+        {
+            SqlCommand command = new SqlCommand($"[{DBENV}].[dbo].sp_get_company_for_import", this.sqlConnection);
+            command.CommandType = CommandType.StoredProcedure;
+            command.Connection = this.sqlConnection;
+            command.Transaction = this.transaction;
+            command.Parameters.AddWithValue("@user_id", userid);
+            command.ExecuteNonQuery();
+        }
         #endregion " CALL STORE "
 
     }

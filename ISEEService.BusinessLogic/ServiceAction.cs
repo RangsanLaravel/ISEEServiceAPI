@@ -1906,6 +1906,26 @@ namespace ISEEService.BusinessLogic
                 await repository.CloseConnectionAsync();
             }
         }
+        public async ValueTask sp_get_company_for_import(string userid)
+        {
+            Repository repository = new Repository(_connectionstring, DBENV);
+            await repository.OpenConnectionAsync();
+            await repository.beginTransection();
+            try
+            {
+                await repository.sp_get_company_for_import(userid);
+                await repository.CommitTransection();
+            }
+            catch (Exception ex)
+            {
+                await repository.RollbackTransection();
+                throw ex;
+            }
+            finally
+            {
+                await repository.CloseConnectionAsync();
+            }
+        }
 
 
         #region " REPORT "

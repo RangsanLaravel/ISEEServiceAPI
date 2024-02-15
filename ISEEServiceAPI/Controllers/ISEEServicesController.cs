@@ -1532,6 +1532,20 @@ namespace ISEEServiceAPI.Controllers
             }
         }
         #endregion " EMAIL "
+        [HttpPost("sp_update_cut_stock_job")]
+        public async ValueTask<IActionResult> sp_update_cut_stock_job()
+        {
+            try
+            {
+                var userid = User.Claims.Where(a => a.Type == "id").Select(a => a.Value).FirstOrDefault();
+                await service.sp_update_cut_stock_job(userid);
+                return Ok();
 
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
